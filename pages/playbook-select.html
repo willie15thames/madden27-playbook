@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playbook Browser - Madden 27 Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        dark: { 900: '#0a0a0f', 800: '#12121a', 700: '#1a1a2e', 600: '#252540' },
+        neon: { green: '#00ff87', blue: '#60a5fa', purple: '#a78bfa', red: '#f87171', yellow: '#fbbf24', cyan: '#22d3ee' }
+      }}}
+    }
+  </script>
+</head>
+<body class="bg-dark-900 text-white min-h-screen">
+  <!-- Nav -->
+  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="../index.html" class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-neon-green to-neon-blue rounded-lg flex items-center justify-center font-black text-dark-900 text-lg">M</div>
+          <span class="text-xl font-bold bg-gradient-to-r from-neon-green to-neon-blue bg-clip-text text-transparent">Madden 27 Lab</span>
+        </a>
+        <div class="hidden md:flex items-center gap-1">
+          <a href="../index.html" class="nav-link"><i class="bi bi-house-fill mr-1"></i> Home</a>
+          <a href="coverages.html" class="nav-link"><i class="bi bi-shield-fill mr-1"></i> Coverages</a>
+          <a href="offenses.html" class="nav-link"><i class="bi bi-lightning-fill mr-1"></i> Offenses</a>
+          <a href="matchups.html" class="nav-link"><i class="bi bi-arrows-angle-expand mr-1"></i> Matchups</a>
+          <a href="playbook-select.html" class="nav-link active"><i class="bi bi-book-fill mr-1"></i> Playbooks</a>
+          <a href="search.html" class="nav-link"><i class="bi bi-search mr-1"></i> Search</a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-400 hover:text-white"><i class="bi bi-list"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-dark-800 border-t border-dark-600">
+      <div class="px-4 py-3 space-y-2">
+        <a href="../index.html" class="block nav-link">Home</a>
+        <a href="coverages.html" class="block nav-link">Coverages</a>
+        <a href="offenses.html" class="block nav-link">Offenses</a>
+        <a href="matchups.html" class="block nav-link">Matchups</a>
+        <a href="playbook-select.html" class="block nav-link active">Playbooks</a>
+        <a href="search.html" class="block nav-link">Search</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-24 pb-16 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-black mb-2">
+          <i class="bi bi-book-fill text-yellow-400 mr-2"></i>Playbook Browser
+        </h1>
+        <p class="text-gray-400">Browse every playbook — click any play to see what it beats and what stops it.</p>
+      </div>
+
+      <!-- Side Selector -->
+      <div class="flex gap-3 mb-6">
+        <button class="filter-btn active" id="offenseTabBtn" data-side="offense">
+          <i class="bi bi-lightning-fill mr-1"></i> Offensive Playbooks
+        </button>
+        <button class="filter-btn" id="defenseTabBtn" data-side="defense">
+          <i class="bi bi-shield-fill mr-1"></i> Defensive Playbooks
+        </button>
+      </div>
+
+      <!-- Playbook Selector -->
+      <div class="mb-6">
+        <select id="playbookSelector" class="custom-select">
+          <option value="">Choose a playbook...</option>
+        </select>
+      </div>
+
+      <!-- Playbook Info -->
+      <div id="playbookInfo" class="hidden results-panel mb-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-black" id="playbookName"></h2>
+            <p class="text-gray-400 text-sm" id="playbookStyle"></p>
+          </div>
+          <div class="text-right">
+            <div class="text-sm text-gray-500">Formations</div>
+            <div class="text-2xl font-black text-neon-green" id="formationCount">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formation Tree -->
+      <div id="formationTree"></div>
+    </div>
+  </main>
+
+  <!-- Play Detail Modal -->
+  <div class="modal-overlay" id="playDetailModal">
+    <div class="modal-content" id="playDetailContent"></div>
+  </div>
+
+  <script type="module" src="../js/pages/playbook-select.js"></script>
+</body>
+</html>

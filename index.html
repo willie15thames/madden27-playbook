@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Madden 27 Playbook Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: { 900: '#0a0a0f', 800: '#12121a', 700: '#1a1a2e', 600: '#252540' },
+            neon: { green: '#00ff87', blue: '#60a5fa', purple: '#a78bfa', red: '#f87171', yellow: '#fbbf24', cyan: '#22d3ee' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-dark-900 text-white min-h-screen">
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-neon-green to-neon-blue rounded-lg flex items-center justify-center font-black text-dark-900 text-lg">M</div>
+          <span class="text-xl font-bold bg-gradient-to-r from-neon-green to-neon-blue bg-clip-text text-transparent">Madden 27 Lab</span>
+        </a>
+        <div class="hidden md:flex items-center gap-1">
+          <a href="index.html" class="nav-link active"><i class="bi bi-house-fill mr-1"></i> Home</a>
+          <a href="pages/coverages.html" class="nav-link"><i class="bi bi-shield-fill mr-1"></i> Coverages</a>
+          <a href="pages/offenses.html" class="nav-link"><i class="bi bi-lightning-fill mr-1"></i> Offenses</a>
+          <a href="pages/matchups.html" class="nav-link"><i class="bi bi-arrows-angle-expand mr-1"></i> Matchups</a>
+          <a href="pages/playbook-select.html" class="nav-link"><i class="bi bi-book-fill mr-1"></i> Playbooks</a>
+          <a href="pages/search.html" class="nav-link"><i class="bi bi-search mr-1"></i> Search</a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-400 hover:text-white">
+          <i class="bi bi-list"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-dark-800 border-t border-dark-600">
+      <div class="px-4 py-3 space-y-2">
+        <a href="index.html" class="block nav-link active">Home</a>
+        <a href="pages/coverages.html" class="block nav-link">Coverages</a>
+        <a href="pages/offenses.html" class="block nav-link">Offenses</a>
+        <a href="pages/matchups.html" class="block nav-link">Matchups</a>
+        <a href="pages/playbook-select.html" class="block nav-link">Playbooks</a>
+        <a href="pages/search.html" class="block nav-link">Search</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-24 pb-16 px-4">
+    <div class="max-w-7xl mx-auto text-center">
+      <div class="relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-neon-green/10 via-neon-blue/10 to-neon-purple/10 blur-3xl rounded-full"></div>
+        <h1 class="relative text-5xl md:text-7xl font-black mb-4">
+          <span class="bg-gradient-to-r from-neon-green via-neon-blue to-neon-purple bg-clip-text text-transparent">MADDEN 27</span>
+        </h1>
+        <h2 class="relative text-2xl md:text-3xl font-bold text-gray-300 mb-2">Playbook Lab</h2>
+        <p class="relative text-lg text-gray-500 max-w-2xl mx-auto mb-8">
+          Master every coverage, exploit every weakness, and dominate every matchup.
+          Select any playbook, pick any play, and instantly see what it beats and what stops it.
+        </p>
+      </div>
+
+      <!-- Quick Action Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+        <a href="pages/coverages.html" class="hero-card group">
+          <div class="card-icon bg-red-500/20 text-red-400 group-hover:bg-red-500/30">
+            <i class="bi bi-shield-fill text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mt-4 mb-2">Defensive Coverages</h3>
+          <p class="text-gray-400 text-sm">Every coverage breakdown — what it stops, what beats it, and when to call it.</p>
+          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+            Explore <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="pages/offenses.html" class="hero-card group">
+          <div class="card-icon bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30">
+            <i class="bi bi-lightning-fill text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mt-4 mb-2">Offensive Plays</h3>
+          <p class="text-gray-400 text-sm">Every play type — routes, concepts, and which coverages they destroy.</p>
+          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+            Explore <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="pages/matchups.html" class="hero-card group">
+          <div class="card-icon bg-purple-500/20 text-purple-400 group-hover:bg-purple-500/30">
+            <i class="bi bi-arrows-angle-expand text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mt-4 mb-2">Matchup Finder</h3>
+          <p class="text-gray-400 text-sm">Pick offense vs defense — instantly see the best plays and counters.</p>
+          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+            Explore <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="pages/playbook-select.html" class="hero-card group">
+          <div class="card-icon bg-yellow-500/20 text-yellow-400 group-hover:bg-yellow-500/30">
+            <i class="bi bi-book-fill text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mt-4 mb-2">Playbook Browser</h3>
+          <p class="text-gray-400 text-sm">Browse every offensive and defensive playbook — all formations and plays.</p>
+          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+            Explore <i class="bi bi-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="py-16 px-4 bg-dark-800/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div class="stat-card">
+          <div class="text-3xl font-black text-neon-green">14</div>
+          <div class="text-sm text-gray-400 mt-1">Coverages</div>
+        </div>
+        <div class="stat-card">
+          <div class="text-3xl font-black text-neon-blue">30+</div>
+          <div class="text-sm text-gray-400 mt-1">Play Types</div>
+        </div>
+        <div class="stat-card">
+          <div class="text-3xl font-black text-neon-purple">16+</div>
+          <div class="text-sm text-gray-400 mt-1">Playbooks</div>
+        </div>
+        <div class="stat-card">
+          <div class="text-3xl font-black text-neon-yellow">100+</div>
+          <div class="text-sm text-gray-400 mt-1">Matchups</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cheat Sheet Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-black mb-8 text-center">Quick Coverage Cheat Sheet</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cheatSheet"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-4 border-t border-dark-600 text-center text-gray-500 text-sm">
+    <p>Madden 27 Playbook Lab &mdash; Built for competitive Madden players</p>
+    <p class="mt-1">Not affiliated with EA Sports. All play data is community-sourced.</p>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
