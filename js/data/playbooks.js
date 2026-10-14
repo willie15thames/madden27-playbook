@@ -27,8 +27,8 @@ const OFFENSIVE_PLAYBOOKS = [
         "Z Close": ["Counter", "HB Dive", "PA Boot", "Power O", "Sweep"]
       },
       "Pistol": {
-        "Open Flex Close": ["HB Stretch", "Inside Zone", "PA Read", "Read Option", "RPO Alert"],
-        "Strong Slot Close": ["Inside Zone", "PA Boot", "Power Read", "Read Option", "RPO Peek"]
+        "Open Flex Close": ["HB Stretch", "Inside Zone", "PA Read", "QB Scramble", "Read Option", "RPO Alert"],
+        "Strong Slot Close": ["Inside Zone", "PA Boot", "Power Read", "QB Scramble", "Read Option", "RPO Peek"]
       },
       "Gun": {
         "Bunch TE": ["Corner Strike", "Curl Flat", "HB Slip Screen", "Inside Zone", "MTN Bench", "MTN Return Levels", "MTN Z Spot", "Orbit Cross Screen", "Orbit PA HB Wheel", "Orbit RPO Alert Screen"],
@@ -1991,15 +1991,15 @@ const OFFENSIVE_PLAYBOOKS = [
         "Wing Flex": ["Inside Zone", "PA Boot", "Power Read", "Read Option"]
       },
       "Gun": {
-        "Ace": ["HB Draw", "Inside Zone", "PA Boot", "PA Read", "Stick"],
-        "Ace Slot": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
-        "Doubles Flex Wing": ["HB Draw", "Inside Zone", "PA Boot", "PA Read", "Stick"],
+        "Ace": ["Drag Over", "HB Draw", "Inside Zone", "PA Boot", "PA Read", "Quick Outs", "Slant Flat", "Stick"],
+        "Ace Slot": ["HB Draw", "Inside Zone", "Levels", "Mills", "PA Read", "Quick Hitch", "Stick"],
+        "Doubles Flex Wing": ["Deep Post", "HB Draw", "Inside Zone", "PA Boot", "PA Deep Outs", "PA Read", "Stick"],
         "Empty Trey": ["Curl Flats", "Mesh", "QB Draw", "Spacing", "Verticals"],
-        "Split Slot": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
-        "Spread": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams", "Spot N Go"],
-        "Tight Slots": ["HB Draw", "Inside Zone", "Mesh", "PA Boot", "PA Read"],
-        "Trey Y-Flex Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read"],
-        "Y Trips Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read"]
+        "Split Slot": ["Deep Crossers", "HB Draw", "Inside Zone", "Levels", "PA Read", "PA Slot Cross", "Stick"],
+        "Spread": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams", "PA Zone Shot", "Spot N Go"],
+        "Tight Slots": ["HB Draw", "Inside Zone", "Mesh", "PA Boot", "PA Read", "Play Action"],
+        "Trey Y-Flex Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read", "Post Corner"],
+        "Y Trips Wk": ["Corner Strike", "Double Post", "HB Draw", "Inside Zone", "Levels", "PA Read", "Skinny Post"]
       },
       "Goal Line": { "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak"] },
       "Hail Mary": { "Hail Mary": ["Hail Mary"] }
@@ -2172,18 +2172,18 @@ const OFFENSIVE_PLAYBOOKS = [
         "Normal": ["Counter", "FB Dive", "HB Dive", "Power O", "Stretch"]
       },
       "Wildcat": {
-        "Normal": ["End Around", "HB Dive", "Jet Sweep", "Power O", "Read Option"]
+        "Normal": ["End Around", "HB Dive", "Jet Sweep", "Power O", "Read Option", "Speed Option"]
       },
       "Pistol": {
-        "Bunch": ["Inside Zone", "Mesh", "PA Read", "Read Option", "RPO Peek"],
-        "Full House Base": ["Counter", "HB Dive", "Inside Zone", "Power O"],
-        "Full House TE": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power O"],
-        "Wing Slot": ["Inside Zone", "PA Boot", "PA Read", "Read Option"]
+        "Bunch": ["Inside Zone", "Mesh", "PA Read", "Read Option", "RPO Bubble", "RPO Peek"],
+        "Full House Base": ["Counter", "HB Blast", "HB Dive", "Inside Zone", "Power O", "Triple Option"],
+        "Full House TE": ["Counter", "HB Dive", "Inside Zone", "Inverted Veer", "PA Boot", "Power O", "Split Zone"],
+        "Wing Slot": ["Inside Zone", "PA Boot", "PA Read", "Read Option", "Speed Option"]
       },
       "Gun": {
-        "Doubles Flex": ["HB Draw", "Inside Zone", "PA Boot", "PA Read", "Stick"],
-        "Flex Y Off": ["HB Draw", "Inside Zone", "Levels", "PA Crossers", "Stick"],
-        "Split Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
+        "Doubles Flex": ["Delayed Draw", "HB Draw", "Inside Zone", "PA Boot", "PA Read", "Stick", "Wide Zone"],
+        "Flex Y Off": ["HB Draw", "Inside Zone", "Levels", "PA Crossers", "RPO Lookie", "Stick"],
+        "Split Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "RPO Zone Peek", "Stick"],
         "Spread": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams", "Spot N Go"],
         "Spread Y-Slot": ["HB Draw", "Inside Zone", "Levels", "PA Seams"],
         "Trey Offset": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read"],
@@ -2214,17 +2214,17 @@ const OFFENSIVE_PLAYBOOKS = [
         "Wing": ["Counter", "HB Toss", "PA Boot", "Power O", "Stretch"]
       },
       "Strong I": {
-        "Pro": ["Counter", "FB Dive", "HB Dive", "PA Boot", "Power O"],
-        "Tight": ["Counter", "FB Dive", "HB Dive", "Power O", "Stretch"],
-        "Twins Over": ["Counter", "HB Dive", "PA Boot", "Power O"],
-        "Wing": ["Counter", "HB Toss", "PA Boot", "Power O", "Stretch"],
-        "Y Open Flex": ["HB Dive", "Inside Zone", "PA Boot", "Power O"]
+        "Pro": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Slam", "PA Boot", "Power O", "Wham"],
+        "Tight": ["Counter", "FB Dive", "HB Dive", "HB Pitch", "Power O", "Stretch", "Wide Zone"],
+        "Twins Over": ["Counter", "HB Dive", "PA Boot", "Power O", "Split Zone"],
+        "Wing": ["Counter", "HB Toss", "PA Boot", "Power O", "Stretch", "Sweep"],
+        "Y Open Flex": ["HB Dive", "Inside Zone", "PA Boot", "Power O", "Wham"]
       },
       "Weak I": {
-        "Slot": ["HB Dive", "Inside Zone", "PA Boot", "Power O"]
+        "Slot": ["Delayed Draw", "HB Dive", "Inside Zone", "PA Boot", "Power O"]
       },
       "Power I": {
-        "Strong": ["Counter", "FB Dive", "HB Dive", "ISO", "Power O", "Stretch"]
+        "Strong": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Slam", "ISO", "Power O", "Stretch", "Triple Option"]
       },
       "Full House": {
         "Wide": ["Counter", "FB Dive", "HB Dive", "Power O", "Stretch"]
@@ -2262,8 +2262,8 @@ const OFFENSIVE_PLAYBOOKS = [
         "Empty Bunch Wide": ["Curl Flats", "Mesh", "QB Draw", "Spacing"],
         "Empty Bunch Y Flex": ["Curl Flats", "Mesh", "QB Draw", "Spacing", "Verticals"],
         "Flex Y Off Close": ["HB Draw", "Inside Zone", "Levels", "PA Crossers", "Stick"],
-        "Gadget Backfield": ["End Around", "HB Dive", "Jet Sweep", "Read Option"],
-        "Gadget Package": ["End Around", "HB Dive", "Jet Sweep", "Read Option", "Trick Play"],
+        "Gadget Backfield": ["End Around", "HB Dive", "Jet Sweep", "QB Scramble", "Read Option"],
+        "Gadget Package": ["End Around", "HB Dive", "Jet Sweep", "QB Scramble", "Read Option", "Trick Play"],
         "Go Go Slot Open": ["HB Draw", "Inside Zone", "PA Read", "Stick"],
         "Normal Y Off Wk": ["Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone"],
         "Slot Left": ["HB Draw", "Inside Zone", "Levels", "PA Read"],
@@ -2395,28 +2395,28 @@ const OFFENSIVE_PLAYBOOKS = [
         "Box Offset Wk": ["HB Draw", "Inside Zone", "PA Boot", "PA Read"],
         "Bunch": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "Spacing"],
         "Bunch Open": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh"],
-        "Bunch Open Offset": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "Spacing"],
-        "Bunch X Nasty": ["Corner Strike", "Inside Zone", "Mesh", "MTN China Cross", "Spot"],
-        "Dbls Y-Flex Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read"],
-        "Double Stack": ["Corner Strike", "Double Slants", "Four Verticals", "HB Draw"],
-        "Doubles Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
-        "Doubles Offset Wk": ["HB Draw", "Inside Zone", "Levels", "PA Read"],
-        "Empty Base Flex": ["Curl Flats", "Mesh", "QB Draw", "Spacing", "Verticals"],
-        "Monster": ["End Around", "HB Dive", "Jet Sweep", "Read Option"],
-        "Normal Y Off": ["Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone"],
-        "Split Slot Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
-        "Spread Flex": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams", "RPO Alert Screen"],
-        "Spread HB Wk": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams"],
-        "Stack Y Off": ["HB Draw", "Inside Zone", "Levels", "PA Read"],
+        "Bunch Open Offset": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "RPO Bubble", "Spacing"],
+        "Bunch X Nasty": ["Corner Strike", "Inside Zone", "Mesh", "MTN China Cross", "RPO Lookie", "Spot"],
+        "Dbls Y-Flex Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "PA Shot Seams"],
+        "Double Stack": ["Corner Strike", "Double Slants", "Four Verticals", "HB Draw", "Skinny Post"],
+        "Doubles Offset": ["Deep Post", "HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
+        "Doubles Offset Wk": ["HB Draw", "Inside Zone", "Levels", "PA Read", "RPO Zone Peek"],
+        "Empty Base Flex": ["Curl Flats", "Mesh", "QB Draw", "Quick Outs", "Spacing", "Verticals"],
+        "Monster": ["End Around", "HB Dive", "Inverted Veer", "Jet Sweep", "Read Option", "Speed Option"],
+        "Normal Y Off": ["Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "PA Slot Cross"],
+        "Split Slot Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Slant Flat", "Stick"],
+        "Spread Flex": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams", "PA Zone Shot", "RPO Alert Screen"],
+        "Spread HB Wk": ["HB Draw", "Inside Zone", "MTN Drive", "PA Seams", "Play Action"],
+        "Stack Y Off": ["Deep Crossers", "HB Draw", "Inside Zone", "Levels", "PA Read"],
         "Tackle Over": ["HB Draw", "Inside Zone", "PA Boot", "Power O"],
         "Tackle Over Trips": ["HB Draw", "Inside Zone", "PA Boot", "Power O"],
-        "Tight Doubles": ["HB Duo", "Inside Zone", "PA Boot", "Spacing"],
-        "Tight Slot Open": ["HB Draw", "Inside Zone", "Mesh", "PA Boot"],
-        "Trey Open Offset": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read"],
-        "Trio Offset": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read"],
-        "Trio Offset Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels"],
+        "Tight Doubles": ["HB Duo", "Inside Zone", "PA Boot", "Quick Hitch", "Spacing"],
+        "Tight Slot Open": ["Drag Over", "HB Draw", "Inside Zone", "Mesh", "PA Boot"],
+        "Trey Open Offset": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mills", "PA Read"],
+        "Trio Offset": ["Corner Strike", "Double Post", "HB Draw", "Inside Zone", "Levels", "PA Read"],
+        "Trio Offset Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Post Corner"],
         "Trips TE": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh"],
-        "Wing Slot Offset": ["HB Draw", "Inside Zone", "PA Boot", "PA Read", "Read Option"],
+        "Wing Slot Offset": ["HB Draw", "Inside Zone", "PA Boot", "PA Deep Outs", "PA Read", "Read Option"],
         "Wing Slot Wk": ["HB Draw", "Inside Zone", "PA Boot", "PA Read"],
         "Wing Tight": ["Counter", "Inside Zone", "PA Boot", "PA Read", "Read Option"],
         "Y Off Trips": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Read"],
@@ -2543,12 +2543,12 @@ const OFFENSIVE_PLAYBOOKS = [
         "Y Trips": ["HB Draw", "Inside Zone", "PA Read", "Stick"]
       },
       "I Form": {
-        "Pro": ["Counter", "FB Dive", "HB Dive", "PA Boot", "Power O"],
+        "Pro": ["Counter", "FB Dive", "HB Dive", "HB Slam", "PA Boot", "Power O"],
         "Slot": ["HB Dive", "Inside Zone", "PA Boot", "PA Read"],
-        "Wing": ["Counter", "HB Toss", "PA Boot", "Power O", "Stretch"]
+        "Wing": ["Counter", "HB Pitch", "HB Toss", "PA Boot", "Power O", "Stretch"]
       },
       "Strong": {
-        "Close": ["Counter", "HB Dive", "PA Boot", "Power O", "Stretch"],
+        "Close": ["Counter", "HB Dive", "PA Boot", "Power O", "Stretch", "Wham"],
         "Pro": ["Counter", "HB Dive", "PA Boot", "Power O"],
         "Slot": ["HB Dive", "Inside Zone", "PA Boot", "PA Read"]
       },
@@ -2569,7 +2569,7 @@ const OFFENSIVE_PLAYBOOKS = [
         "Tight Slot": ["HB Dive", "Inside Zone", "PA Boot", "Power O"]
       },
       "Gun": {
-        "Bunch": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "Spacing"],
+        "Bunch": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "PA Shot Seams", "Spacing"],
         "Doubles": ["Curl Combo", "Four Verticals", "HB Draw", "Inside Zone", "PA Read"],
         "Empty Trey": ["Curl Flats", "Mesh", "QB Draw", "Spacing", "Verticals"],
         "Split Offset": ["HB Draw", "Inside Zone", "Levels", "PA Read", "Stick"],
@@ -2592,7 +2592,7 @@ const DEF_PLAYS = {
   base34: ["Cover 1 Hole", "Cover 1 Robber", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2", "OLB Fire Man", "Sting Pinch", "Gap Press"],
   base43: ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Tampa 2", "Thunder Smoke", "LB Sting I", "Sam Edge 3"],
   base46: ["Cover 0", "Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Tampa 2", "OLB Blitz", "Gap Press", "Thunder Smoke"],
-  nickel24: ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 3 Buzz Match", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Drop Field", "Cover 4 Palms", "Cover 4 Quarters", "Cover 6", "Tampa 2", "Edge Blitz 0", "Nickel 2 Trap", "Nickel Sim 2"],
+  nickel24: ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 2 Zone", "Cover 3 Buzz Match", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Drop Field", "Cover 4 Palms", "Cover 4 Quarters", "Cover 6", "Tampa 2", "Edge Blitz 0", "Nickel 2 Trap", "Nickel Sim 2"],
   nickel33: ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Tampa 2"],
   nickelMug: ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Sky", "Mid Blitz 0", "Nickel Dog 3 Buzz", "Nickel Sim 2", "Tampa 2"],
   nickelOver: ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Tampa 2", "Edge Blitz 0"],
@@ -3883,18 +3883,18 @@ const DEFENSIVE_PLAYBOOKS = [
         "Odd": ["Cover 1 Hole", "Cover 1 Robber", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2", "OLB Fire Man"]
       },
       "4-3": {
-        "Odd": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
-        "Over": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Tampa 2", "Thunder Smoke"],
-        "Under": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"]
+        "Odd": ["Cover 1 Hole", "Cover 2 Man", "Cover 2 Zone", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "Over": ["Cover 1 Hole", "Cover 2 Man", "Cover 2 Sink", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Tampa 2", "Thunder Smoke"],
+        "Under": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Match", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"]
       },
       "5-2": {
         "Normal": ["Cover 1 Hole", "Cover 3 Sky", "Gap Press"]
       },
       "Nickel": {
-        "3-3": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "3-3": ["Cover 1 Hole", "Cover 2 Lurk", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
         "3-3 Cub": ["Cover 1 Hole", "Cover 3 Sky", "Gap Press", "OLB Blitz"],
-        "3-3 Dbl Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Sky", "Mid Blitz 0", "Tampa 2"],
-        "3-3 Over Jack": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "3-3 Dbl Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Press", "Cover 3 Sky", "Inverted Cover 2", "Mid Blitz 0", "Tampa 2"],
+        "3-3 Over Jack": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Cover 9", "Tampa 2"],
         "3-3 Swap Dbl Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Sky", "Mid Blitz 0"],
         "3-3 Wide Jack": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters"]
       },
@@ -3925,14 +3925,14 @@ const DEFENSIVE_PLAYBOOKS = [
     style: "Tampa 2 / Zone Heavy",
     formations: {
       "4-3": {
-        "Over": ["Cover 1 Hole", "Cover 2 Hard Flat", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2", "Thunder Smoke"],
-        "Over Wide": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
-        "Under": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"]
+        "Over": ["Cover 1 Hole", "Cover 2 Hard Flat", "Cover 2 Man", "Cover 2 Press", "Cover 2 Zone", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2", "Thunder Smoke"],
+        "Over Wide": ["Cover 1 Hole", "Cover 2 Man", "Cover 2 Sink", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "Under": ["Cover 1 Hole", "Cover 2 Lurk", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"]
       },
       "Nickel": {
-        "3-3": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
-        "Double Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Sky", "Mid Blitz 0", "Tampa 2"],
-        "Over": ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Tampa 2"]
+        "3-3": ["Cover 1 Hole", "Cover 2 Man", "Cover 2 Zone", "Cover 3 Cloud", "Cover 3 Match", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "Double Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Sky", "Inverted Cover 2", "Mid Blitz 0", "Tampa 2"],
+        "Over": ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Cover 6", "Cover 9", "Tampa 2"]
       },
       "Dime": {
         "Normal": ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Cloud", "Cover 4 Quarters", "Cover 6", "Tampa 2"]
@@ -3956,15 +3956,15 @@ const DEFENSIVE_PLAYBOOKS = [
     style: "Default / Starter",
     formations: {
       "4-3": {
-        "Over": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
-        "Under": ["Cover 1 Hole", "Cover 2 Man", "Cover 3 Sky", "Tampa 2"]
+        "Over": ["Cover 1 Hole", "Cover 2 Man", "Cover 2 Zone", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "Under": ["Cover 1 Hole", "Cover 2 Man", "Cover 2 Sink", "Cover 3 Sky", "Tampa 2"]
       },
       "Nickel": {
-        "Over": ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
-        "Double Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 3 Sky", "Mid Blitz 0"]
+        "Over": ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Man", "Cover 3 Cloud", "Cover 3 Match", "Cover 3 Sky", "Cover 4 Quarters", "Tampa 2"],
+        "Double Mug": ["Cover 1 Hole", "Cover 2 Invert", "Cover 2 Press", "Cover 3 Sky", "Inverted Cover 2", "Mid Blitz 0"]
       },
       "Dime": {
-        "Normal": ["Cover 1 Hole", "Cover 3 Cloud", "Cover 4 Quarters", "Tampa 2"]
+        "Normal": ["Cover 1 Hole", "Cover 2 Lurk", "Cover 3 Cloud", "Cover 4 Quarters", "Cover 9", "Tampa 2"]
       },
       "Prevent": {
         "3 Deep": ["Prevent"]
