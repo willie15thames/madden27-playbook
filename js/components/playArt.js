@@ -306,31 +306,31 @@ const PLAY_ROUTES = {
   },
   'Inside Zone': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Outside Zone': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'HB Stretch': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Power O': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_power' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Counter': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter', FB: 'run_power' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'HB Dive': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive', FB: 'run_dive' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'HB Toss': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'HB Draw': {
     routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'run_inside' },
@@ -342,7 +342,7 @@ const PLAY_ROUTES = {
   },
   'Jet Sweep': {
     routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'QB Sneak': {
     routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
@@ -378,35 +378,35 @@ const PLAY_ROUTES = {
   },
   'Wide Zone': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Split Zone': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_counter' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Duo': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Trap': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Wham': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'ISO': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Sweep': {
     routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'End Around': {
     routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'QB Draw': {
     routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'block' },
@@ -433,7 +433,7 @@ const PLAY_ROUTES = {
     qb: 'option_keep', isRun: true
   },
   'Inverted Veer': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
     qb: 'run_power', isRun: true
   },
   'Deep Post': {
@@ -570,7 +570,7 @@ const PLAY_ROUTES = {
   },
   'Orbit': {
     routes: { WR1: 'streak', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
-    qb: 'qb_drop', isRun: true
+    qb: 'qb_handoff', isRun: true
   },
   'Orbit Screen': {
     routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
@@ -625,7 +625,7 @@ const DEFAULT_PASS_ROUTES = {
 };
 const DEFAULT_RUN_ROUTES = {
   routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
-  qb: 'qb_drop', isRun: true
+  qb: 'qb_handoff', isRun: true
 };
 
 // ============================
@@ -1338,6 +1338,9 @@ class PlayArtRenderer {
   // Returns {dx, dy, isPull} for OL end position delta
   _getOLBlockTarget(olKey, playFamily) {
     const name = playFamily.toLowerCase();
+    // Check if the QB route is a bootleg
+    const playRoutes = this.getPlayRoutes(playFamily);
+    const isBootQB = playRoutes && (playRoutes.qb === 'qb_boot_right' || playRoutes.qb === 'qb_boot_left');
 
     // Screen plays: OL releases downfield to block for screen
     if (name.includes('screen')) {
@@ -1349,7 +1352,7 @@ class PlayArtRenderer {
     }
 
     // Bootleg / PA Boot: slide protection away from rollout
-    if (name.includes('boot') || name.includes('bootleg')) {
+    if (name.includes('boot') || name.includes('bootleg') || isBootQB) {
       if (olKey === 'RT' || olKey === 'RG') return { dx: -0.04, dy: -0.03, isPull: false };
       return { dx: -0.02, dy: -0.03, isPull: false };
     }
@@ -1896,6 +1899,28 @@ class PlayArtRenderer {
     } else if (!isOff && defPositions) {
       const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
       const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+      const dbKeysLocal = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
+
+      // For man coverage, compute zone-like drop targets so DBs move
+      const manDropTargets = {};
+      if (coverageData && coverageData.type === 'man') {
+        // Simulate man coverage movement: DBs drop toward receiver areas
+        const defEntries = Object.entries(defPositions);
+        const dbDefs = defEntries.filter(([k]) => dbKeysLocal.includes(k));
+        const lbDefs = defEntries.filter(([k]) => lbKeys.includes(k));
+        // DBs shadow toward their side's receiver zone
+        for (const [key, pos] of dbDefs) {
+          if (key === 'CB1') manDropTargets[key] = [pos[0] + 0.02, pos[1] - 0.12];
+          else if (key === 'CB2') manDropTargets[key] = [pos[0] - 0.02, pos[1] - 0.12];
+          else if (key === 'FS') manDropTargets[key] = [pos[0], pos[1] - 0.08];
+          else if (key === 'SS') manDropTargets[key] = [pos[0] - 0.04, pos[1] - 0.06];
+          else manDropTargets[key] = [pos[0], pos[1] - 0.08];
+        }
+        for (const [key, pos] of lbDefs) {
+          manDropTargets[key] = [pos[0], pos[1] + 0.04];
+        }
+      }
+
       for (const [key, startPos] of Object.entries(defPositions)) {
         const isDL = dlKeys.includes(key);
         const isLB = lbKeys.includes(key);
@@ -1905,6 +1930,9 @@ class PlayArtRenderer {
         else if (coverageData && coverageData.type === 'zone') {
           const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos);
           if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+        } else if (coverageData && coverageData.type === 'man' && manDropTargets[key]) {
+          endX = manDropTargets[key][0];
+          endY = manDropTargets[key][1];
         }
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],
