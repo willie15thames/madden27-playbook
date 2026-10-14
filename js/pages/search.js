@@ -119,14 +119,14 @@ function getPersonnelOptions() {
   for (const [key, val] of Object.entries(PERSONNEL_DEFENSE)) {
     opts.push({ value: val.label, label: `${val.label} (${val.description})` });
   }
-  return opts;
+  return opts.sort((a, b) => a.label.localeCompare(b.label));
 }
 
 function getPlaybookOptions() {
   const opts = [];
   OFFENSIVE_PLAYBOOKS.forEach(pb => opts.push({ value: pb.name, label: `OFF: ${pb.name}` }));
   DEFENSIVE_PLAYBOOKS.forEach(pb => opts.push({ value: pb.name, label: `DEF: ${pb.name}` }));
-  return opts;
+  return opts.sort((a, b) => a.label.localeCompare(b.label));
 }
 
 // Filtering

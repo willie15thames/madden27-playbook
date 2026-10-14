@@ -73,7 +73,7 @@ offFormationSelect.addEventListener('change', () => {
   resetSelect(offSubFormationSelect, 'Choose a sub-formation...');
   resetSelect(offPlaySelect, 'Choose a play...');
   if (pb && offFormationSelect.value) {
-    populateSelect(offSubFormationSelect, Object.keys(pb.formations[offFormationSelect.value]));
+    populateSelect(offSubFormationSelect, Object.keys(pb.formations[offFormationSelect.value]).sort());
   }
   currentOff.formation = offFormationSelect.value;
   checkMatchup();
@@ -104,7 +104,7 @@ defFormationSelect.addEventListener('change', () => {
   resetSelect(defSubFormationSelect, 'Choose a sub-formation...');
   resetSelect(defPlaySelect, 'Choose a coverage...');
   if (pb && defFormationSelect.value) {
-    populateSelect(defSubFormationSelect, Object.keys(pb.formations[defFormationSelect.value]));
+    populateSelect(defSubFormationSelect, Object.keys(pb.formations[defFormationSelect.value]).sort());
   }
   currentDef.formation = defFormationSelect.value;
   checkMatchup();

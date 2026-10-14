@@ -110,7 +110,7 @@ function bindHoverEvents(card) {
 function renderCards(filter = 'all', search = '') {
   cleanup();
   grid.innerHTML = '';
-  const entries = Object.entries(PLAY_TYPES);
+  const entries = Object.entries(PLAY_TYPES).sort(([a], [b]) => a.localeCompare(b));
   const filtered = entries.filter(([name, play]) => {
     const matchFilter = filter === 'all' || play.type === filter;
     const matchSearch = !search || name.toLowerCase().includes(search.toLowerCase()) ||

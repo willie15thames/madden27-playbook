@@ -113,7 +113,7 @@ function bindHoverEvents(card) {
 function renderCards(filter = 'all', search = '', shell = 'all') {
   cleanup();
   grid.innerHTML = '';
-  const filtered = COVERAGES.filter(cov => {
+  const filtered = [...COVERAGES].sort((a, b) => a.name.localeCompare(b.name)).filter(cov => {
     const matchFilter = filter === 'all' || cov.type === filter || (filter === 'Zone Match' && cov.type === 'Zone Match');
     const matchSearch = !search || cov.name.toLowerCase().includes(search.toLowerCase()) ||
       cov.description.toLowerCase().includes(search.toLowerCase());

@@ -42,7 +42,7 @@ if (statBooks) statBooks.textContent = stats.totalPlaybooks.toLocaleString();
 // Cheat sheet on home page
 const cheatSheet = document.getElementById('cheatSheet');
 if (cheatSheet) {
-  COVERAGES.forEach(cov => {
+  [...COVERAGES].sort((a, b) => a.name.localeCompare(b.name)).forEach(cov => {
     const typeClass = cov.type === 'Man' ? 'man' : cov.type === 'Zone' ? 'zone' : cov.type === 'Zone Match' ? 'zone-match' : 'hybrid';
     const card = document.createElement('div');
     card.className = 'cheat-card animate-fade-in';
