@@ -12,8 +12,8 @@
       theme: {
         extend: {
           colors: {
-            dark: { 900: '#0a0a0f', 800: '#12121a', 700: '#1a1a2e', 600: '#252540' },
-            neon: { green: '#00ff87', blue: '#60a5fa', purple: '#a78bfa', red: '#f87171', yellow: '#fbbf24', cyan: '#22d3ee' }
+            dark: { 900: '#0d001a', 800: '#1a0033', 700: '#2a0055', 600: '#2F4F4F' },
+            neon: { green: '#00FFFF', blue: '#8A2BE2', purple: '#4B0082', red: '#FF1493', yellow: '#00FFFF', cyan: '#00FFFF' }
           }
         }
       }
@@ -21,47 +21,17 @@
   </script>
 </head>
 <body class="bg-dark-900 text-white min-h-screen">
-  <!-- Navigation -->
-  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="index.html" class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-neon-green to-neon-blue rounded-lg flex items-center justify-center font-black text-dark-900 text-lg">M</div>
-          <span class="text-xl font-bold bg-gradient-to-r from-neon-green to-neon-blue bg-clip-text text-transparent">Madden 27 Lab</span>
-        </a>
-        <div class="hidden md:flex items-center gap-1">
-          <a href="index.html" class="nav-link active"><i class="bi bi-house-fill mr-1"></i> Home</a>
-          <a href="pages/coverages.html" class="nav-link"><i class="bi bi-shield-fill mr-1"></i> Coverages</a>
-          <a href="pages/offenses.html" class="nav-link"><i class="bi bi-lightning-fill mr-1"></i> Offenses</a>
-          <a href="pages/matchups.html" class="nav-link"><i class="bi bi-arrows-angle-expand mr-1"></i> Matchups</a>
-          <a href="pages/playbook-select.html" class="nav-link"><i class="bi bi-book-fill mr-1"></i> Playbooks</a>
-          <a href="pages/search.html" class="nav-link"><i class="bi bi-search mr-1"></i> Search</a>
-        </div>
-        <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-400 hover:text-white">
-          <i class="bi bi-list"></i>
-        </button>
-      </div>
-    </div>
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-dark-800 border-t border-dark-600">
-      <div class="px-4 py-3 space-y-2">
-        <a href="index.html" class="block nav-link active">Home</a>
-        <a href="pages/coverages.html" class="block nav-link">Coverages</a>
-        <a href="pages/offenses.html" class="block nav-link">Offenses</a>
-        <a href="pages/matchups.html" class="block nav-link">Matchups</a>
-        <a href="pages/playbook-select.html" class="block nav-link">Playbooks</a>
-        <a href="pages/search.html" class="block nav-link">Search</a>
-      </div>
-    </div>
-  </nav>
+  <!-- Navigation (dynamic) -->
+  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600"></nav>
+  <script type="module">import { initNav } from './js/components/nav.js'; initNav();</script>
 
   <!-- Hero Section -->
   <section class="pt-24 pb-16 px-4">
     <div class="max-w-7xl mx-auto text-center">
       <div class="relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-neon-green/10 via-neon-blue/10 to-neon-purple/10 blur-3xl rounded-full"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-neon-cyan/10 via-neon-blue/10 to-neon-red/10 blur-3xl rounded-full"></div>
         <h1 class="relative text-5xl md:text-7xl font-black mb-4">
-          <span class="bg-gradient-to-r from-neon-green via-neon-blue to-neon-purple bg-clip-text text-transparent">MADDEN 27</span>
+          <span class="bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-red bg-clip-text text-transparent">MADDEN 27</span>
         </h1>
         <h2 class="relative text-2xl md:text-3xl font-bold text-gray-300 mb-2">Playbook Lab</h2>
         <p class="relative text-lg text-gray-500 max-w-2xl mx-auto mb-8">
@@ -73,45 +43,45 @@
       <!-- Quick Action Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
         <a href="pages/coverages.html" class="hero-card group">
-          <div class="card-icon bg-red-500/20 text-red-400 group-hover:bg-red-500/30">
+          <div class="card-icon bg-pink-500/20 text-pink-400 group-hover:bg-pink-500/30">
             <i class="bi bi-shield-fill text-3xl"></i>
           </div>
           <h3 class="text-xl font-bold mt-4 mb-2">Defensive Coverages</h3>
           <p class="text-gray-400 text-sm">Every coverage breakdown — what it stops, what beats it, and when to call it.</p>
-          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+          <div class="mt-4 text-neon-cyan text-sm font-semibold flex items-center gap-1">
             Explore <i class="bi bi-arrow-right"></i>
           </div>
         </a>
 
         <a href="pages/offenses.html" class="hero-card group">
-          <div class="card-icon bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30">
+          <div class="card-icon bg-violet-500/20 text-violet-400 group-hover:bg-violet-500/30">
             <i class="bi bi-lightning-fill text-3xl"></i>
           </div>
           <h3 class="text-xl font-bold mt-4 mb-2">Offensive Plays</h3>
           <p class="text-gray-400 text-sm">Every play type — routes, concepts, and which coverages they destroy.</p>
-          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+          <div class="mt-4 text-neon-cyan text-sm font-semibold flex items-center gap-1">
             Explore <i class="bi bi-arrow-right"></i>
           </div>
         </a>
 
         <a href="pages/matchups.html" class="hero-card group">
-          <div class="card-icon bg-purple-500/20 text-purple-400 group-hover:bg-purple-500/30">
+          <div class="card-icon bg-indigo-500/20 text-indigo-400 group-hover:bg-indigo-500/30">
             <i class="bi bi-arrows-angle-expand text-3xl"></i>
           </div>
           <h3 class="text-xl font-bold mt-4 mb-2">Matchup Finder</h3>
           <p class="text-gray-400 text-sm">Pick offense vs defense — instantly see the best plays and counters.</p>
-          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+          <div class="mt-4 text-neon-cyan text-sm font-semibold flex items-center gap-1">
             Explore <i class="bi bi-arrow-right"></i>
           </div>
         </a>
 
         <a href="pages/playbook-select.html" class="hero-card group">
-          <div class="card-icon bg-yellow-500/20 text-yellow-400 group-hover:bg-yellow-500/30">
+          <div class="card-icon bg-cyan-500/20 text-cyan-400 group-hover:bg-cyan-500/30">
             <i class="bi bi-book-fill text-3xl"></i>
           </div>
           <h3 class="text-xl font-bold mt-4 mb-2">Playbook Browser</h3>
           <p class="text-gray-400 text-sm">Browse every offensive and defensive playbook — all formations and plays.</p>
-          <div class="mt-4 text-neon-green text-sm font-semibold flex items-center gap-1">
+          <div class="mt-4 text-neon-cyan text-sm font-semibold flex items-center gap-1">
             Explore <i class="bi bi-arrow-right"></i>
           </div>
         </a>
@@ -123,21 +93,21 @@
   <section class="py-16 px-4 bg-dark-800/50">
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        <div class="stat-card">
-          <div class="text-3xl font-black text-neon-green">14</div>
+        <div class="stat-card" id="statCoverages">
+          <div class="text-3xl font-black text-neon-red"></div>
           <div class="text-sm text-gray-400 mt-1">Coverages</div>
         </div>
-        <div class="stat-card">
-          <div class="text-3xl font-black text-neon-blue">30+</div>
-          <div class="text-sm text-gray-400 mt-1">Play Types</div>
+        <div class="stat-card" id="statPlays">
+          <div class="text-3xl font-black text-neon-cyan"></div>
+          <div class="text-sm text-gray-400 mt-1">Total Plays</div>
         </div>
-        <div class="stat-card">
-          <div class="text-3xl font-black text-neon-purple">16+</div>
+        <div class="stat-card" id="statFormations">
+          <div class="text-3xl font-black text-neon-blue"></div>
+          <div class="text-sm text-gray-400 mt-1">Formations</div>
+        </div>
+        <div class="stat-card" id="statPlaybooks">
+          <div class="text-3xl font-black text-neon-red"></div>
           <div class="text-sm text-gray-400 mt-1">Playbooks</div>
-        </div>
-        <div class="stat-card">
-          <div class="text-3xl font-black text-neon-yellow">100+</div>
-          <div class="text-sm text-gray-400 mt-1">Matchups</div>
         </div>
       </div>
     </div>

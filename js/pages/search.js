@@ -261,12 +261,12 @@ function render() {
 
 function getIcon(item) {
   if (item.data.kind === 'offenseType' || item.data.kind === 'offenseVariant') {
-    return { icon: 'bi-lightning-fill', bg: 'bg-blue-500/20 text-blue-400' };
+    return { icon: 'bi-lightning-fill', bg: 'bg-blue-500/20 text-[#00FFFF]' };
   }
   if (item.data.kind === 'coverage') {
-    return { icon: 'bi-shield-fill', bg: 'bg-red-500/20 text-red-400' };
+    return { icon: 'bi-shield-fill', bg: 'bg-red-500/20 text-[#FF1493]' };
   }
-  return { icon: 'bi-shield-fill-check', bg: 'bg-purple-500/20 text-purple-400' };
+  return { icon: 'bi-shield-fill-check', bg: 'bg-purple-500/20 text-[#8A2BE2]' };
 }
 
 function getBadge(item) {
@@ -285,7 +285,7 @@ function getBadge(item) {
     return `<span class="play-type-badge ${item.data.variant.playType === 'Run' ? 'run' : 'pass'}">${item.data.variant.playType}</span>`;
   }
   if (item.data.kind === 'defenseVariant') {
-    return `<span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${item.data.variant.coverage}</span>`;
+    return `<span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-[#B45CFF]">${item.data.variant.coverage}</span>`;
   }
   return '';
 }
@@ -410,21 +410,21 @@ function openOffenseTypeDetail(name, play, variants) {
     <p class="text-gray-300 mb-4">${play.description}</p>
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400"><i class="bi bi-lightning-fill mr-1"></i> Beats</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-lightning-fill mr-1"></i> Beats</h4>
         <div class="flex flex-wrap">${play.beats.map(b => `<span class="tag-green">${b}</span>`).join('')}</div>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
         <div class="flex flex-wrap">${play.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400">Good vs Coverages</h4>
+        <h4 class="text-[#00FFFF]">Good vs Coverages</h4>
         <div class="flex flex-wrap">${play.goodVsCoverages.map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400">Bad vs Coverages</h4>
+        <h4 class="text-[#FF1493]">Bad vs Coverages</h4>
         <div class="flex flex-wrap">${(play.badVsCoverages.length ? play.badVsCoverages : ['None']).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
       </div>
     </div>
@@ -471,28 +471,28 @@ function openCoverageDetail(cov, variants) {
     <p class="text-gray-300 mb-4">${cov.description}</p>
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
         <ul class="space-y-1">
           ${cov.strengths.map(s => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-plus-circle text-green-500 mt-0.5 flex-shrink-0"></i>${s}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
         <ul class="space-y-1">
           ${cov.weaknesses.map(w => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-dash-circle text-red-500 mt-0.5 flex-shrink-0"></i>${w}</li>`).join('')}
         </ul>
       </div>
     </div>
     <div class="results-section">
-      <h4 class="text-green-400"><i class="bi bi-shield-fill-check mr-1"></i> What It Stops</h4>
+      <h4 class="text-[#00FFFF]"><i class="bi bi-shield-fill-check mr-1"></i> What It Stops</h4>
       <div class="flex flex-wrap">${cov.stops.map(s => `<span class="tag-green">${s}</span>`).join('')}</div>
     </div>
     <div class="results-section">
-      <h4 class="text-red-400"><i class="bi bi-lightning-fill mr-1"></i> What Beats It</h4>
+      <h4 class="text-[#FF1493]"><i class="bi bi-lightning-fill mr-1"></i> What Beats It</h4>
       <div class="flex flex-wrap">${cov.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
     </div>
     <div class="results-section">
-      <h4 class="text-yellow-400"><i class="bi bi-bullseye mr-1"></i> Best Against</h4>
+      <h4 class="text-[#00FFFF]"><i class="bi bi-bullseye mr-1"></i> Best Against</h4>
       <div class="flex flex-wrap">${cov.bestAgainst.map(b => `<span class="tag-yellow">${b}</span>`).join('')}</div>
     </div>
     <div class="p-3 bg-dark-700 rounded-lg border border-dark-600 mb-4">
@@ -538,21 +538,21 @@ function openOffenseVariantDetail(v) {
     <div class="text-xs text-gray-500 mb-4"><i class="bi bi-people-fill mr-1"></i>${v.personnel}</div>
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400"><i class="bi bi-lightning-fill mr-1"></i> Beats</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-lightning-fill mr-1"></i> Beats</h4>
         <div class="flex flex-wrap">${v.beats.map(b => `<span class="tag-green">${b}</span>`).join('')}</div>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
         <div class="flex flex-wrap">${v.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400">Good vs Coverages</h4>
+        <h4 class="text-[#00FFFF]">Good vs Coverages</h4>
         <div class="flex flex-wrap">${v.goodVsCoverages.map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400">Bad vs Coverages</h4>
+        <h4 class="text-[#FF1493]">Bad vs Coverages</h4>
         <div class="flex flex-wrap">${(v.badVsCoverages.length ? v.badVsCoverages : ['None']).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
       </div>
     </div>
@@ -580,7 +580,7 @@ function openDefenseVariantDetail(v) {
       <div>
         <h2 class="text-2xl font-black">${v.name}</h2>
         <div class="flex gap-2 mt-1">
-          <span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${v.coverage}</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-[#B45CFF]">${v.coverage}</span>
           <span class="text-sm text-gray-400">${v.formation} / ${v.subFormation}</span>
         </div>
       </div>
@@ -607,11 +607,11 @@ function openDefenseVariantDetail(v) {
       </div>
     </div>
     <div class="results-section">
-      <h4 class="text-green-400"><i class="bi bi-shield-fill-check mr-1"></i> Stops</h4>
+      <h4 class="text-[#00FFFF]"><i class="bi bi-shield-fill-check mr-1"></i> Stops</h4>
       <div class="flex flex-wrap">${v.stops.map(s => `<span class="tag-green">${s}</span>`).join('')}</div>
     </div>
     <div class="results-section">
-      <h4 class="text-red-400"><i class="bi bi-lightning-fill mr-1"></i> Beaten By</h4>
+      <h4 class="text-[#FF1493]"><i class="bi bi-lightning-fill mr-1"></i> Beaten By</h4>
       <div class="flex flex-wrap">${v.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
     </div>
     <div class="mb-4">
@@ -689,23 +689,23 @@ searchInput.addEventListener('input', () => {
 const style = document.createElement('style');
 style.textContent = `
   .search-result-card {
-    background: #12121a;
-    border: 1px solid #252540;
+    background: #1a0033;
+    border: 1px solid #2F4F4F;
     border-radius: 0.75rem;
     padding: 1rem;
     cursor: pointer;
     transition: all 0.15s ease;
   }
   .search-result-card:hover {
-    border-color: #60a5fa;
-    background: #1a1a2e;
+    border-color: #8A2BE2;
+    background: #2a0055;
     transform: translateX(4px);
   }
   .side-btn {
     padding: 6px 16px;
     font-size: 12px;
     font-weight: 700;
-    background: #12121a;
+    background: #1a0033;
     color: #6b7280;
     border: none;
     cursor: pointer;
@@ -713,9 +713,9 @@ style.textContent = `
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .side-btn:hover { background: #1a1a2e; color: #d1d5db; }
-  .side-btn.active[data-side="offense"] { background: #1e3a5f; color: #60a5fa; }
-  .side-btn.active[data-side="defense"] { background: #5f1e1e; color: #f87171; }
+  .side-btn:hover { background: #2a0055; color: #d1d5db; }
+  .side-btn.active[data-side="offense"] { background: #1e3a5f; color: #8A2BE2; }
+  .side-btn.active[data-side="defense"] { background: #5f1e1e; color: #FF1493; }
 `;
 document.head.appendChild(style);
 

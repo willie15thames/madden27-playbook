@@ -10,49 +10,21 @@
   <script>
     tailwind.config = {
       theme: { extend: { colors: {
-        dark: { 900: '#0a0a0f', 800: '#12121a', 700: '#1a1a2e', 600: '#252540' },
-        neon: { green: '#00ff87', blue: '#60a5fa', purple: '#a78bfa', red: '#f87171', yellow: '#fbbf24', cyan: '#22d3ee' }
+        dark: { 900: '#0d001a', 800: '#1a0033', 700: '#2a0055', 600: '#2F4F4F' },
+        neon: { green: '#00FFFF', blue: '#8A2BE2', purple: '#4B0082', red: '#FF1493', yellow: '#00FFFF', cyan: '#00FFFF' }
       }}}
     }
   </script>
 </head>
 <body class="bg-dark-900 text-white min-h-screen">
-  <!-- Nav -->
-  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="../index.html" class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-neon-green to-neon-blue rounded-lg flex items-center justify-center font-black text-dark-900 text-lg">M</div>
-          <span class="text-xl font-bold bg-gradient-to-r from-neon-green to-neon-blue bg-clip-text text-transparent">Madden 27 Lab</span>
-        </a>
-        <div class="hidden md:flex items-center gap-1">
-          <a href="../index.html" class="nav-link"><i class="bi bi-house-fill mr-1"></i> Home</a>
-          <a href="coverages.html" class="nav-link"><i class="bi bi-shield-fill mr-1"></i> Coverages</a>
-          <a href="offenses.html" class="nav-link active"><i class="bi bi-lightning-fill mr-1"></i> Offenses</a>
-          <a href="matchups.html" class="nav-link"><i class="bi bi-arrows-angle-expand mr-1"></i> Matchups</a>
-          <a href="playbook-select.html" class="nav-link"><i class="bi bi-book-fill mr-1"></i> Playbooks</a>
-          <a href="search.html" class="nav-link"><i class="bi bi-search mr-1"></i> Search</a>
-        </div>
-        <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-400 hover:text-white"><i class="bi bi-list"></i></button>
-      </div>
-    </div>
-    <div id="mobileMenu" class="hidden md:hidden bg-dark-800 border-t border-dark-600">
-      <div class="px-4 py-3 space-y-2">
-        <a href="../index.html" class="block nav-link">Home</a>
-        <a href="coverages.html" class="block nav-link">Coverages</a>
-        <a href="offenses.html" class="block nav-link active">Offenses</a>
-        <a href="matchups.html" class="block nav-link">Matchups</a>
-        <a href="playbook-select.html" class="block nav-link">Playbooks</a>
-        <a href="search.html" class="block nav-link">Search</a>
-      </div>
-    </div>
-  </nav>
+  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600"></nav>
+  <script type="module">import { initNav } from '../js/components/nav.js'; initNav();</script>
 
   <main class="pt-24 pb-16 px-4">
     <div class="max-w-7xl mx-auto">
       <div class="mb-8">
         <h1 class="text-3xl md:text-4xl font-black mb-2">
-          <i class="bi bi-lightning-fill text-blue-400 mr-2"></i>Offensive Play Types
+          <i class="bi bi-lightning-fill text-neon-cyan mr-2"></i>Offensive Play Types
         </h1>
         <p class="text-gray-400">Every play type — what coverages it beats and what stops it.</p>
       </div>

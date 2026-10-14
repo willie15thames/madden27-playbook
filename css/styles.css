@@ -1,10 +1,11 @@
 /* ===== Madden 27 Playbook Lab - Global Styles ===== */
+/* Palette: #4B0082 (Indigo), #8A2BE2 (Blue Violet), #00FFFF (Cyan), #FF1493 (Deep Pink), #2F4F4F (Dark Slate Gray) */
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0a0a0f; }
-::-webkit-scrollbar-thumb { background: #252540; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #3b3b5c; }
+::-webkit-scrollbar-track { background: #0d001a; }
+::-webkit-scrollbar-thumb { background: #2F4F4F; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3d6666; }
 
 /* Smooth scrolling */
 html { scroll-behavior: smooth; }
@@ -19,22 +20,22 @@ html { scroll-behavior: smooth; }
   transition: all 0.2s ease;
 }
 .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.nav-link.active { color: #00ff87; background: rgba(0,255,135,0.1); }
+.nav-link.active { color: #00FFFF; background: rgba(0,255,255,0.1); }
 
 /* Hero Cards */
 .hero-card {
   display: block;
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 1rem;
   padding: 2rem;
   text-align: left;
   transition: all 0.3s ease;
 }
 .hero-card:hover {
-  border-color: #00ff87;
+  border-color: #00FFFF;
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0,255,135,0.1);
+  box-shadow: 0 8px 32px rgba(0,255,255,0.1);
 }
 .card-icon {
   width: 56px; height: 56px;
@@ -45,16 +46,16 @@ html { scroll-behavior: smooth; }
 
 /* Stat Cards */
 .stat-card {
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 0.75rem;
   padding: 1.5rem;
 }
 
 /* Coverage Cards */
 .coverage-card {
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 1rem;
   padding: 0;
   overflow: hidden;
@@ -62,13 +63,13 @@ html { scroll-behavior: smooth; }
   cursor: pointer;
 }
 .coverage-card:hover {
-  border-color: #60a5fa;
+  border-color: #8A2BE2;
   transform: translateY(-2px);
-  box-shadow: 0 4px 24px rgba(96,165,250,0.1);
+  box-shadow: 0 4px 24px rgba(138,43,226,0.15);
 }
 .coverage-card.live-active {
-  border-color: #f87171;
-  box-shadow: 0 0 20px rgba(248,113,113,0.15);
+  border-color: #FF1493;
+  box-shadow: 0 0 20px rgba(255,20,147,0.15);
 }
 .coverage-card .type-badge {
   display: inline-block;
@@ -79,15 +80,15 @@ html { scroll-behavior: smooth; }
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.type-badge.man { background: rgba(239,68,68,0.2); color: #f87171; }
-.type-badge.zone { background: rgba(59,130,246,0.2); color: #60a5fa; }
-.type-badge.zone-match { background: rgba(20,184,166,0.2); color: #2dd4bf; }
-.type-badge.hybrid { background: rgba(168,85,247,0.2); color: #c084fc; }
+.type-badge.man { background: rgba(255,20,147,0.2); color: #FF1493; }
+.type-badge.zone { background: rgba(138,43,226,0.2); color: #8A2BE2; }
+.type-badge.zone-match { background: rgba(0,255,255,0.2); color: #00FFFF; }
+.type-badge.hybrid { background: rgba(75,0,130,0.3); color: #B45CFF; }
 
 /* Play Cards */
 .play-card {
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 0.75rem;
   padding: 0;
   overflow: hidden;
@@ -95,12 +96,12 @@ html { scroll-behavior: smooth; }
   cursor: pointer;
 }
 .play-card:hover {
-  border-color: #a78bfa;
+  border-color: #8A2BE2;
   transform: translateY(-2px);
 }
 .play-card.live-active {
-  border-color: #60a5fa;
-  box-shadow: 0 0 20px rgba(96,165,250,0.15);
+  border-color: #00FFFF;
+  box-shadow: 0 0 20px rgba(0,255,255,0.15);
 }
 
 /* Play Art Wrapper - large canvas taking up most of the card */
@@ -120,7 +121,7 @@ html { scroll-behavior: smooth; }
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(248,113,113,0.85);
+  background: rgba(255,20,147,0.85);
   color: white;
   font-size: 0.6rem;
   font-weight: 800;
@@ -146,10 +147,10 @@ html { scroll-behavior: smooth; }
   font-weight: 700;
   text-transform: uppercase;
 }
-.play-type-badge.run { background: rgba(251,191,36,0.2); color: #fbbf24; }
-.play-type-badge.pass { background: rgba(96,165,250,0.2); color: #60a5fa; }
-.play-type-badge.screen { background: rgba(168,85,247,0.2); color: #c084fc; }
-.play-type-badge.rpo { background: rgba(34,211,238,0.2); color: #22d3ee; }
+.play-type-badge.run { background: rgba(0,255,255,0.15); color: #00FFFF; }
+.play-type-badge.pass { background: rgba(138,43,226,0.2); color: #8A2BE2; }
+.play-type-badge.screen { background: rgba(75,0,130,0.3); color: #B45CFF; }
+.play-type-badge.rpo { background: rgba(255,20,147,0.2); color: #FF1493; }
 
 /* Tag Pills */
 .tag-green {
@@ -158,8 +159,8 @@ html { scroll-behavior: smooth; }
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(0,255,135,0.15);
-  color: #00ff87;
+  background: rgba(0,255,255,0.15);
+  color: #00FFFF;
   margin: 0.15rem;
 }
 .tag-red {
@@ -168,8 +169,8 @@ html { scroll-behavior: smooth; }
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(248,113,113,0.15);
-  color: #f87171;
+  background: rgba(255,20,147,0.15);
+  color: #FF1493;
   margin: 0.15rem;
 }
 .tag-blue {
@@ -178,8 +179,8 @@ html { scroll-behavior: smooth; }
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(96,165,250,0.15);
-  color: #60a5fa;
+  background: rgba(138,43,226,0.15);
+  color: #8A2BE2;
   margin: 0.15rem;
 }
 .tag-yellow {
@@ -188,8 +189,8 @@ html { scroll-behavior: smooth; }
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(251,191,36,0.15);
-  color: #fbbf24;
+  background: rgba(0,255,255,0.15);
+  color: #00FFFF;
   margin: 0.15rem;
 }
 .tag-purple {
@@ -198,8 +199,8 @@ html { scroll-behavior: smooth; }
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: rgba(168,85,247,0.15);
-  color: #c084fc;
+  background: rgba(75,0,130,0.2);
+  color: #B45CFF;
   margin: 0.15rem;
 }
 
@@ -223,8 +224,8 @@ html { scroll-behavior: smooth; }
   pointer-events: auto;
 }
 .modal-content {
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 1rem;
   max-width: 700px;
   width: 100%;
@@ -240,8 +241,8 @@ html { scroll-behavior: smooth; }
 
 /* Search Input */
 .search-input {
-  background: #1a1a2e;
-  border: 1px solid #252540;
+  background: #2a0055;
+  border: 1px solid #2F4F4F;
   border-radius: 0.75rem;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
   color: white;
@@ -250,7 +251,7 @@ html { scroll-behavior: smooth; }
   transition: border-color 0.2s;
   outline: none;
 }
-.search-input:focus { border-color: #00ff87; }
+.search-input:focus { border-color: #00FFFF; }
 .search-input::placeholder { color: #6b7280; }
 
 /* Filter Buttons */
@@ -259,23 +260,23 @@ html { scroll-behavior: smooth; }
   border-radius: 0.5rem;
   font-size: 0.8rem;
   font-weight: 600;
-  background: #1a1a2e;
-  border: 1px solid #252540;
+  background: #2a0055;
+  border: 1px solid #2F4F4F;
   color: #9ca3af;
   cursor: pointer;
   transition: all 0.2s;
 }
-.filter-btn:hover { border-color: #60a5fa; color: #fff; }
+.filter-btn:hover { border-color: #8A2BE2; color: #fff; }
 .filter-btn.active {
-  background: rgba(0,255,135,0.1);
-  border-color: #00ff87;
-  color: #00ff87;
+  background: rgba(0,255,255,0.1);
+  border-color: #00FFFF;
+  color: #00FFFF;
 }
 
 /* Shell Picklist */
 .shell-select {
-  background: #1a1a2e;
-  border: 1px solid #252540;
+  background: #2a0055;
+  border: 1px solid #2F4F4F;
   border-radius: 0.5rem;
   padding: 0.5rem 2.2rem 0.5rem 0.75rem;
   color: #9ca3af;
@@ -289,14 +290,14 @@ html { scroll-behavior: smooth; }
   background-position: right 0.6rem center;
   transition: all 0.2s;
 }
-.shell-select:hover { border-color: #60a5fa; color: #fff; }
-.shell-select:focus { border-color: #00ff87; color: #00ff87; }
-.shell-select option { background: #1a1a2e; color: white; }
+.shell-select:hover { border-color: #8A2BE2; color: #fff; }
+.shell-select:focus { border-color: #00FFFF; color: #00FFFF; }
+.shell-select option { background: #2a0055; color: white; }
 
 /* Dropdown Select */
 .custom-select {
-  background: #1a1a2e;
-  border: 1px solid #252540;
+  background: #2a0055;
+  border: 1px solid #2F4F4F;
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
   color: white;
@@ -311,13 +312,13 @@ html { scroll-behavior: smooth; }
   width: 100%;
   transition: border-color 0.2s;
 }
-.custom-select:focus { border-color: #00ff87; }
-.custom-select option { background: #1a1a2e; color: white; }
+.custom-select:focus { border-color: #00FFFF; }
+.custom-select option { background: #2a0055; color: white; }
 
 /* Playbook Tree */
 .formation-group {
-  background: #1a1a2e;
-  border: 1px solid #252540;
+  background: #2a0055;
+  border: 1px solid #2F4F4F;
   border-radius: 0.75rem;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -348,12 +349,12 @@ html { scroll-behavior: smooth; }
 }
 .sub-formation {
   padding: 0.5rem 1rem 0.5rem 2rem;
-  border-top: 1px solid #252540;
+  border-top: 1px solid #2F4F4F;
 }
 .sub-formation-name {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #60a5fa;
+  color: #8A2BE2;
   margin-bottom: 0.5rem;
 }
 .play-chip {
@@ -363,21 +364,21 @@ html { scroll-behavior: smooth; }
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background: #252540;
+  background: #2F4F4F;
   color: #d1d5db;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s;
 }
 .play-chip:hover {
-  border-color: #00ff87;
-  color: #00ff87;
-  background: rgba(0,255,135,0.1);
+  border-color: #00FFFF;
+  color: #00FFFF;
+  background: rgba(0,255,255,0.1);
 }
 .play-chip.selected {
-  border-color: #00ff87;
-  color: #00ff87;
-  background: rgba(0,255,135,0.15);
+  border-color: #00FFFF;
+  color: #00FFFF;
+  background: rgba(0,255,255,0.15);
 }
 
 /* Play Chip with Art */
@@ -387,27 +388,27 @@ html { scroll-behavior: smooth; }
   align-items: center;
   padding: 0.4rem;
   border-radius: 0.5rem;
-  background: #252540;
+  background: #2F4F4F;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s;
 }
 .play-chip-art:hover {
-  border-color: #00ff87;
-  background: rgba(0,255,135,0.1);
+  border-color: #00FFFF;
+  background: rgba(0,255,255,0.1);
 }
 .play-chip-art span {
   color: #d1d5db;
   font-weight: 600;
 }
 .play-chip-art:hover span {
-  color: #00ff87;
+  color: #00FFFF;
 }
 
 /* Results Panel */
 .results-panel {
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 1rem;
   padding: 1.5rem;
 }
@@ -421,7 +422,7 @@ html { scroll-behavior: smooth; }
   letter-spacing: 0.05em;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #252540;
+  border-bottom: 1px solid #2F4F4F;
 }
 
 /* Matchup Comparison */
@@ -431,7 +432,7 @@ html { scroll-behavior: smooth; }
   justify-content: center;
   width: 48px; height: 48px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #f87171, #60a5fa);
+  background: linear-gradient(135deg, #FF1493, #8A2BE2);
   font-weight: 900;
   font-size: 0.9rem;
   color: white;
@@ -441,7 +442,7 @@ html { scroll-behavior: smooth; }
 .tooltip-container { position: relative; }
 .tooltip-container .tooltip-text {
   visibility: hidden;
-  background: #252540;
+  background: #2F4F4F;
   color: #e5e7eb;
   font-size: 0.75rem;
   padding: 0.5rem 0.75rem;
@@ -463,20 +464,20 @@ html { scroll-behavior: smooth; }
 
 /* Cheat Sheet Cards */
 .cheat-card {
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 0.75rem;
   padding: 1rem;
   transition: border-color 0.2s;
 }
-.cheat-card:hover { border-color: #3b3b5c; }
+.cheat-card:hover { border-color: #4B0082; }
 
 /* Side Toggle Buttons */
 .side-btn {
   padding: 6px 16px;
   font-size: 12px;
   font-weight: 700;
-  background: #12121a;
+  background: #1a0033;
   color: #6b7280;
   border: none;
   cursor: pointer;
@@ -484,9 +485,9 @@ html { scroll-behavior: smooth; }
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.side-btn:hover { background: #1a1a2e; color: #d1d5db; }
-.side-btn.active[data-side="offense"] { background: #1e3a5f; color: #60a5fa; }
-.side-btn.active[data-side="defense"] { background: #5f1e1e; color: #f87171; }
+.side-btn:hover { background: #2a0055; color: #d1d5db; }
+.side-btn.active[data-side="offense"] { background: rgba(0,255,255,0.15); color: #00FFFF; }
+.side-btn.active[data-side="defense"] { background: rgba(255,20,147,0.15); color: #FF1493; }
 
 /* Animations */
 @keyframes fadeInUp {
@@ -496,8 +497,8 @@ html { scroll-behavior: smooth; }
 .animate-fade-in { animation: fadeInUp 0.4s ease forwards; }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,135,0.2); }
-  50% { box-shadow: 0 0 20px 4px rgba(0,255,135,0.15); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,255,0.2); }
+  50% { box-shadow: 0 0 20px 4px rgba(0,255,255,0.15); }
 }
 .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
@@ -508,8 +509,8 @@ html { scroll-behavior: smooth; }
   gap: 4px;
   flex-wrap: wrap;
   padding: 6px 10px;
-  background: #12121a;
-  border: 1px solid #252540;
+  background: #1a0033;
+  border: 1px solid #2F4F4F;
   border-radius: 8px;
 }
 .pos-filter-bar .label {
@@ -525,17 +526,17 @@ html { scroll-behavior: smooth; }
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 700;
-  background: #252540;
+  background: #2F4F4F;
   color: #6b7280;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s;
   user-select: none;
 }
-.pos-toggle:hover { border-color: #60a5fa; color: #d1d5db; }
-.pos-toggle.active { background: rgba(96,165,250,0.2); color: #60a5fa; border-color: #60a5fa; }
-.pos-toggle.active.off-group { background: rgba(96,165,250,0.2); color: #60a5fa; border-color: #60a5fa; }
-.pos-toggle.active.def-group { background: rgba(248,113,113,0.2); color: #f87171; border-color: #f87171; }
+.pos-toggle:hover { border-color: #8A2BE2; color: #d1d5db; }
+.pos-toggle.active { background: rgba(138,43,226,0.2); color: #8A2BE2; border-color: #8A2BE2; }
+.pos-toggle.active.off-group { background: rgba(0,255,255,0.2); color: #00FFFF; border-color: #00FFFF; }
+.pos-toggle.active.def-group { background: rgba(255,20,147,0.2); color: #FF1493; border-color: #FF1493; }
 
 /* Madden Adjustment Controls */
 .adj-bar {
@@ -546,8 +547,8 @@ html { scroll-behavior: smooth; }
   margin-top: 8px;
 }
 .adj-select {
-  background: #1a1a2e;
-  border: 1px solid #252540;
+  background: #2a0055;
+  border: 1px solid #2F4F4F;
   border-radius: 4px;
   padding: 3px 20px 3px 6px;
   color: #9ca3af;
@@ -561,9 +562,9 @@ html { scroll-behavior: smooth; }
   background-position: right 4px center;
   transition: all 0.15s;
 }
-.adj-select:hover { border-color: #60a5fa; color: #fff; }
-.adj-select:focus { border-color: #00ff87; color: #00ff87; }
-.adj-select option { background: #1a1a2e; color: white; }
+.adj-select:hover { border-color: #8A2BE2; color: #fff; }
+.adj-select:focus { border-color: #00FFFF; color: #00FFFF; }
+.adj-select option { background: #2a0055; color: white; }
 
 .adj-label {
   font-size: 0.6rem;
@@ -584,15 +585,15 @@ html { scroll-behavior: smooth; }
   border-radius: 4px;
   font-size: 0.65rem;
   font-weight: 700;
-  background: #252540;
+  background: #2F4F4F;
   color: #6b7280;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s;
   display: flex; align-items: center; justify-content: center;
 }
-.speed-btn:hover { border-color: #60a5fa; color: #d1d5db; }
-.speed-btn.active { background: rgba(96,165,250,0.2); color: #60a5fa; border-color: #60a5fa; }
+.speed-btn:hover { border-color: #8A2BE2; color: #d1d5db; }
+.speed-btn.active { background: rgba(0,255,255,0.2); color: #00FFFF; border-color: #00FFFF; }
 
 /* Responsive helpers */
 @media (max-width: 768px) {

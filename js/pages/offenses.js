@@ -228,22 +228,22 @@ function openModal(name, play, variants) {
 
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400"><i class="bi bi-lightning-fill mr-1"></i> Beats</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-lightning-fill mr-1"></i> Beats</h4>
         <div class="flex flex-wrap">${play.beats.map(b => `<span class="tag-green">${b}</span>`).join('')}</div>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
         <div class="flex flex-wrap">${play.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
       </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400">Good vs Coverages</h4>
+        <h4 class="text-[#00FFFF]">Good vs Coverages</h4>
         <div class="flex flex-wrap">${play.goodVsCoverages.map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400">Bad vs Coverages</h4>
+        <h4 class="text-[#FF1493]">Bad vs Coverages</h4>
         <div class="flex flex-wrap">${(play.badVsCoverages.length ? play.badVsCoverages : ['None']).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
       </div>
     </div>

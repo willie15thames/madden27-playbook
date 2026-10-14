@@ -76,7 +76,7 @@ playbookSelector.addEventListener('change', () => {
     group.innerHTML = `
       <div class="formation-header" data-formation="${formationName}">
         <div class="flex items-center gap-3">
-          <i class="bi ${currentSide === 'offense' ? 'bi-lightning-fill text-blue-400' : 'bi-shield-fill text-red-400'}"></i>
+          <i class="bi ${currentSide === 'offense' ? 'bi-lightning-fill text-[#00FFFF]' : 'bi-shield-fill text-[#FF1493]'}"></i>
           <span>${formationName}</span>
           <span class="text-xs text-gray-500">${Object.keys(subFormations).length} sets &middot; ${totalPlays} plays</span>
         </div>
@@ -169,7 +169,7 @@ function openOffenseDetail(playName, formation, subFormation) {
       </div>
       <p class="text-gray-300 mb-4">This play is available in the selected playbook.</p>
       <div class="results-section">
-        <h4 class="text-blue-400">Play Information</h4>
+        <h4 class="text-[#00FFFF]">Play Information</h4>
         <p class="text-sm text-gray-400">Detailed matchup data for this specific play variation is not yet available. Check the general play type categories on the <a href="offenses.html" class="text-neon-green underline">Offenses page</a> for similar plays.</p>
       </div>
       ${getSimilarPlaysHTML(playName)}
@@ -193,19 +193,19 @@ function openOffenseDetail(playName, formation, subFormation) {
       <p class="text-gray-300 mb-6">${play.description}</p>
 
       <div class="results-section">
-        <h4 class="text-green-400"><i class="bi bi-lightning-fill mr-1"></i> This Play Beats</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-lightning-fill mr-1"></i> This Play Beats</h4>
         <div class="flex flex-wrap">${play.beats.map(b => `<span class="tag-green">${b}</span>`).join('')}</div>
       </div>
       <div class="results-section">
-        <h4 class="text-red-400"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-shield-fill mr-1"></i> Stopped By</h4>
         <div class="flex flex-wrap">${play.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
       </div>
       <div class="results-section">
-        <h4 class="text-green-400"><i class="bi bi-check-circle-fill mr-1"></i> Good vs Coverages</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Good vs Coverages</h4>
         <div class="flex flex-wrap">${play.goodVsCoverages.map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
       </div>
       <div class="results-section">
-        <h4 class="text-red-400"><i class="bi bi-x-circle-fill mr-1"></i> Bad vs Coverages</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-x-circle-fill mr-1"></i> Bad vs Coverages</h4>
         <div class="flex flex-wrap">${(play.badVsCoverages.length > 0 ? play.badVsCoverages : ['None specifically']).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
       </div>
       <div class="p-4 bg-dark-700 rounded-lg border border-dark-600 mt-4">
@@ -241,7 +241,7 @@ function openDefenseDetail(coverageName, formation) {
       </div>
       <p class="text-gray-300 mb-4">This coverage is available in the selected playbook.</p>
       <div class="results-section">
-        <h4 class="text-red-400">Coverage Information</h4>
+        <h4 class="text-[#FF1493]">Coverage Information</h4>
         <p class="text-sm text-gray-400">Check the <a href="coverages.html" class="text-neon-green underline">Coverages page</a> for detailed breakdowns of similar coverages.</p>
       </div>
     `;
@@ -264,27 +264,27 @@ function openDefenseDetail(coverageName, formation) {
       <p class="text-gray-300 mb-6">${cov.description}</p>
 
       <div class="results-section">
-        <h4 class="text-green-400"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
         <ul class="space-y-1">
           ${cov.strengths.map(s => `<li class="text-sm text-gray-300 flex items-start gap-2"><i class="bi bi-plus-circle text-green-500 mt-0.5"></i>${s}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section">
-        <h4 class="text-red-400"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
         <ul class="space-y-1">
           ${cov.weaknesses.map(w => `<li class="text-sm text-gray-300 flex items-start gap-2"><i class="bi bi-dash-circle text-red-500 mt-0.5"></i>${w}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section">
-        <h4 class="text-green-400"><i class="bi bi-shield-fill-check mr-1"></i> What It Stops</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-shield-fill-check mr-1"></i> What It Stops</h4>
         <div class="flex flex-wrap">${cov.stops.map(s => `<span class="tag-green">${s}</span>`).join('')}</div>
       </div>
       <div class="results-section">
-        <h4 class="text-red-400"><i class="bi bi-lightning-fill mr-1"></i> What Beats It</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-lightning-fill mr-1"></i> What Beats It</h4>
         <div class="flex flex-wrap">${cov.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
       </div>
       <div class="results-section">
-        <h4 class="text-yellow-400"><i class="bi bi-bullseye mr-1"></i> Best Against</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-bullseye mr-1"></i> Best Against</h4>
         <div class="flex flex-wrap">${cov.bestAgainst.map(b => `<span class="tag-yellow">${b}</span>`).join('')}</div>
       </div>
       <div class="p-4 bg-dark-700 rounded-lg border border-dark-600 mt-4">

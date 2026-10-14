@@ -244,13 +244,13 @@ function openModal(cov, variants) {
 
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
-        <h4 class="text-green-400"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
+        <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
         <ul class="space-y-1">
           ${cov.strengths.map(s => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-plus-circle text-green-500 mt-0.5 flex-shrink-0"></i>${s}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section mb-0">
-        <h4 class="text-red-400"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
+        <h4 class="text-[#FF1493]"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
         <ul class="space-y-1">
           ${cov.weaknesses.map(w => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-dash-circle text-red-500 mt-0.5 flex-shrink-0"></i>${w}</li>`).join('')}
         </ul>
@@ -258,17 +258,17 @@ function openModal(cov, variants) {
     </div>
 
     <div class="results-section">
-      <h4 class="text-green-400"><i class="bi bi-shield-fill-check mr-1"></i> What It Stops</h4>
+      <h4 class="text-[#00FFFF]"><i class="bi bi-shield-fill-check mr-1"></i> What It Stops</h4>
       <div class="flex flex-wrap">${cov.stops.map(s => `<span class="tag-green">${s}</span>`).join('')}</div>
     </div>
 
     <div class="results-section">
-      <h4 class="text-red-400"><i class="bi bi-lightning-fill mr-1"></i> What Beats It</h4>
+      <h4 class="text-[#FF1493]"><i class="bi bi-lightning-fill mr-1"></i> What Beats It</h4>
       <div class="flex flex-wrap">${cov.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div>
     </div>
 
     <div class="results-section">
-      <h4 class="text-yellow-400"><i class="bi bi-bullseye mr-1"></i> Best Against</h4>
+      <h4 class="text-[#00FFFF]"><i class="bi bi-bullseye mr-1"></i> Best Against</h4>
       <div class="flex flex-wrap">${cov.bestAgainst.map(b => `<span class="tag-yellow">${b}</span>`).join('')}</div>
     </div>
 

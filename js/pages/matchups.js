@@ -140,17 +140,17 @@ function checkMatchup() {
     const defWins = doesDefenseBeat(defPlay, defCoverageData, offPlay, offPlayData);
     if (offWins && !defWins) {
       verdictText.textContent = `${offPlay} BEATS ${defCoverageData.name}`;
-      verdictText.className = 'text-2xl font-black mb-2 text-green-400';
+      verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
       verdictDetail.textContent = 'The offense has the advantage in this matchup.';
       verdictPanel.style.borderColor = '#22c55e';
     } else if (defWins && !offWins) {
       verdictText.textContent = `${defCoverageData.name} STOPS ${offPlay}`;
-      verdictText.className = 'text-2xl font-black mb-2 text-red-400';
+      verdictText.className = 'text-2xl font-black mb-2 text-[#FF1493]';
       verdictDetail.textContent = 'The defense has the advantage in this matchup.';
       verdictPanel.style.borderColor = '#ef4444';
     } else if (offWins && defWins) {
       verdictText.textContent = 'EVEN MATCHUP';
-      verdictText.className = 'text-2xl font-black mb-2 text-yellow-400';
+      verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
       verdictDetail.textContent = 'Both sides have answers. Execution and user skill decide.';
       verdictPanel.style.borderColor = '#eab308';
     } else {
@@ -163,7 +163,7 @@ function checkMatchup() {
     verdictText.textContent = offPlayData ? 'Select a defensive coverage' : 'Select an offensive play';
     verdictText.className = 'text-2xl font-black mb-2 text-gray-400';
     verdictDetail.textContent = '';
-    verdictPanel.style.borderColor = '#252540';
+    verdictPanel.style.borderColor = '#2F4F4F';
   }
 
   // Live play animation with side toggle
@@ -273,8 +273,8 @@ function checkMatchup() {
     recommendations.innerHTML = `
       <h3 class="text-lg font-bold text-neon-cyan mb-4"><i class="bi bi-stars mr-2"></i>Recommendations</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div><h4 class="text-sm font-bold text-blue-400 uppercase mb-2">Best Plays vs ${defCoverageData.name}</h4><div class="flex flex-wrap">${offAlts.map(a => `<span class="tag-blue">${a}</span>`).join('')}</div></div>
-        <div><h4 class="text-sm font-bold text-red-400 uppercase mb-2">Best Coverages vs ${offPlay}</h4><div class="flex flex-wrap">${defAlts.map(a => `<span class="tag-purple">${a}</span>`).join('')}</div></div>
+        <div><h4 class="text-sm font-bold text-[#00FFFF] uppercase mb-2">Best Plays vs ${defCoverageData.name}</h4><div class="flex flex-wrap">${offAlts.map(a => `<span class="tag-blue">${a}</span>`).join('')}</div></div>
+        <div><h4 class="text-sm font-bold text-[#FF1493] uppercase mb-2">Best Coverages vs ${offPlay}</h4><div class="flex flex-wrap">${defAlts.map(a => `<span class="tag-purple">${a}</span>`).join('')}</div></div>
       </div>
     `;
   } else {

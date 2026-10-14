@@ -4,12 +4,12 @@
 const FIELD_GREEN = '#1a472a';
 const FIELD_LINE = 'rgba(255,255,255,0.15)';
 const YARD_LINE = 'rgba(255,255,255,0.25)';
-const OFF_COLOR = '#60a5fa';
-const DEF_COLOR = '#f87171';
-const ROUTE_COLOR = '#60a5fa';
-const ZONE_COLOR = 'rgba(248,113,113,0.18)';
-const ZONE_BORDER = 'rgba(248,113,113,0.5)';
-const BALL_COLOR = '#fbbf24';
+const OFF_COLOR = '#00FFFF';
+const DEF_COLOR = '#FF1493';
+const ROUTE_COLOR = '#00FFFF';
+const ZONE_COLOR = 'rgba(255,20,147,0.18)';
+const ZONE_BORDER = 'rgba(255,20,147,0.5)';
+const BALL_COLOR = '#8A2BE2';
 const LOS_COLOR = 'rgba(255,255,255,0.5)';
 
 // Player positions on the field (normalized 0-1 coordinates)
@@ -845,7 +845,7 @@ class PlayArtRenderer {
 
     // Draw OL first (no routes)
     for (const key of ['LT', 'LG', 'C', 'RG', 'RT']) {
-      if (positions[key]) this.drawPlayer(positions[key][0], positions[key][1], '#6b7280', '', 7);
+      if (positions[key]) this.drawPlayer(positions[key][0], positions[key][1], '#4B0082', '', 7);
     }
 
     // Draw routes then players
@@ -934,9 +934,14 @@ class PlayArtRenderer {
       const playData = this.getPlayRoutes(playFamily);
       const routes = playData.routes;
 
+      // Draw the box on run plays
+      if (playData.isRun && progress > 0.15) {
+        this._drawBox(offPositions, defPositions, Math.min((progress - 0.15) * 3, 1), true);
+      }
+
       // OL
       for (const key of ['LT', 'LG', 'C', 'RG', 'RT']) {
-        if (offPositions[key]) this.drawPlayer(offPositions[key][0], offPositions[key][1], '#6b7280', '', 7);
+        if (offPositions[key]) this.drawPlayer(offPositions[key][0], offPositions[key][1], '#4B0082', '', 7);
       }
 
       // Animated routes
@@ -1044,7 +1049,7 @@ class PlayArtRenderer {
         key, startPos: [...startPos], endPos: [endX, endY],
         routeName, path, isOL, isQB,
         label: key.replace(/\d/g, '').substring(0, 2),
-        color: isQB ? BALL_COLOR : (isOL ? '#6b7280' : OFF_COLOR),
+        color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
         size: isQB ? 9 : (isOL ? 7 : 8)
       });
     }
@@ -1119,10 +1124,11 @@ class PlayArtRenderer {
         }
       }
 
-      // === Gap fit labels for run plays ===
-      if (isRun && gaps.length > 0 && developPhase) {
+      // === The Box + Gap fit labels for run plays ===
+      if (isRun && developPhase) {
         const gapFade = Math.min(routeT * 2.5, 1);
-        this._drawGaps(gaps, gapFade, isOffSide);
+        this._drawBox(offPositions, defPositions, gapFade, isOffSide);
+        if (gaps.length > 0) this._drawGaps(gaps, gapFade, isOffSide);
       }
 
       // === Draw route trails (the path behind moving players) ===
@@ -1367,6 +1373,94 @@ class PlayArtRenderer {
     return gaps;
   }
 
+  // Draw "The Box" - the area between tackles where defenders stack vs the run
+  _drawBox(offPositions, defPositions, fade, isOffSide) {
+    const ctx = this.ctx;
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+    const olXs = olKeys.filter(k => offPositions[k]).map(k => offPositions[k][0]);
+    if (olXs.length < 2) return;
+
+    const leftEdge = Math.min(...olXs) - 0.04;
+    const rightEdge = Math.max(...olXs) + 0.04;
+    const losY = 0.60;
+    const boxDepth = 0.20; // ~5 yards behind LOS
+    const boxTop = losY - boxDepth;
+
+    const x = leftEdge * this.width;
+    const y = boxTop * this.height;
+    const w = (rightEdge - leftEdge) * this.width;
+    const h = boxDepth * this.height;
+
+    // Box zone fill
+    ctx.globalAlpha = fade * 0.18;
+    ctx.fillStyle = '#FF1493';
+    ctx.fillRect(x, y, w, h);
+    ctx.globalAlpha = fade * 0.5;
+    ctx.strokeStyle = '#FF1493';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.setLineDash([]);
+
+    // Count defenders in the box
+    let inBox = 0;
+    for (const [key, pos] of Object.entries(defPositions)) {
+      if (pos[0] >= leftEdge && pos[0] <= rightEdge && pos[1] >= boxTop && pos[1] <= losY + 0.04) {
+        inBox++;
+      }
+    }
+
+    // Box count label
+    ctx.globalAlpha = fade * 0.9;
+    const label = `${inBox} IN BOX`;
+    ctx.font = `bold ${Math.max(9, this.width * 0.032)}px system-ui`;
+    const tw = ctx.measureText(label).width + 10;
+    const lx = (leftEdge + rightEdge) / 2 * this.width;
+    const ly = boxTop * this.height - 2;
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.beginPath();
+    ctx.roundRect(lx - tw / 2, ly - 12, tw, 14, 3);
+    ctx.fill();
+    ctx.fillStyle = '#FF1493';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(label, lx, ly);
+    ctx.globalAlpha = 1;
+  }
+
+  // Box zone only (no defender count) for single-play card view
+  _drawBoxZoneOnly(offPositions, fade) {
+    const ctx = this.ctx;
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+    const olXs = olKeys.filter(k => offPositions[k]).map(k => offPositions[k][0]);
+    if (olXs.length < 2) return;
+    const leftEdge = Math.min(...olXs) - 0.04;
+    const rightEdge = Math.max(...olXs) + 0.04;
+    const losY = 0.60;
+    const boxTop = losY - 0.20;
+    const x = leftEdge * this.width;
+    const y = boxTop * this.height;
+    const w = (rightEdge - leftEdge) * this.width;
+    const h = 0.20 * this.height;
+    ctx.globalAlpha = fade * 0.12;
+    ctx.fillStyle = '#FF1493';
+    ctx.fillRect(x, y, w, h);
+    ctx.globalAlpha = fade * 0.35;
+    ctx.strokeStyle = '#FF1493';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.setLineDash([]);
+    // Label
+    ctx.globalAlpha = fade * 0.7;
+    ctx.font = `bold ${Math.max(8, this.width * 0.028)}px system-ui`;
+    ctx.fillStyle = '#FF1493';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('THE BOX', (leftEdge + rightEdge) / 2 * this.width, boxTop * this.height - 2);
+    ctx.globalAlpha = 1;
+  }
+
   _drawGaps(gaps, fade, isOffSide) {
     const ctx = this.ctx;
     ctx.globalAlpha = fade * (isOffSide ? 0.7 : 0.5);
@@ -1374,12 +1468,12 @@ class PlayArtRenderer {
       const px = gap.x * this.width;
       const py = gap.y * this.height;
       // Gap indicator
-      ctx.fillStyle = 'rgba(251,191,36,0.25)';
+      ctx.fillStyle = 'rgba(0,255,255,0.25)';
       ctx.beginPath();
       ctx.arc(px, py, 8, 0, Math.PI * 2);
       ctx.fill();
       // Label
-      ctx.fillStyle = '#fbbf24';
+      ctx.fillStyle = '#00FFFF';
       ctx.font = 'bold 8px system-ui';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -1410,7 +1504,7 @@ class PlayArtRenderer {
         const dy = (nearest.startPos[1] + (nearest.endPos[1] - nearest.startPos[1]) * Math.min(moveT * 1.5, 1)) * this.height;
         // Clash spark
         const mx = (ox + dx) / 2, my = (oy + dy) / 2;
-        ctx.strokeStyle = isOffSide ? '#60a5fa' : '#f87171';
+        ctx.strokeStyle = isOffSide ? '#00FFFF' : '#FF1493';
         ctx.lineWidth = 2;
         ctx.setLineDash([2, 2]);
         ctx.beginPath();
@@ -1420,7 +1514,7 @@ class PlayArtRenderer {
         ctx.setLineDash([]);
         // Impact spark
         if (engageFade > 0.5) {
-          ctx.fillStyle = '#fbbf24';
+          ctx.fillStyle = '#00FFFF';
           const sparkSize = 3 + Math.sin(performance.now() / 100) * 1.5;
           ctx.beginPath();
           ctx.arc(mx, my, sparkSize, 0, Math.PI * 2);
@@ -1450,7 +1544,7 @@ class PlayArtRenderer {
     ctx.roundRect(px - tw / 2, py - 6, tw, 12, 3);
     ctx.fill();
     // Text
-    ctx.fillStyle = '#60a5fa';
+    ctx.fillStyle = '#00FFFF';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(name, px, py);
@@ -1473,7 +1567,7 @@ class PlayArtRenderer {
       ctx.beginPath();
       ctx.roundRect(px - tw / 2, py - 6, tw, 12, 3);
       ctx.fill();
-      ctx.fillStyle = '#f87171';
+      ctx.fillStyle = '#FF1493';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(shortLabel, px, py);
@@ -1487,7 +1581,7 @@ class PlayArtRenderer {
     ctx.globalAlpha = fade * 0.8;
     const isOff = side === 'offense';
     const label = isOff ? 'OFFENSE VIEW' : 'DEFENSE VIEW';
-    const color = isOff ? '#60a5fa' : '#f87171';
+    const color = isOff ? '#00FFFF' : '#FF1493';
     ctx.font = 'bold 9px system-ui';
     const tw = ctx.measureText(label).width + 10;
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
@@ -1536,7 +1630,7 @@ class PlayArtRenderer {
           key, startPos: [...startPos], endPos: [endX, endY],
           routeName, path, isOL, isQB,
           label: key.replace(/\d/g, '').substring(0, 2),
-          color: isQB ? BALL_COLOR : (isOL ? '#6b7280' : OFF_COLOR),
+          color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
           size: isQB ? 9 : (isOL ? 7 : 8)
         });
       }
@@ -1576,6 +1670,12 @@ class PlayArtRenderer {
       const moveT = ease(Math.min(routeT, 1));
 
       if (isOff && playData) {
+        // Draw the box zone on run plays
+        if (playData.isRun && developPhase && offPositions) {
+          const boxFade = Math.min(routeT * 2.5, 1);
+          this._drawBoxZoneOnly(offPositions, boxFade);
+        }
+
         // Draw route trails
         if (developPhase) {
           for (const p of players) {

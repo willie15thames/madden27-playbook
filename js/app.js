@@ -1,14 +1,43 @@
 // Main app JS for index page
 import COVERAGES from './data/coverages.js';
+import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from './data/playbooks.js';
 
-// Mobile menu toggle
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-if (mobileMenuBtn && mobileMenu) {
-  mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-  });
+// Dynamic stats from actual data
+function computeStats() {
+  let totalPlays = 0;
+  let totalFormations = 0;
+  const allBooks = [...OFFENSIVE_PLAYBOOKS, ...DEFENSIVE_PLAYBOOKS];
+
+  for (const book of allBooks) {
+    if (book.formations) {
+      for (const [formation, subs] of Object.entries(book.formations)) {
+        for (const [subName, plays] of Object.entries(subs)) {
+          totalFormations++;
+          if (Array.isArray(plays)) totalPlays += plays.length;
+        }
+      }
+    }
+  }
+
+  return {
+    coverages: COVERAGES.length,
+    totalPlays,
+    totalFormations,
+    totalPlaybooks: allBooks.length
+  };
 }
+
+const stats = computeStats();
+
+const statCov = document.querySelector('#statCoverages div');
+const statPlays = document.querySelector('#statPlays div');
+const statForm = document.querySelector('#statFormations div');
+const statBooks = document.querySelector('#statPlaybooks div');
+
+if (statCov) statCov.textContent = stats.coverages.toLocaleString();
+if (statPlays) statPlays.textContent = stats.totalPlays.toLocaleString();
+if (statForm) statForm.textContent = stats.totalFormations.toLocaleString();
+if (statBooks) statBooks.textContent = stats.totalPlaybooks.toLocaleString();
 
 // Cheat sheet on home page
 const cheatSheet = document.getElementById('cheatSheet');
