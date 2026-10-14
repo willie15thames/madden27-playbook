@@ -63,13 +63,25 @@
           <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
           <input type="text" id="coverageSearch" class="search-input" placeholder="Search coverages...">
         </div>
-        <div class="flex gap-2 flex-wrap">
+        <div class="flex gap-2 flex-wrap items-center">
           <button class="filter-btn active" data-filter="all">All</button>
           <button class="filter-btn" data-filter="Man">Man</button>
           <button class="filter-btn" data-filter="Zone">Zone</button>
           <button class="filter-btn" data-filter="Zone Match">Match</button>
+          <select id="shellFilter" class="shell-select">
+            <option value="all">All Shells</option>
+            <option value="0 Deep">0 Deep</option>
+            <option value="1 Deep">1 Deep</option>
+            <option value="2 Deep">2 Deep</option>
+            <option value="3 Deep">3 Deep</option>
+            <option value="4 Deep">4 Deep</option>
+            <option value="Mixed">Mixed</option>
+          </select>
         </div>
       </div>
+
+      <!-- Position Group Filter -->
+      <div id="posFilterContainer" class="mb-4"></div>
 
       <!-- Coverage Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="coverageGrid"></div>

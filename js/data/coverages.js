@@ -1,4 +1,4 @@
-// Madden 27 Defensive Coverages Data
+// Madden 27 Defensive Coverages Data - Complete coverage system
 const COVERAGES = [
   {
     id: "cover0",
@@ -43,6 +43,20 @@ const COVERAGES = [
     color: "#fb923c"
   },
   {
+    id: "cover1hole",
+    name: "Cover 1 Hole",
+    type: "Man",
+    shell: "1 Deep",
+    description: "Cover 1 man with a hole player sitting in a short zone underneath. Extra defender in the middle to stop quick crosses.",
+    strengths: ["Takes away hot routes", "Hole player jumps short throws", "Safety help deep", "Great vs mesh"],
+    weaknesses: ["Sideline routes", "Flood concepts", "Deep outs", "Corner routes"],
+    stops: ["Slants", "Quick crosses", "Hot routes", "Mesh concepts", "Drags", "Shallow crosses"],
+    beatenBy: ["Corner routes", "Out routes", "Flood concepts", "Sideline throws", "Deep outs"],
+    bestAgainst: ["Quick game", "Mesh concepts", "Crossing route heavy"],
+    tips: "Two defenders in the middle (safety + hole player). Attack the sidelines instead.",
+    color: "#ea580c"
+  },
+  {
     id: "cover2zone",
     name: "Cover 2 Zone",
     type: "Zone",
@@ -71,6 +85,34 @@ const COVERAGES = [
     color: "#84cc16"
   },
   {
+    id: "cover2sink",
+    name: "Cover 2 Sink",
+    type: "Zone",
+    shell: "2 Deep",
+    description: "Cover 2 zone where the underneath defenders sink deeper into their zones rather than playing aggressive. Defends intermediate routes better.",
+    strengths: ["Better intermediate coverage", "Covers dig/in routes", "Two deep safeties", "Less vulnerable to crossers"],
+    weaknesses: ["Flat routes wide open", "Shallow crosses", "Quick outs", "Underneath is soft"],
+    stops: ["Dig routes", "In routes", "Intermediate crossers", "Post routes", "Seam routes"],
+    beatenBy: ["Flat routes", "Quick outs", "Shallow crosses", "HB screens", "Bubble screens"],
+    bestAgainst: ["Intermediate passing", "Dig/crosser heavy", "PA Crossers"],
+    tips: "Defenders sink into intermediate zones. Attack the flats and underneath.",
+    color: "#a3e635"
+  },
+  {
+    id: "cover2lurk",
+    name: "Cover 2 Lurk",
+    type: "Zone",
+    shell: "2 Deep",
+    description: "Cover 2 with a lurk defender who sits underneath reading QB eyes. Great for user-controlled ballhawks.",
+    strengths: ["Lurk defender jumps routes", "Two deep safeties", "User play potential", "Great for pick-6s"],
+    weaknesses: ["Deep middle hole", "Post routes", "If lurker is beaten, big play"],
+    stops: ["Slants", "Drags", "Crossers", "Short to intermediate routes", "Quick game"],
+    beatenBy: ["Deep posts", "Seam routes", "4 Verticals", "Routes away from lurker"],
+    bestAgainst: ["Predictable passing", "Short/intermediate attackers"],
+    tips: "User the lurk defender. Read the QB's eyes and break on the throw for interceptions.",
+    color: "#65a30d"
+  },
+  {
     id: "cover3",
     name: "Cover 3",
     type: "Zone",
@@ -97,6 +139,34 @@ const COVERAGES = [
     bestAgainst: ["Run heavy", "Strong side attacks", "Play action"],
     tips: "Attack away from the SS in the flat. The weak side is more vulnerable.",
     color: "#16a34a"
+  },
+  {
+    id: "cover3buzz",
+    name: "Cover 3 Buzz",
+    type: "Zone",
+    shell: "3 Deep",
+    description: "Cover 3 with the strong safety buzzing down to the flat pre-snap. Similar to Sky but SS comes from depth rather than the box.",
+    strengths: ["Disguises as Cover 1/4 pre-snap", "SS buzz creates confusion", "Three deep zones", "Good vs reads"],
+    weaknesses: ["Seam routes behind buzz", "If SS is late, flat is open", "Levels concepts", "Quick passes"],
+    stops: ["Deep passes", "Go routes", "Post routes", "Streaks", "Corner routes"],
+    beatenBy: ["Seam routes", "Flat routes (quick)", "Levels", "Flood concepts", "Quick game"],
+    bestAgainst: ["Deep passing", "Play action", "Vertical offense"],
+    tips: "The buzz safety reveals the coverage post-snap. Attack before he gets to his flat zone.",
+    color: "#059669"
+  },
+  {
+    id: "cover3cloud",
+    name: "Cover 3 Cloud",
+    type: "Zone",
+    shell: "3 Deep",
+    description: "Cover 3 where the corner drops to the flat instead of playing the deep third. Safety takes the deep third on that side.",
+    strengths: ["Corner in flat is physical vs flat routes", "Takes away quick outs", "Better flat coverage", "Good vs screens"],
+    weaknesses: ["Safety rotating late to deep third", "Deep sideline vulnerable on rotation", "Corner routes exploit rotation"],
+    stops: ["Flat routes", "Quick outs", "Screens", "HB swings", "Bubble screens"],
+    beatenBy: ["Corner routes", "Deep outs", "Go routes to cloud side", "Fade routes"],
+    bestAgainst: ["Flat route heavy", "Screen heavy", "Quick outside game"],
+    tips: "Corner in flat takes away quick throws outside. Attack deep on the cloud side.",
+    color: "#0d9488"
   },
   {
     id: "cover3match",
@@ -141,6 +211,20 @@ const COVERAGES = [
     color: "#2563eb"
   },
   {
+    id: "cover4drop",
+    name: "Cover 4 Drop",
+    type: "Zone",
+    shell: "4 Deep",
+    description: "Cover 4 where all four deep defenders drop straight back without reading routes. Maximum deep protection.",
+    strengths: ["Maximum deep coverage", "Simple reads", "Great vs deep shots", "No blown assignments deep"],
+    weaknesses: ["Extremely soft underneath", "Everything short is open", "Easy completions underneath"],
+    stops: ["All deep routes", "4 Verticals", "Hail Mary", "Deep posts", "Deep corners"],
+    beatenBy: ["All short routes", "Curls", "Drags", "Flat routes", "Crossers", "Quick game"],
+    bestAgainst: ["Deep shot offense", "End of half", "Aggressive deep passers"],
+    tips: "Only use against deep-ball heavy opponents. Everything underneath will be open.",
+    color: "#1d4ed8"
+  },
+  {
     id: "cover6",
     name: "Cover 6 (Quarter-Quarter-Half)",
     type: "Zone",
@@ -181,6 +265,34 @@ const COVERAGES = [
     bestAgainst: ["Deep passing", "Middle of field attacks", "Vertical concepts"],
     tips: "Works best with 85+ speed at MLB. If your MLB is slow, avoid this coverage.",
     color: "#f43f5e"
+  },
+  {
+    id: "inverted",
+    name: "Inverted Cover 2",
+    type: "Zone",
+    shell: "2 Deep (Inverted)",
+    description: "Inverted coverage shell where the safeties rotate up and corners play deep. Disguises as man pre-snap but plays zone.",
+    strengths: ["Disguise pre-snap", "Safeties fill vs run", "Corners lock down deep", "Confuses QB reads"],
+    weaknesses: ["Slow corners exposed deep", "Middle of field soft", "Motion reveals structure"],
+    stops: ["Outside runs", "Flat routes", "Quick outs", "Shallow crosses"],
+    beatenBy: ["Deep posts", "Seam routes", "Inside crossing routes", "Speed mismatches deep"],
+    bestAgainst: ["Run heavy", "Outside game", "Pre-snap read offense"],
+    tips: "Inverted look confuses the QB. Best with fast corners who can play deep.",
+    color: "#d946ef"
+  },
+  {
+    id: "cover2press",
+    name: "Cover 2 Press",
+    type: "Zone",
+    shell: "2 Deep",
+    description: "Cover 2 zone with press coverage at the line. Corners jam receivers then drop to flats.",
+    strengths: ["Disrupts timing routes", "Press + zone hybrid", "Strong vs quick game", "Good vs slants"],
+    weaknesses: ["If press is beaten, big play", "Deep middle hole", "Post routes", "Speed receivers beat press"],
+    stops: ["Quick slants", "Quick outs", "Timing routes", "Flat routes", "Hitches"],
+    beatenBy: ["Speed releases", "Deep posts", "4 Verticals", "Double moves", "Seam routes"],
+    bestAgainst: ["Quick game", "Timing-based offense", "Slant heavy"],
+    tips: "Press disrupts timing. But if the receiver beats the press, it's man with zone responsibility.",
+    color: "#ca8a04"
   },
   {
     id: "prevent",

@@ -200,17 +200,29 @@ const COVERAGE_ZONES = {
   'Cover 0': { zones: [], type: 'man' },
   'Cover 1': { zones: ['deep_middle'], type: 'man' },
   'Cover 1 Robber': { zones: ['deep_middle', 'mid_hole'], type: 'man' },
+  'Cover 1 Hole': { zones: ['deep_middle', 'mid_hole'], type: 'man' },
   'Cover 2 Zone': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
-  'Cover 2 Man Under': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
+  'Cover 2 Man': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
+  'Cover 2 Invert': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
+  'Cover 2 Sink': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
+  'Cover 2 Lurk': { zones: ['deep_half_left', 'deep_half_right', 'mid_hole', 'hook_left', 'hook_right'], type: 'zone' },
+  'Cover 2 Press': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
+  'Cover 2 Hard Flat': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
   'Cover 3': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'curl_flat_left', 'curl_flat_right', 'hook_left', 'hook_right'], type: 'zone' },
   'Cover 3 Sky': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'flat_right', 'hook_left', 'hook_right', 'curl_flat_left'], type: 'zone' },
+  'Cover 3 Cloud': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
+  'Cover 3 Buzz': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 3 Match': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
   'Cover 4': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 4 Palms': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'hook_left', 'hook_right'], type: 'zone' },
+  'Cover 4 Drop': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
   'Cover 6': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_half_right', 'hook_left', 'hook_right', 'flat_right'], type: 'zone' },
   'Cover 9': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
   'Tampa 2': { zones: ['deep_half_left', 'deep_half_right', 'tampa_mlb_deep', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
-  'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle'], type: 'zone' }
+  'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle'], type: 'zone' },
+  'Mid Blitz': { zones: [], type: 'man' },
+  'Edge Blitz': { zones: [], type: 'man' },
+  'Inverted Cover 2': { zones: ['deep_half', 'deep_half', 'hook_curl', 'flat', 'flat'], type: 'zone' }
 };
 
 // Play route assignments per play family
@@ -354,6 +366,246 @@ const PLAY_ROUTES = {
   'Tush Push': {
     routes: { FB: 'run_dive', RB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
     qb: 'run_dive', isRun: true
+  },
+  'Wide Zone': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Split Zone': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_counter' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Duo': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Trap': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Wham': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'ISO': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_drop', isRun: true
+  },
+  'End Around': {
+    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', isRun: true
+  },
+  'QB Draw': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'block' },
+    qb: 'run_inside', isRun: true
+  },
+  'QB Power': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_power' },
+    qb: 'run_power', isRun: true
+  },
+  'QB Scramble': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'streak', WR4: 'curl', TE: 'block', RB: 'block' },
+    qb: 'qb_scramble', isRun: true
+  },
+  'Power Read': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    qb: 'option_keep', isRun: true
+  },
+  'Speed Option': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'option_keep', isRun: true
+  },
+  'Triple Option': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give', FB: 'run_dive' },
+    qb: 'option_keep', isRun: true
+  },
+  'Inverted Veer': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'run_power', isRun: true
+  },
+  'Deep Post': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Deep Crossers': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'post', WR4: 'streak', TE: 'drag', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Hail Mary': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'streak', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Skinny Post': {
+    routes: { WR1: 'post', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Double Post': {
+    routes: { WR1: 'post', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Post Corner': {
+    routes: { WR1: 'corner', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Read': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'drag', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR2'
+  },
+  'PA Scissors': {
+    routes: { WR1: 'post', WR2: 'corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Shot Seams': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Slot Cross': {
+    routes: { WR1: 'streak', WR2: 'in', WR3: 'drag', WR4: 'streak', TE: 'drag', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Power O': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'drag', WR4: 'curl', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR2'
+  },
+  'PA Zone Shot': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Spacing': {
+    routes: { WR1: 'curl', WR2: 'flat', WR3: 'hitch', WR4: 'out', TE: 'drag', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Drive': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Snag': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Dagger': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Mills': {
+    routes: { WR1: 'post', WR2: 'in', WR3: 'corner', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Bench': {
+    routes: { WR1: 'curl', WR2: 'out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Sail': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Dig Under': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Mesh Traffic': {
+    routes: { WR1: 'post', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Bunch Trail': {
+    routes: { WR1: 'streak', WR2: 'flat', WR3: 'corner', WR4: 'streak', TE: 'drag', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Quick Outs': {
+    routes: { WR1: 'out', WR2: 'out', WR3: 'out', WR4: 'out', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Comeback': {
+    routes: { WR1: 'comeback', WR2: 'comeback', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Slant Flat': {
+    routes: { WR1: 'slant', WR2: 'flat', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Quick Hitch': {
+    routes: { WR1: 'hitch', WR2: 'hitch', WR3: 'hitch', WR4: 'hitch', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'WR Screen': {
+    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Bubble Screen': {
+    routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Tunnel Screen': {
+    routes: { WR1: 'block', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Middle Screen': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'RPO Alert': {
+    routes: { WR1: 'slant', WR2: 'hitch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'RPO Bubble': {
+    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'RPO Peek': {
+    routes: { WR1: 'slant', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Orbit': {
+    routes: { WR1: 'streak', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Orbit Screen': {
+    routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'HB Blast': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'HB Slam': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'HB Pitch': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Delayed Draw': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Jailbreak Screen': {
+    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Screens': {
+    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'screen' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'RPO Zone Peek': {
+    routes: { WR1: 'slant', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'RPO Power Read': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'RPO Lookie': {
+    routes: { WR1: 'out', WR2: 'slant', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Play Action': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
   }
 };
 
@@ -545,22 +797,41 @@ class PlayArtRenderer {
   }
 
   getPlayRoutes(playFamily) {
+    if (!playFamily) return DEFAULT_PASS_ROUTES;
     if (PLAY_ROUTES[playFamily]) return PLAY_ROUTES[playFamily];
-    // Try partial match
+    const lower = playFamily.toLowerCase();
+    // Exact prefix match first (avoids "PA Power O" matching "Power O")
     for (const key of Object.keys(PLAY_ROUTES)) {
-      if (playFamily.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(playFamily.toLowerCase())) {
+      if (lower === key.toLowerCase()) return PLAY_ROUTES[key];
+    }
+    // Try "starts with" for PA/RPO variants
+    for (const key of Object.keys(PLAY_ROUTES)) {
+      if (lower.startsWith(key.toLowerCase()) || key.toLowerCase().startsWith(lower)) {
         return PLAY_ROUTES[key];
       }
     }
-    return playFamily && (playFamily.toLowerCase().includes('zone') || playFamily.toLowerCase().includes('power') || playFamily.toLowerCase().includes('dive') || playFamily.toLowerCase().includes('stretch') || playFamily.toLowerCase().includes('counter') || playFamily.toLowerCase().includes('toss') || playFamily.toLowerCase().includes('sweep') || playFamily.toLowerCase().includes('sneak') || playFamily.toLowerCase().includes('option'))
-      ? DEFAULT_RUN_ROUTES : DEFAULT_PASS_ROUTES;
+    // Partial includes (skip if play is PA/RPO and key is a run)
+    const isPA = lower.startsWith('pa ') || lower.startsWith('rpo ');
+    for (const key of Object.keys(PLAY_ROUTES)) {
+      const kl = key.toLowerCase();
+      if (isPA && PLAY_ROUTES[key].isRun) continue;
+      if (lower.includes(kl) || kl.includes(lower)) return PLAY_ROUTES[key];
+    }
+    // Fallback by type
+    const runWords = ['zone', 'power', 'dive', 'stretch', 'counter', 'toss', 'sweep', 'sneak', 'option', 'draw', 'iso', 'trap', 'wham', 'blast', 'slam', 'duo', 'pitch', 'veer', 'orbit'];
+    return runWords.some(w => lower.includes(w)) ? DEFAULT_RUN_ROUTES : DEFAULT_PASS_ROUTES;
   }
 
   getCoverageZones(coverageName) {
-    for (const key of Object.keys(COVERAGE_ZONES)) {
-      if (coverageName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(coverageName.toLowerCase())) {
-        return COVERAGE_ZONES[key];
-      }
+    if (!coverageName) return COVERAGE_ZONES['Cover 3'];
+    const lower = coverageName.toLowerCase();
+    // Exact match
+    if (COVERAGE_ZONES[coverageName]) return COVERAGE_ZONES[coverageName];
+    // Try longest key match first to avoid "Cover 1" matching before "Cover 1 Hole"
+    const keys = Object.keys(COVERAGE_ZONES).sort((a, b) => b.length - a.length);
+    for (const key of keys) {
+      const kl = key.toLowerCase();
+      if (lower.includes(kl) || kl.includes(lower)) return COVERAGE_ZONES[key];
     }
     return COVERAGE_ZONES['Cover 3'];
   }
@@ -730,8 +1001,681 @@ class PlayArtRenderer {
     this.animFrame = requestAnimationFrame(animate);
   }
 
+  // ============================
+  // LIVE PLAY ANIMATION ENGINE
+  // ============================
+  // Players physically move: WRs run routes, OL engages DL, DBs drop/follow, gaps fill
+  // side: 'offense' | 'defense' - which side is highlighted
+  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, coverageName, duration = 4000, visibleGroups = null }) {
+    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+    this.isAnimating = true;
+
+    const offPositions = this.getOffensePositions(offFormation, offSubFormation);
+    const defPositions = this.getDefensePositions(defFormation);
+    const playData = this.getPlayRoutes(playFamily);
+    const coverageData = this.getCoverageZones(coverageName);
+    const routes = playData.routes;
+    const isRun = !!playData.isRun;
+    const isOffSide = side === 'offense';
+
+    // Build offensive player animation data
+    const offPlayers = [];
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+    const gapLabels = ['D', 'C', 'B', 'A', 'A', 'B', 'C', 'D'];
+
+    for (const [key, startPos] of Object.entries(offPositions)) {
+      const isOL = olKeys.includes(key);
+      const isQB = key === 'QB';
+      const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
+      const path = ROUTE_PATHS[routeName] || [];
+
+      // Compute final position by following waypoints
+      let endX = startPos[0], endY = startPos[1];
+      for (const [dx, dy] of path) { endX += dx; endY += dy; }
+
+      // OL: push forward slightly to engage
+      if (isOL) {
+        const blockDir = isRun ? this._getRunBlockDirection(key, playFamily) : 0;
+        endX = startPos[0] + blockDir * 0.03;
+        endY = startPos[1] - 0.03;
+      }
+
+      offPlayers.push({
+        key, startPos: [...startPos], endPos: [endX, endY],
+        routeName, path, isOL, isQB,
+        label: key.replace(/\d/g, '').substring(0, 2),
+        color: isQB ? BALL_COLOR : (isOL ? '#6b7280' : OFF_COLOR),
+        size: isQB ? 9 : (isOL ? 7 : 8)
+      });
+    }
+
+    // Build defensive player animation data
+    const defPlayers = [];
+    const defEntries = Object.entries(defPositions);
+    const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
+    const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+    const dbKeys = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
+
+    for (const [key, startPos] of defEntries) {
+      const isDL = dlKeys.includes(key);
+      const isLB = lbKeys.includes(key);
+      const isDB = dbKeys.includes(key);
+
+      let endX = startPos[0], endY = startPos[1];
+
+      if (isDL) {
+        // DL rushes to LOS then gets blocked
+        endY = 0.60;
+      } else if (coverageData.type === 'zone') {
+        // Zone: move toward assigned zone center
+        const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos);
+        if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+      } else {
+        // Man: DBs follow nearest WR, LBs mirror or blitz
+        const manTarget = this._getManTarget(key, isLB, isDB, startPos, offPlayers, isRun);
+        if (manTarget) { endX = manTarget[0]; endY = manTarget[1]; }
+      }
+
+      defPlayers.push({
+        key, startPos: [...startPos], endPos: [endX, endY],
+        isDL, isLB, isDB,
+        label: key.replace(/\d/g, '').substring(0, 2),
+        color: DEF_COLOR, size: 8
+      });
+    }
+
+    // Gap data for run plays
+    const gaps = isRun ? this._computeGaps(offPositions) : [];
+
+    const startTime = performance.now();
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      this.animProgress = t;
+
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.drawField();
+
+      // Phase timing
+      const preSnap = t < 0.08;
+      const snapPhase = t >= 0.08 && t < 0.15;
+      const developPhase = t >= 0.15;
+      const routeT = Math.max(0, (t - 0.15) / 0.65); // 15%-80% = route development
+      const lateT = Math.max(0, (t - 0.70) / 0.30); // 70%-100% = ball flight / finish
+
+      // Easing
+      const ease = v => v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
+      const moveT = ease(Math.min(routeT, 1));
+
+      // === Draw coverage zones (fade in during development) ===
+      if (coverageData.type === 'zone' && developPhase) {
+        const zoneFade = Math.min(routeT * 2, 1);
+        for (const zone of coverageData.zones) {
+          this.drawZone(zone, (isOffSide ? 0.08 : 0.14) * zoneFade);
+        }
+        // Zone labels for defense perspective
+        if (!isOffSide && zoneFade > 0.5) {
+          this._drawZoneLabels(coverageData.zones, zoneFade);
+        }
+      }
+
+      // === Gap fit labels for run plays ===
+      if (isRun && gaps.length > 0 && developPhase) {
+        const gapFade = Math.min(routeT * 2.5, 1);
+        this._drawGaps(gaps, gapFade, isOffSide);
+      }
+
+      // === Draw route trails (the path behind moving players) ===
+      if (developPhase) {
+        for (const p of offPlayers) {
+          if (p.isOL || p.path.length === 0) continue;
+          const routeColor = (isRun && !p.isQB) ? BALL_COLOR : ROUTE_COLOR;
+          const alpha = isOffSide ? 0.7 : 0.3;
+          this.ctx.globalAlpha = alpha;
+          this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+          this.ctx.globalAlpha = 1;
+          // Route name labels (offense perspective)
+          if (isOffSide && routeT > 0.3 && !p.isQB && p.routeName !== 'block') {
+            this._drawRouteLabel(p, routeT);
+          }
+        }
+      }
+
+      // === Block engagement lines (OL <-> DL) ===
+      if (developPhase) {
+        this._drawBlockEngagements(offPlayers, defPlayers, moveT, isOffSide);
+      }
+
+      // === Move and draw defensive players ===
+      const dimOpp = isOffSide ? 0.55 : 1.0;
+      for (const p of defPlayers) {
+        const vis = this._isVisible(p.key, visibleGroups);
+        const mt = p.isDL ? Math.min(moveT * 1.5, 1) : moveT;
+        const x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? mt : 0);
+        const y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? mt : 0);
+        this.ctx.globalAlpha = vis ? dimOpp : 0.12;
+        const glow = !isOffSide && developPhase && vis;
+        if (glow) this._drawGlow(x, y, DEF_COLOR, p.size + 3);
+        this.drawPlayer(x, y, p.color, vis ? p.label : '', p.size);
+        this.ctx.globalAlpha = 1;
+      }
+
+      // === Move and draw offensive players ===
+      const dimOff = isOffSide ? 1.0 : 0.55;
+      for (const p of offPlayers) {
+        const vis = this._isVisible(p.key, visibleGroups);
+        let x, y;
+        if (p.isOL) {
+          const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
+          x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * olT;
+          y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * olT;
+        } else {
+          x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? moveT : 0);
+          y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? moveT : 0);
+        }
+        this.ctx.globalAlpha = vis ? dimOff : 0.12;
+        const glow = isOffSide && developPhase && !p.isOL && vis;
+        if (glow) this._drawGlow(x, y, p.isQB ? BALL_COLOR : OFF_COLOR, p.size + 3);
+        this.drawPlayer(x, y, p.color, vis ? p.label : '', p.size);
+        this.ctx.globalAlpha = 1;
+      }
+
+      // === Ball flight for pass plays ===
+      if (!isRun && playData.ball_target && lateT > 0 && lateT < 1) {
+        const targetPlayer = offPlayers.find(p => p.key === playData.ball_target);
+        const qbPlayer = offPlayers.find(p => p.isQB);
+        if (targetPlayer && qbPlayer) {
+          const qx = qbPlayer.endPos[0], qy = qbPlayer.endPos[1];
+          const tx = targetPlayer.endPos[0], ty = targetPlayer.endPos[1];
+          const bx = (qx + (tx - qx) * lateT) * this.width;
+          const by = (qy + (ty - qy) * lateT) * this.height;
+          // Ball shadow
+          this.ctx.fillStyle = 'rgba(0,0,0,0.3)';
+          this.ctx.beginPath();
+          this.ctx.ellipse(bx + 2, by + 2, 5, 3, Math.atan2(ty - qy, tx - qx), 0, Math.PI * 2);
+          this.ctx.fill();
+          // Ball
+          this.ctx.fillStyle = BALL_COLOR;
+          this.ctx.beginPath();
+          this.ctx.ellipse(bx, by, 5, 3, Math.atan2(ty - qy, tx - qx), 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#92400e';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+          // Spiral laces
+          const angle = Math.atan2(ty - qy, tx - qx);
+          this.ctx.strokeStyle = '#fff';
+          this.ctx.lineWidth = 0.8;
+          this.ctx.beginPath();
+          this.ctx.moveTo(bx - 2 * Math.cos(angle + 0.8), by - 2 * Math.sin(angle + 0.8));
+          this.ctx.lineTo(bx + 2 * Math.cos(angle + 0.8), by + 2 * Math.sin(angle + 0.8));
+          this.ctx.stroke();
+        }
+      }
+
+      // === Side indicator ===
+      this._drawSideIndicator(side, t);
+
+      if (t < 1) {
+        this.animFrame = requestAnimationFrame(animate);
+      } else {
+        this.isAnimating = false;
+        this._loopTimeout = setTimeout(() => {
+          if (this.canvas.isConnected) {
+            this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, coverageName, duration, visibleGroups });
+          }
+        }, 1500);
+      }
+    };
+
+    this.animFrame = requestAnimationFrame(animate);
+  }
+
+  // === Live Play Helpers ===
+
+  // Position group classification
+  _getPositionGroup(key) {
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+    if (olKeys.includes(key)) return 'OL';
+    if (key === 'QB') return 'QB';
+    if (key.startsWith('WR')) return 'WR';
+    if (key.startsWith('TE')) return 'TE';
+    if (key === 'RB' || key === 'FB') return 'RB';
+    const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
+    if (dlKeys.includes(key)) return 'DL';
+    const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+    if (lbKeys.includes(key)) return 'LB';
+    return 'DB';
+  }
+
+  _isVisible(key, visibleGroups) {
+    if (!visibleGroups) return true;
+    return visibleGroups.has(this._getPositionGroup(key));
+  }
+
+  _hexToRgba(hex, alpha) {
+    if (hex.startsWith('#')) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+    if (hex.startsWith('rgb')) return hex.replace(')', `,${alpha})`).replace('rgb(', 'rgba(');
+    return hex;
+  }
+
+  _drawGlow(x, y, color, radius) {
+    const ctx = this.ctx;
+    const px = x * this.width, py = y * this.height;
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, radius * 1.5);
+    grad.addColorStop(0, this._hexToRgba(color, 0.35));
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(px, py, radius * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  _getRunBlockDirection(olKey, playFamily) {
+    const name = playFamily.toLowerCase();
+    // Zone runs: whole OL slides one direction
+    if (name.includes('stretch') || name.includes('toss') || name.includes('outside zone')) {
+      return olKey === 'LT' || olKey === 'LG' ? 1 : (olKey === 'RT' || olKey === 'RG' ? 1.5 : 1);
+    }
+    if (name.includes('counter')) {
+      return olKey === 'RG' ? -2 : (olKey === 'RT' ? -1.5 : 0.3);
+    }
+    if (name.includes('power')) {
+      return olKey === 'RG' ? -1.5 : 0.3;
+    }
+    return 0; // Inside zone / dive: straight ahead
+  }
+
+  _getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos) {
+    if (isRun && isLB) {
+      // LBs fill gaps on run plays
+      return [startPos[0], startPos[1] + 0.06];
+    }
+    // Map defender keys to likely zone assignments
+    const zoneMap = {
+      'CB1': ['deep_third_left', 'deep_quarter_1', 'deep_half_left', 'curl_flat_left'],
+      'CB2': ['deep_third_right', 'deep_quarter_4', 'deep_half_right', 'curl_flat_right'],
+      'NCB': ['hook_left', 'curl_flat_left', 'mid_hole'],
+      'NCB1': ['hook_left', 'curl_flat_left', 'deep_quarter_2'],
+      'NCB2': ['hook_right', 'curl_flat_right', 'deep_quarter_3'],
+      'NCB3': ['mid_hole', 'deep_quarter_3'],
+      'FS': ['deep_middle', 'deep_half_left', 'deep_third_mid', 'deep_quarter_2'],
+      'SS': ['deep_half_right', 'deep_quarter_3', 'hook_right', 'flat_right'],
+      'S': ['deep_middle'],
+      'LOLB': ['flat_left', 'curl_flat_left', 'hook_left'],
+      'ROLB': ['flat_right', 'curl_flat_right', 'hook_right'],
+      'ILB1': ['hook_left', 'mid_hole'],
+      'ILB2': ['hook_right', 'mid_hole'],
+      'MLB': ['mid_hole', 'tampa_mlb_deep', 'hook_left'],
+      'LB': ['mid_hole', 'hook_left'],
+      'LB1': ['hook_left', 'mid_hole'],
+      'LB2': ['hook_right', 'mid_hole'],
+      'LB3': ['mid_hole']
+    };
+    const candidates = zoneMap[key] || [];
+    for (const zName of candidates) {
+      if (coverageData.zones.includes(zName)) {
+        const z = ZONE_SHAPES[zName];
+        if (z) return [z.x + z.w / 2, z.y + z.h / 2];
+      }
+    }
+    return null;
+  }
+
+  _getManTarget(key, isLB, isDB, startPos, offPlayers, isRun) {
+    if (isRun && isLB) {
+      return [startPos[0], startPos[1] + 0.06];
+    }
+    if (!isDB && !isLB) return null;
+    // Find nearest WR/TE to follow
+    const receivers = offPlayers.filter(p => !p.isOL && !p.isQB && p.routeName !== 'block');
+    if (receivers.length === 0) return null;
+    let nearest = receivers[0], minDist = Infinity;
+    for (const r of receivers) {
+      const d = Math.hypot(r.startPos[0] - startPos[0], r.startPos[1] - startPos[1]);
+      if (d < minDist) { minDist = d; nearest = r; }
+    }
+    // Follow partway to their end position
+    const followFactor = isDB ? 0.85 : 0.6;
+    return [
+      nearest.startPos[0] + (nearest.endPos[0] - nearest.startPos[0]) * followFactor + (isDB ? 0.02 : 0),
+      nearest.startPos[1] + (nearest.endPos[1] - nearest.startPos[1]) * followFactor + 0.02
+    ];
+  }
+
+  _computeGaps(offPositions) {
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+    const olPositions = olKeys.filter(k => offPositions[k]).map(k => offPositions[k]);
+    const gaps = [];
+    const labels = ['C/D', 'B', 'A', 'A', 'B', 'C/D'];
+    // Gaps between OL
+    for (let i = 0; i < olPositions.length - 1; i++) {
+      const x = (olPositions[i][0] + olPositions[i + 1][0]) / 2;
+      const y = olPositions[i][1] - 0.02;
+      gaps.push({ x, y, label: labels[i] || 'G' });
+    }
+    // Outside gaps
+    if (olPositions.length >= 2) {
+      gaps.unshift({ x: olPositions[0][0] - 0.06, y: olPositions[0][1] - 0.02, label: 'D' });
+      gaps.push({ x: olPositions[olPositions.length - 1][0] + 0.06, y: olPositions[olPositions.length - 1][1] - 0.02, label: 'D' });
+    }
+    return gaps;
+  }
+
+  _drawGaps(gaps, fade, isOffSide) {
+    const ctx = this.ctx;
+    ctx.globalAlpha = fade * (isOffSide ? 0.7 : 0.5);
+    for (const gap of gaps) {
+      const px = gap.x * this.width;
+      const py = gap.y * this.height;
+      // Gap indicator
+      ctx.fillStyle = 'rgba(251,191,36,0.25)';
+      ctx.beginPath();
+      ctx.arc(px, py, 8, 0, Math.PI * 2);
+      ctx.fill();
+      // Label
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 8px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(gap.label, px, py);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  _drawBlockEngagements(offPlayers, defPlayers, moveT, isOffSide) {
+    if (moveT < 0.3) return;
+    const ctx = this.ctx;
+    const engageFade = Math.min((moveT - 0.3) / 0.3, 1);
+    const olPlayers = offPlayers.filter(p => p.isOL);
+    const dlPlayers = defPlayers.filter(p => p.isDL);
+
+    ctx.globalAlpha = engageFade * 0.6;
+    for (const ol of olPlayers) {
+      // Find nearest DL
+      let nearest = null, minDist = Infinity;
+      for (const dl of dlPlayers) {
+        const d = Math.hypot(ol.endPos[0] - dl.startPos[0], ol.endPos[1] - dl.startPos[1]);
+        if (d < minDist) { minDist = d; nearest = dl; }
+      }
+      if (nearest && minDist < 0.2) {
+        const ox = ol.endPos[0] * this.width;
+        const oy = ol.endPos[1] * this.height;
+        const dx = (nearest.startPos[0] + (nearest.endPos[0] - nearest.startPos[0]) * Math.min(moveT * 1.5, 1)) * this.width;
+        const dy = (nearest.startPos[1] + (nearest.endPos[1] - nearest.startPos[1]) * Math.min(moveT * 1.5, 1)) * this.height;
+        // Clash spark
+        const mx = (ox + dx) / 2, my = (oy + dy) / 2;
+        ctx.strokeStyle = isOffSide ? '#60a5fa' : '#f87171';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.moveTo(ox, oy);
+        ctx.lineTo(dx, dy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // Impact spark
+        if (engageFade > 0.5) {
+          ctx.fillStyle = '#fbbf24';
+          const sparkSize = 3 + Math.sin(performance.now() / 100) * 1.5;
+          ctx.beginPath();
+          ctx.arc(mx, my, sparkSize, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  _drawRouteLabel(player, routeT) {
+    if (routeT < 0.4) return;
+    const ctx = this.ctx;
+    const fade = Math.min((routeT - 0.4) / 0.2, 1);
+    // Position label at midpoint of route
+    const midX = (player.startPos[0] + player.endPos[0]) / 2;
+    const midY = (player.startPos[1] + player.endPos[1]) / 2;
+    const px = midX * this.width;
+    const py = midY * this.height - 10;
+    const name = player.routeName.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+    ctx.globalAlpha = fade * 0.85;
+    // Background pill
+    ctx.font = 'bold 7px system-ui';
+    const tw = ctx.measureText(name).width + 6;
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.beginPath();
+    ctx.roundRect(px - tw / 2, py - 6, tw, 12, 3);
+    ctx.fill();
+    // Text
+    ctx.fillStyle = '#60a5fa';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(name, px, py);
+    ctx.globalAlpha = 1;
+  }
+
+  _drawZoneLabels(zones, fade) {
+    const ctx = this.ctx;
+    ctx.globalAlpha = fade * 0.7;
+    for (const zoneName of zones) {
+      const z = ZONE_SHAPES[zoneName];
+      if (!z) continue;
+      const px = (z.x + z.w / 2) * this.width;
+      const py = (z.y + z.h / 2) * this.height;
+      const label = zoneName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).replace('Deep ', 'D.').replace('Half ', 'H.').replace('Quarter ', 'Q.').replace('Curl ', 'C/');
+      const shortLabel = label.length > 12 ? label.substring(0, 11) + '.' : label;
+      ctx.font = 'bold 7px system-ui';
+      const tw = ctx.measureText(shortLabel).width + 6;
+      ctx.fillStyle = 'rgba(248,113,113,0.2)';
+      ctx.beginPath();
+      ctx.roundRect(px - tw / 2, py - 6, tw, 12, 3);
+      ctx.fill();
+      ctx.fillStyle = '#f87171';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(shortLabel, px, py);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  _drawSideIndicator(side, t) {
+    const ctx = this.ctx;
+    const fade = Math.min(t * 5, 1);
+    ctx.globalAlpha = fade * 0.8;
+    const isOff = side === 'offense';
+    const label = isOff ? 'OFFENSE VIEW' : 'DEFENSE VIEW';
+    const color = isOff ? '#60a5fa' : '#f87171';
+    ctx.font = 'bold 9px system-ui';
+    const tw = ctx.measureText(label).width + 10;
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.beginPath();
+    ctx.roundRect(this.width / 2 - tw / 2, 4, tw, 16, 4);
+    ctx.fill();
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, this.width / 2, 12);
+    ctx.globalAlpha = 1;
+  }
+
+  // === SINGLE-PLAY LIVE ANIMATION (no opponent, card view) ===
+  // Shows only offense OR defense animated, for card previews
+  // visibleGroups: null (all) or Set of group names: 'OL','QB','WR','TE','RB','DL','LB','DB'
+  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, coverageName, duration = 3500, visibleGroups = null }) {
+    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+    this.isAnimating = true;
+
+    const isOff = mode === 'offense';
+    const offPositions = isOff ? this.getOffensePositions(offFormation, offSubFormation) : null;
+    const playData = isOff ? this.getPlayRoutes(playFamily) : null;
+    const defPositions = !isOff ? this.getDefensePositions(defFormation) : null;
+    const coverageData = !isOff ? this.getCoverageZones(coverageName) : null;
+
+    // Build player data
+    const players = [];
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+
+    if (isOff && offPositions && playData) {
+      const routes = playData.routes;
+      for (const [key, startPos] of Object.entries(offPositions)) {
+        const isOL = olKeys.includes(key);
+        const isQB = key === 'QB';
+        const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
+        const path = ROUTE_PATHS[routeName] || [];
+        let endX = startPos[0], endY = startPos[1];
+        for (const [dx, dy] of path) { endX += dx; endY += dy; }
+        if (isOL) {
+          const blockDir = playData.isRun ? this._getRunBlockDirection(key, playFamily) : 0;
+          endX = startPos[0] + blockDir * 0.03;
+          endY = startPos[1] - 0.03;
+        }
+        players.push({
+          key, startPos: [...startPos], endPos: [endX, endY],
+          routeName, path, isOL, isQB,
+          label: key.replace(/\d/g, '').substring(0, 2),
+          color: isQB ? BALL_COLOR : (isOL ? '#6b7280' : OFF_COLOR),
+          size: isQB ? 9 : (isOL ? 7 : 8)
+        });
+      }
+    } else if (!isOff && defPositions) {
+      const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
+      const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+      for (const [key, startPos] of Object.entries(defPositions)) {
+        const isDL = dlKeys.includes(key);
+        const isLB = lbKeys.includes(key);
+        const isDB = !isDL && !isLB;
+        let endX = startPos[0], endY = startPos[1];
+        if (isDL) { endY = 0.60; }
+        else if (coverageData && coverageData.type === 'zone') {
+          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos);
+          if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+        }
+        players.push({
+          key, startPos: [...startPos], endPos: [endX, endY],
+          isDL, isLB, isDB,
+          label: key.replace(/\d/g, '').substring(0, 2),
+          color: DEF_COLOR, size: 8
+        });
+      }
+    }
+
+    const startTime = performance.now();
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.drawField();
+
+      const developPhase = t >= 0.12;
+      const routeT = Math.max(0, (t - 0.12) / 0.68);
+      const lateT = Math.max(0, (t - 0.70) / 0.30);
+      const ease = v => v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
+      const moveT = ease(Math.min(routeT, 1));
+
+      if (isOff && playData) {
+        // Draw route trails
+        if (developPhase) {
+          for (const p of players) {
+            if (p.isOL || p.path.length === 0) continue;
+            if (!this._isVisible(p.key, visibleGroups)) continue;
+            const routeColor = (playData.isRun && !p.isQB) ? BALL_COLOR : ROUTE_COLOR;
+            this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+            if (routeT > 0.3 && !p.isQB && p.routeName !== 'block') {
+              this._drawRouteLabel(p, routeT);
+            }
+          }
+        }
+
+        // Draw players moving along routes
+        for (const p of players) {
+          const vis = this._isVisible(p.key, visibleGroups);
+          let x, y;
+          if (p.isOL) {
+            const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
+            x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * olT;
+            y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * olT;
+          } else {
+            x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? moveT : 0);
+            y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? moveT : 0);
+          }
+          if (!vis) { this.ctx.globalAlpha = 0.15; }
+          if (developPhase && !p.isOL && vis) this._drawGlow(x, y, p.isQB ? BALL_COLOR : OFF_COLOR, p.size + 3);
+          this.drawPlayer(x, y, p.color, vis ? p.label : '', p.size);
+          this.ctx.globalAlpha = 1;
+        }
+
+        // Ball flight
+        if (!playData.isRun && playData.ball_target && lateT > 0 && lateT < 1) {
+          const targetPlayer = players.find(p => p.key === playData.ball_target);
+          const qbPlayer = players.find(p => p.isQB);
+          if (targetPlayer && qbPlayer) {
+            const qx = qbPlayer.endPos[0], qy = qbPlayer.endPos[1];
+            const tx = targetPlayer.endPos[0], ty = targetPlayer.endPos[1];
+            const bx = (qx + (tx - qx) * lateT) * this.width;
+            const by = (qy + (ty - qy) * lateT) * this.height;
+            this.ctx.fillStyle = BALL_COLOR;
+            this.ctx.beginPath();
+            this.ctx.ellipse(bx, by, 5, 3, Math.atan2(ty - qy, tx - qx), 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#92400e'; this.ctx.lineWidth = 1; this.ctx.stroke();
+          }
+        }
+      } else if (!isOff && coverageData) {
+        // Draw zones
+        if (coverageData.type === 'zone' && developPhase) {
+          const zoneFade = Math.min(routeT * 2, 1);
+          for (const zone of coverageData.zones) {
+            this.drawZone(zone, 0.14 * zoneFade);
+          }
+          if (zoneFade > 0.5) this._drawZoneLabels(coverageData.zones, zoneFade);
+        }
+        // Draw defenders moving
+        for (const p of players) {
+          const vis = this._isVisible(p.key, visibleGroups);
+          const mt = p.isDL ? Math.min(moveT * 1.5, 1) : moveT;
+          const x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? mt : 0);
+          const y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? mt : 0);
+          if (!vis) { this.ctx.globalAlpha = 0.15; }
+          if (developPhase && vis) this._drawGlow(x, y, DEF_COLOR, p.size + 3);
+          this.drawPlayer(x, y, p.color, vis ? p.label : '', p.size);
+          this.ctx.globalAlpha = 1;
+        }
+      }
+
+      // Play name label
+      const ctx = this.ctx;
+      const label = isOff ? (playFamily || '') : (coverageName || '');
+      if (label && t > 0.05) {
+        ctx.globalAlpha = Math.min((t - 0.05) * 5, 0.8);
+        ctx.fillStyle = isOff ? OFF_COLOR : DEF_COLOR;
+        ctx.font = `bold ${Math.max(10, this.width * 0.04)}px system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(label, this.width / 2, 6);
+        ctx.globalAlpha = 1;
+      }
+
+      if (t < 1) {
+        this.animFrame = requestAnimationFrame(animate);
+      } else {
+        this.isAnimating = false;
+        this._loopTimeout = setTimeout(() => {
+          if (this.canvas.isConnected) {
+            this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, coverageName, duration });
+          }
+        }, 1200);
+      }
+    };
+
+    this.animFrame = requestAnimationFrame(animate);
+  }
+
   stop() {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
+    if (this._loopTimeout) clearTimeout(this._loopTimeout);
     this.isAnimating = false;
   }
 

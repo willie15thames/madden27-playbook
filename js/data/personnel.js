@@ -24,7 +24,8 @@ const PERSONNEL_DEFENSE = {
 };
 
 const FORMATIONS_OFFENSE = [
-  "Shotgun", "Singleback", "I-Form", "Pistol", "Strong Close", "Wildcat", "Goal Line"
+  "Singleback", "I Form", "Strong", "Strong I", "Weak", "Maryland I", "Split T",
+  "Pistol", "Gun", "Wildcat", "Goal Line", "Hail Mary"
 ];
 
 const FORMATIONS_DEFENSE = [

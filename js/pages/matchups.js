@@ -166,20 +166,51 @@ function checkMatchup() {
     verdictPanel.style.borderColor = '#252540';
   }
 
-  // Animated VS canvas
+  // Live play animation with side toggle
   const vsContainer = document.getElementById('vsCanvasContainer');
   if (vsContainer) {
     vsContainer.innerHTML = '';
     if (offPlay && defPlay) {
+      // Side toggle
+      const toggleDiv = document.createElement('div');
+      toggleDiv.className = 'flex justify-center mb-3';
+      toggleDiv.innerHTML = `
+        <div class="inline-flex rounded-lg overflow-hidden border border-dark-600" id="matchupSideToggle">
+          <button class="side-btn active" data-side="offense"><i class="bi bi-lightning-fill mr-1"></i>Run Offense</button>
+          <button class="side-btn" data-side="defense"><i class="bi bi-shield-fill mr-1"></i>Run Defense</button>
+        </div>
+      `;
+      vsContainer.appendChild(toggleDiv);
+
       const canvas = document.createElement('canvas');
       canvas.width = 400; canvas.height = 320;
       canvas.className = 'rounded-xl mx-auto block';
       canvas.style.background = '#1a472a';
       canvas.style.maxWidth = '100%';
       vsContainer.appendChild(canvas);
+
       if (vsRenderer) vsRenderer.destroy();
       vsRenderer = new PlayArtRenderer(canvas, { width: 400, height: 320 });
-      vsRenderer.renderMatchupAnimated(offFormation, offSubForm, offPlay, defFormation, defPlay, 4000);
+
+      let matchupSide = 'offense';
+      const startMatchupAnim = () => {
+        vsRenderer.renderLivePlay({
+          side: matchupSide,
+          offFormation, offSubFormation: offSubForm, playFamily: offPlay,
+          defFormation, coverageName: defPlay,
+          duration: 4000
+        });
+      };
+      startMatchupAnim();
+
+      toggleDiv.querySelectorAll('.side-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          matchupSide = btn.dataset.side;
+          toggleDiv.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          startMatchupAnim();
+        });
+      });
     }
   }
 

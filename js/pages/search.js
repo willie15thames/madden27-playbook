@@ -308,33 +308,85 @@ function getMeta(item) {
   return parts.length ? `<div class="flex flex-wrap gap-3">${parts.join('')}</div>` : '';
 }
 
-// Detail modal
-function openDetail(item) {
-  if (item.data.kind === 'offenseType') {
-    openOffenseTypeDetail(item.data.name, item.data.play, item.data.variants);
-    renderModalArt('offense', 'Shotgun', 'Spread Y-Flex', item.data.name);
-  } else if (item.data.kind === 'coverage') {
-    openCoverageDetail(item.data.cov, item.data.variants);
-    renderModalArt('defense', 'Nickel', null, item.data.cov.name);
-  } else if (item.data.kind === 'offenseVariant') {
-    openOffenseVariantDetail(item.data.variant);
-    renderModalArt('offense', item.data.variant.formation, item.data.variant.subFormation, item.data.variant.family || item.data.variant.name);
-  } else if (item.data.kind === 'defenseVariant') {
-    openDefenseVariantDetail(item.data.variant);
-    renderModalArt('defense', item.data.variant.formation, null, item.data.variant.coverage);
-  }
+// Side selector state
+let currentSide = 'offense';
+let currentModalItem = null;
+
+function getSideToggleHTML() {
+  return `
+    <div class="flex justify-center mb-3">
+      <div class="inline-flex rounded-lg overflow-hidden border border-dark-600" id="sideToggle">
+        <button class="side-btn ${currentSide === 'offense' ? 'active' : ''}" data-side="offense">
+          <i class="bi bi-lightning-fill mr-1"></i>Run Offense
+        </button>
+        <button class="side-btn ${currentSide === 'defense' ? 'active' : ''}" data-side="defense">
+          <i class="bi bi-shield-fill mr-1"></i>Run Defense
+        </button>
+      </div>
+    </div>
+  `;
 }
 
-function renderModalArt(side, formation, subFormation, playName) {
+function bindSideToggle() {
+  const toggle = modalContent.querySelector('#sideToggle');
+  if (!toggle) return;
+  toggle.querySelectorAll('.side-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentSide = btn.dataset.side;
+      toggle.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (currentModalItem) startLiveAnimation(currentModalItem);
+    });
+  });
+}
+
+function startLiveAnimation(item) {
+  cleanupRenderers();
   const c = document.getElementById('modalSearchArt');
   if (!c) return;
-  const r = new PlayArtRenderer(c, { width: 280, height: 220 });
-  if (side === 'offense') {
-    r.renderPlayCard(formation, subFormation || 'Spread Y-Flex', playName);
-  } else {
-    r.renderCoverageCard(formation, playName);
-  }
+  const r = new PlayArtRenderer(c, { width: 340, height: 260 });
+
+  const offFormation = item.offFormation || 'Shotgun';
+  const offSubFormation = item.offSubFormation || 'Spread Y-Flex';
+  const playFamily = item.playFamily || 'Inside Zone';
+  const defFormation = item.defFormation || 'Nickel';
+  const coverageName = item.coverageName || 'Cover 3';
+
+  r.renderLivePlay({
+    side: currentSide,
+    offFormation, offSubFormation, playFamily,
+    defFormation, coverageName,
+    duration: 4000
+  });
   renderers.push(r);
+}
+
+// Detail modal
+function openDetail(item) {
+  // Build animation params
+  let animItem = {};
+  if (item.data.kind === 'offenseType') {
+    currentSide = 'offense';
+    animItem = { offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex', playFamily: item.data.name, defFormation: 'Nickel', coverageName: 'Cover 3' };
+    openOffenseTypeDetail(item.data.name, item.data.play, item.data.variants);
+  } else if (item.data.kind === 'coverage') {
+    currentSide = 'defense';
+    animItem = { offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: 'Nickel', coverageName: item.data.cov.name };
+    openCoverageDetail(item.data.cov, item.data.variants);
+  } else if (item.data.kind === 'offenseVariant') {
+    currentSide = 'offense';
+    const v = item.data.variant;
+    animItem = { offFormation: v.formation, offSubFormation: v.subFormation, playFamily: v.family || v.name, defFormation: 'Nickel', coverageName: 'Cover 3' };
+    openOffenseVariantDetail(v);
+  } else if (item.data.kind === 'defenseVariant') {
+    currentSide = 'defense';
+    const v = item.data.variant;
+    animItem = { offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: v.formation, coverageName: v.coverage };
+    openDefenseVariantDetail(v);
+  }
+  currentModalItem = animItem;
+  bindSideToggle();
+  startLiveAnimation(animItem);
 }
 
 function openOffenseTypeDetail(name, play, variants) {
@@ -351,8 +403,9 @@ function openOffenseTypeDetail(name, play, variants) {
       </div>
       <button class="close-modal text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
     </div>
+    ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="280" height="220" class="rounded-lg" style="background:#1a472a;"></canvas>
+      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${play.description}</p>
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -411,8 +464,9 @@ function openCoverageDetail(cov, variants) {
       </div>
       <button class="close-modal text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
     </div>
+    ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="280" height="220" class="rounded-lg" style="background:#1a472a;"></canvas>
+      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${cov.description}</p>
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -476,8 +530,9 @@ function openOffenseVariantDetail(v) {
       </div>
       <button class="close-modal text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
     </div>
+    ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="280" height="220" class="rounded-lg" style="background:#1a472a;"></canvas>
+      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${v.description}</p>
     <div class="text-xs text-gray-500 mb-4"><i class="bi bi-people-fill mr-1"></i>${v.personnel}</div>
@@ -531,8 +586,9 @@ function openDefenseVariantDetail(v) {
       </div>
       <button class="close-modal text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
     </div>
+    ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="280" height="220" class="rounded-lg" style="background:#1a472a;"></canvas>
+      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${v.description}</p>
     <div class="text-xs text-gray-500 mb-4"><i class="bi bi-people-fill mr-1"></i>${v.personnel}</div>
@@ -645,6 +701,21 @@ style.textContent = `
     background: #1a1a2e;
     transform: translateX(4px);
   }
+  .side-btn {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #12121a;
+    color: #6b7280;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .side-btn:hover { background: #1a1a2e; color: #d1d5db; }
+  .side-btn.active[data-side="offense"] { background: #1e3a5f; color: #60a5fa; }
+  .side-btn.active[data-side="defense"] { background: #5f1e1e; color: #f87171; }
 `;
 document.head.appendChild(style);
 
