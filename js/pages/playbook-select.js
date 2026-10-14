@@ -55,7 +55,7 @@ function getPlaybookCount(playName) {
 
 function populatePlaybookSelector() {
   playbookSelector.innerHTML = '<option value="">Choose a playbook...</option>';
-  currentPlaybooks.forEach(pb => {
+  [...currentPlaybooks].sort((a, b) => a.name.localeCompare(b.name)).forEach(pb => {
     const opt = document.createElement('option');
     opt.value = pb.id;
     opt.textContent = pb.name;
@@ -127,7 +127,7 @@ function buildFormationTree(pb, search) {
   formationTree.innerHTML = '';
   const lower = search.toLowerCase();
 
-  Object.entries(pb.formations).forEach(([formationName, subFormations]) => {
+  Object.entries(pb.formations).sort(([a], [b]) => a.localeCompare(b)).forEach(([formationName, subFormations]) => {
     // Filter plays by search
     const filteredSubs = {};
     for (const [subName, plays] of Object.entries(subFormations)) {
@@ -151,17 +151,17 @@ function buildFormationTree(pb, search) {
         <i class="bi bi-chevron-down chevron text-gray-500"></i>
       </div>
       <div class="formation-body">
-        ${Object.entries(filteredSubs).map(([subName, plays]) => `
+        ${Object.entries(filteredSubs).sort(([a], [b]) => a.localeCompare(b)).map(([subName, plays]) => `
           <div class="sub-formation">
             <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
             <div class="flex flex-wrap gap-3">
-              ${plays.map((play, pi) => {
+              ${[...plays].sort((a, b) => a.localeCompare(b)).map((play, pi) => {
                 const playData = currentSide === 'offense' ? PLAY_TYPES[play] : null;
                 const isRun = playData && playData.type === 'Run';
                 const badgeClass = !playData ? '' : isRun ? 'run' : playData.subtype === 'Screen' ? 'screen' : playData.subtype === 'RPO' ? 'rpo' : 'pass';
                 return `
                 <div class="play-chip-art" data-play="${play}" data-formation="${formationName}" data-subformation="${subName}">
-                  <canvas id="pbArt_${formationName.replace(/[^a-zA-Z0-9]/g,'_')}_${subName.replace(/[^a-zA-Z0-9]/g,'_')}_${pi}" width="80" height="64" class="rounded" style="background:#1a472a;"></canvas>
+                  <canvas id="pbArt_${formationName.replace(/[^a-zA-Z0-9]/g,'_')}_${subName.replace(/[^a-zA-Z0-9]/g,'_')}_${pi}" width="140" height="112" class="rounded" style="background:#1a472a;"></canvas>
                   <span class="play-chip-label">${play}</span>
                   ${badgeClass ? `<span class="play-chip-badge ${badgeClass}">${playData.type}</span>` : ''}
                 </div>`;
@@ -218,7 +218,7 @@ function buildFormationTree(pb, search) {
       const pn = chip.dataset.play;
       const fm = chip.dataset.formation;
       const sf = chip.dataset.subformation;
-      const r = new PlayArtRenderer(canvas, { width: 80, height: 64 });
+      const r = new PlayArtRenderer(canvas, { width: 140, height: 112 });
       if (currentSide === 'offense') {
         r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
       } else {
@@ -233,7 +233,8 @@ function buildFormationTree(pb, search) {
         canvas._hoverAnim.destroy();
         renderers = renderers.filter(r => r !== canvas._hoverAnim);
         canvas._hoverAnim = null;
-        // Re-render static
+        // Clear rendered flag so static art re-renders
+        delete canvas.dataset.rendered;
         renderChipCanvas(canvas);
       }
     });
@@ -247,7 +248,7 @@ function renderChipCanvas(canvas) {
   const fm = chipEl.dataset.formation;
   const sf = chipEl.dataset.subformation;
   const pn = chipEl.dataset.play;
-  const r = new PlayArtRenderer(canvas, { width: 80, height: 64 });
+  const r = new PlayArtRenderer(canvas, { width: 140, height: 112 });
   if (currentSide === 'offense') {
     r.renderPlayCard(fm, sf, pn);
   } else {
@@ -296,7 +297,7 @@ function openOffenseDetail(playName, formation, subFormation) {
       </div>
     </div>
     <div class="flex justify-center mb-2">
-      <canvas id="pbModalArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="pbModalArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <div class="flex justify-center mb-4">
       <div class="pos-filter-bar" id="pbModalPosFilter">
@@ -376,7 +377,7 @@ function openOffenseDetail(playName, formation, subFormation) {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
     if (pbModalCanvas) {
-      const r = new PlayArtRenderer(pbModalCanvas, { width: 340, height: 260 });
+      const r = new PlayArtRenderer(pbModalCanvas, { width: 440, height: 340 });
       r.renderLivePlay({
         side: modalSide, offFormation: fm, offSubFormation: sf,
         playFamily: playName, defFormation: 'Nickel', coverageName: 'Cover 3',
@@ -443,7 +444,7 @@ function openDefenseDetail(coverageName, formation) {
       </div>
     </div>
     <div class="flex justify-center mb-2">
-      <canvas id="pbModalArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="pbModalArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <div class="flex justify-center mb-4">
       <div class="pos-filter-bar" id="pbModalPosFilter">
@@ -527,7 +528,7 @@ function openDefenseDetail(coverageName, formation) {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
     if (pbModalCanvas) {
-      const r = new PlayArtRenderer(pbModalCanvas, { width: 340, height: 260 });
+      const r = new PlayArtRenderer(pbModalCanvas, { width: 440, height: 340 });
       r.renderLivePlay({
         side: modalSide, offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex',
         playFamily: 'Inside Zone', defFormation: fm, coverageName: coverageName,

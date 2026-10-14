@@ -127,7 +127,7 @@ function renderCards(filter = 'all', search = '') {
     card.dataset.playName = name;
     card.innerHTML = `
       <div class="play-art-wrapper">
-        <canvas class="play-art-canvas" width="320" height="220"></canvas>
+        <canvas class="play-art-canvas" width="400" height="280"></canvas>
         <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
       </div>
       <div class="card-info">
@@ -157,7 +157,7 @@ function renderCards(filter = 'all', search = '') {
     // Static play art
     const canvas = card.querySelector('.play-art-canvas');
     if (canvas) {
-      const r = new PlayArtRenderer(canvas, { width: 320, height: 220 });
+      const r = new PlayArtRenderer(canvas, { width: 400, height: 280 });
       r.renderPlayCard('Shotgun', 'Spread Y-Flex', name);
       card._staticRenderer = r;
     }
@@ -189,7 +189,7 @@ function openModal(name, play, variants) {
       </div>
     </div>
     <div class="flex justify-center mb-2">
-      <canvas id="modalOffArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalOffArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <div class="flex justify-center mb-4">
       <div class="pos-filter-bar" id="modalPosFilter">
@@ -328,7 +328,7 @@ function openModal(name, play, variants) {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
     if (mainCanvas) {
-      const r = new PlayArtRenderer(mainCanvas, { width: 340, height: 260 });
+      const r = new PlayArtRenderer(mainCanvas, { width: 440, height: 340 });
       r.renderLivePlay({
         side: offModalSide, offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex',
         playFamily: name, defFormation: 'Nickel', coverageName: 'Cover 3',

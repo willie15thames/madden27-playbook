@@ -29,10 +29,20 @@
         <p class="text-gray-400">Select a play and coverage to see an animated breakdown of how they match up.</p>
       </div>
 
+      <!-- Side Chooser -->
+      <div class="flex gap-3 mb-6" id="sideChooser">
+        <button class="filter-btn" id="chooseOffenseBtn" data-side="offense">
+          <i class="bi bi-lightning-fill mr-1"></i> I'm Running Offense
+        </button>
+        <button class="filter-btn" id="chooseDefenseBtn" data-side="defense">
+          <i class="bi bi-shield-fill mr-1"></i> I'm Running Defense
+        </button>
+      </div>
+
       <!-- Matchup Selector -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8" id="matchupPanels" style="display:none;">
         <!-- Offensive Side -->
-        <div class="results-panel">
+        <div class="results-panel" id="offensePanel">
           <h3 class="text-lg font-bold text-neon-cyan mb-4"><i class="bi bi-lightning-fill mr-2"></i>Offense — Select a Play</h3>
           <select id="offPlaybookSelect" class="custom-select mb-3">
             <option value="">Choose an offensive playbook...</option>
@@ -50,7 +60,7 @@
         </div>
 
         <!-- Defensive Side -->
-        <div class="results-panel">
+        <div class="results-panel" id="defensePanel">
           <h3 class="text-lg font-bold text-neon-red mb-4"><i class="bi bi-shield-fill mr-2"></i>Defense — Select a Coverage</h3>
           <select id="defPlaybookSelect" class="custom-select mb-3">
             <option value="">Choose a defensive playbook...</option>

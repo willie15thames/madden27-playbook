@@ -22,17 +22,38 @@ const matchupResults = document.getElementById('matchupResults');
 let vsRenderer = null;
 let offStaticRenderer = null;
 let defStaticRenderer = null;
+let userSide = null;
+
+// Side chooser
+const sideChooser = document.getElementById('sideChooser');
+const matchupPanels = document.getElementById('matchupPanels');
+const chooseOffenseBtn = document.getElementById('chooseOffenseBtn');
+const chooseDefenseBtn = document.getElementById('chooseDefenseBtn');
+
+function selectSide(side) {
+  userSide = side;
+  matchupPanels.style.display = '';
+  chooseOffenseBtn.classList.toggle('active', side === 'offense');
+  chooseDefenseBtn.classList.toggle('active', side === 'defense');
+  // Highlight the user's panel
+  const offPanel = document.getElementById('offensePanel');
+  const defPanel = document.getElementById('defensePanel');
+  offPanel.style.borderColor = side === 'offense' ? '#00FFFF' : '';
+  defPanel.style.borderColor = side === 'defense' ? '#FF1493' : '';
+}
+chooseOffenseBtn.addEventListener('click', () => selectSide('offense'));
+chooseDefenseBtn.addEventListener('click', () => selectSide('defense'));
 
 // Track current selections
 let currentOff = { formation: '', subFormation: '', play: '' };
 let currentDef = { formation: '', subFormation: '', play: '' };
 
-OFFENSIVE_PLAYBOOKS.forEach(pb => {
+[...OFFENSIVE_PLAYBOOKS].sort((a, b) => a.name.localeCompare(b.name)).forEach(pb => {
   const opt = document.createElement('option');
   opt.value = pb.id; opt.textContent = pb.name;
   offPlaybookSelect.appendChild(opt);
 });
-DEFENSIVE_PLAYBOOKS.forEach(pb => {
+[...DEFENSIVE_PLAYBOOKS].sort((a, b) => a.name.localeCompare(b.name)).forEach(pb => {
   const opt = document.createElement('option');
   opt.value = pb.id; opt.textContent = pb.name;
   defPlaybookSelect.appendChild(opt);
@@ -44,7 +65,7 @@ offPlaybookSelect.addEventListener('change', () => {
   resetSelect(offFormationSelect, 'Choose a formation...');
   resetSelect(offSubFormationSelect, 'Choose a sub-formation...');
   resetSelect(offPlaySelect, 'Choose a play...');
-  if (pb) { populateSelect(offFormationSelect, Object.keys(pb.formations)); }
+  if (pb) { populateSelect(offFormationSelect, Object.keys(pb.formations).sort()); }
   checkMatchup();
 });
 offFormationSelect.addEventListener('change', () => {
@@ -75,7 +96,7 @@ defPlaybookSelect.addEventListener('change', () => {
   resetSelect(defFormationSelect, 'Choose a formation...');
   resetSelect(defSubFormationSelect, 'Choose a sub-formation...');
   resetSelect(defPlaySelect, 'Choose a coverage...');
-  if (pb) { populateSelect(defFormationSelect, Object.keys(pb.formations)); }
+  if (pb) { populateSelect(defFormationSelect, Object.keys(pb.formations).sort()); }
   checkMatchup();
 });
 defFormationSelect.addEventListener('change', () => {
@@ -105,7 +126,7 @@ function resetSelect(sel, placeholder) {
   sel.disabled = true;
 }
 function populateSelect(sel, items) {
-  items.forEach(item => {
+  [...items].sort((a, b) => a.localeCompare(b)).forEach(item => {
     const opt = document.createElement('option');
     opt.value = item; opt.textContent = item;
     sel.appendChild(opt);
@@ -183,14 +204,14 @@ function checkMatchup() {
       vsContainer.appendChild(toggleDiv);
 
       const canvas = document.createElement('canvas');
-      canvas.width = 400; canvas.height = 320;
+      canvas.width = 480; canvas.height = 380;
       canvas.className = 'rounded-xl mx-auto block';
       canvas.style.background = '#1a472a';
       canvas.style.maxWidth = '100%';
       vsContainer.appendChild(canvas);
 
       if (vsRenderer) vsRenderer.destroy();
-      vsRenderer = new PlayArtRenderer(canvas, { width: 400, height: 320 });
+      vsRenderer = new PlayArtRenderer(canvas, { width: 480, height: 380 });
 
       let matchupSide = 'offense';
       const startMatchupAnim = () => {
@@ -221,12 +242,12 @@ function checkMatchup() {
     offArtContainer.innerHTML = '';
     if (offPlay) {
       const c = document.createElement('canvas');
-      c.width = 220; c.height = 175;
+      c.width = 280; c.height = 220;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
       offArtContainer.appendChild(c);
       if (offStaticRenderer) offStaticRenderer.destroy();
-      offStaticRenderer = new PlayArtRenderer(c, { width: 220, height: 175 });
+      offStaticRenderer = new PlayArtRenderer(c, { width: 280, height: 220 });
       offStaticRenderer.renderPlayCard(offFormation, offSubForm, offPlay);
     }
   }
@@ -234,12 +255,12 @@ function checkMatchup() {
     defArtContainer.innerHTML = '';
     if (defPlay) {
       const c = document.createElement('canvas');
-      c.width = 220; c.height = 175;
+      c.width = 280; c.height = 220;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
       defArtContainer.appendChild(c);
       if (defStaticRenderer) defStaticRenderer.destroy();
-      defStaticRenderer = new PlayArtRenderer(c, { width: 220, height: 175 });
+      defStaticRenderer = new PlayArtRenderer(c, { width: 280, height: 220 });
       defStaticRenderer.renderCoverageCard(defFormation, defPlay);
     }
   }
@@ -273,8 +294,8 @@ function checkMatchup() {
     recommendations.innerHTML = `
       <h3 class="text-lg font-bold text-neon-cyan mb-4"><i class="bi bi-stars mr-2"></i>Recommendations</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div><h4 class="text-sm font-bold text-[#00FFFF] uppercase mb-2">Best Plays vs ${defCoverageData.name}</h4><div class="flex flex-wrap">${offAlts.map(a => `<span class="tag-blue">${a}</span>`).join('')}</div></div>
-        <div><h4 class="text-sm font-bold text-[#FF1493] uppercase mb-2">Best Coverages vs ${offPlay}</h4><div class="flex flex-wrap">${defAlts.map(a => `<span class="tag-purple">${a}</span>`).join('')}</div></div>
+        <div><h4 class="text-sm font-bold text-[#00FFFF] uppercase mb-2">Best Plays vs ${defCoverageData.name}</h4><div class="flex flex-wrap">${offAlts.map(a => `<span class="tag-green">${a}</span>`).join('')}</div></div>
+        <div><h4 class="text-sm font-bold text-[#FF1493] uppercase mb-2">Best Coverages vs ${offPlay}</h4><div class="flex flex-wrap">${defAlts.map(a => `<span class="tag-green">${a}</span>`).join('')}</div></div>
       </div>
     `;
   } else {

@@ -166,11 +166,20 @@ const ROUTE_PATHS = {
   'run_counter': [[-0.05, -0.02], [0.10, -0.12]],
   'run_stretch': [[0.20, -0.04]],
   'run_dive': [[0, -0.08]],
+  'run_outside': [[0.20, -0.06]],
   'option_give': [[0.10, -0.06]],
   'option_keep': [[-0.08, -0.10]],
-  'qb_boot_right': [[0.20, -0.05]],
+  'qb_boot_right': [[0.22, 0.02], [0.06, -0.12]],
+  'qb_boot_left': [[-0.22, 0.02], [-0.06, -0.12]],
   'qb_drop': [[0, 0.04]],
-  'qb_scramble': [[-0.05, -0.10]]
+  'qb_scramble': [[-0.05, -0.10]],
+  'qb_handoff': [[0, 0.02]],
+  'pull_left': [[-0.10, 0.0], [-0.08, -0.10]],
+  'pull_right': [[0.10, 0.0], [0.08, -0.10]],
+  'ol_release_right': [[0.12, -0.02], [0.06, -0.06]],
+  'ol_release_left': [[-0.12, -0.02], [-0.06, -0.06]],
+  'screen_left': [[-0.06, 0.04], [-0.10, 0.02]],
+  'screen_right': [[0.06, 0.04], [0.10, 0.02]]
 };
 
 // Coverage zone shapes (center + radius, normalized)
@@ -222,7 +231,7 @@ const COVERAGE_ZONES = {
   'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle'], type: 'zone' },
   'Mid Blitz': { zones: [], type: 'man' },
   'Edge Blitz': { zones: [], type: 'man' },
-  'Inverted Cover 2': { zones: ['deep_half', 'deep_half', 'hook_curl', 'flat', 'flat'], type: 'zone' }
+  'Inverted Cover 2': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'flat_left', 'flat_right'], type: 'zone' }
 };
 
 // Play route assignments per play family
@@ -1046,16 +1055,18 @@ class PlayArtRenderer {
       let endX = startPos[0], endY = startPos[1];
       for (const [dx, dy] of path) { endX += dx; endY += dy; }
 
-      // OL: push forward slightly to engage
+      // OL: compute block target based on play type
+      let isPull = false;
       if (isOL) {
-        const blockDir = isRun ? this._getRunBlockDirection(key, playFamily) : 0;
-        endX = startPos[0] + blockDir * 0.03;
-        endY = startPos[1] - 0.03;
+        const blockTarget = this._getOLBlockTarget(key, playFamily);
+        endX = startPos[0] + blockTarget.dx;
+        endY = startPos[1] + blockTarget.dy;
+        isPull = blockTarget.isPull;
       }
 
       offPlayers.push({
         key, startPos: [...startPos], endPos: [endX, endY],
-        routeName, path, isOL, isQB,
+        routeName, path, isOL, isQB, isPull,
         label: key.replace(/\d/g, '').substring(0, 2),
         color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
         size: isQB ? 9 : (isOL ? 7 : 8)
@@ -1068,6 +1079,39 @@ class PlayArtRenderer {
     const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
     const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
     const dbKeys = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
+
+    // Pre-compute man coverage 1-to-1 assignments to avoid multiple DBs on same WR
+    const manAssignments = {};
+    if (coverageData.type !== 'zone') {
+      const receivers = offPlayers.filter(p => !p.isOL && !p.isQB && p.routeName !== 'block');
+      const assignedReceivers = new Set();
+      // Sort defenders: DBs first (by proximity priority), then LBs
+      const manDefenders = defEntries
+        .map(([key, pos]) => ({ key, pos, isDB: dbKeys.includes(key), isLB: lbKeys.includes(key), isDL: dlKeys.includes(key) }))
+        .filter(d => (d.isDB || d.isLB) && !d.isDL);
+      // DBs get first pick, then LBs
+      manDefenders.sort((a, b) => (b.isDB ? 1 : 0) - (a.isDB ? 1 : 0));
+      for (const def of manDefenders) {
+        if (isRun && def.isLB) {
+          manAssignments[def.key] = [def.pos[0], def.pos[1] + 0.06];
+          continue;
+        }
+        let nearest = null, minDist = Infinity;
+        for (const r of receivers) {
+          if (assignedReceivers.has(r)) continue;
+          const d = Math.hypot(r.startPos[0] - def.pos[0], r.startPos[1] - def.pos[1]);
+          if (d < minDist) { minDist = d; nearest = r; }
+        }
+        if (nearest) {
+          assignedReceivers.add(nearest);
+          const followFactor = def.isDB ? 0.85 : 0.6;
+          manAssignments[def.key] = [
+            nearest.startPos[0] + (nearest.endPos[0] - nearest.startPos[0]) * followFactor + (def.isDB ? 0.02 : 0),
+            nearest.startPos[1] + (nearest.endPos[1] - nearest.startPos[1]) * followFactor + 0.02
+          ];
+        }
+      }
+    }
 
     for (const [key, startPos] of defEntries) {
       const isDL = dlKeys.includes(key);
@@ -1084,8 +1128,8 @@ class PlayArtRenderer {
         const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos);
         if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
       } else {
-        // Man: DBs follow nearest WR, LBs mirror or blitz
-        const manTarget = this._getManTarget(key, isLB, isDB, startPos, offPlayers, isRun);
+        // Man: use pre-computed 1-to-1 assignment
+        const manTarget = manAssignments[key];
         if (manTarget) { endX = manTarget[0]; endY = manTarget[1]; }
       }
 
@@ -1135,7 +1179,7 @@ class PlayArtRenderer {
       // === The Box + Gap fit labels for run plays ===
       if (isRun && developPhase) {
         const gapFade = Math.min(routeT * 2.5, 1);
-        this._drawRunLanes(offPositions, playFamily, gapFade, isOffSide);
+        this._drawRunLanes(offPositions, playFamily, gapFade, isOffSide, defPositions);
         this._drawBox(offPositions, defPositions, gapFade, isOffSide);
         if (gaps.length > 0) this._drawGaps(gaps, gapFade, isOffSide);
       }
@@ -1291,19 +1335,57 @@ class PlayArtRenderer {
     ctx.fill();
   }
 
-  _getRunBlockDirection(olKey, playFamily) {
+  // Returns {dx, dy, isPull} for OL end position delta
+  _getOLBlockTarget(olKey, playFamily) {
     const name = playFamily.toLowerCase();
-    // Zone runs: whole OL slides one direction
-    if (name.includes('stretch') || name.includes('toss') || name.includes('outside zone')) {
-      return olKey === 'LT' || olKey === 'LG' ? 1 : (olKey === 'RT' || olKey === 'RG' ? 1.5 : 1);
+
+    // Screen plays: OL releases downfield to block for screen
+    if (name.includes('screen')) {
+      if (olKey === 'LG' || olKey === 'C') return { dx: 0.10, dy: -0.08, isPull: true };
+      if (olKey === 'RG') return { dx: 0.12, dy: -0.06, isPull: true };
+      if (olKey === 'LT') return { dx: 0.06, dy: -0.06, isPull: false };
+      if (olKey === 'RT') return { dx: 0.14, dy: -0.04, isPull: true };
+      return { dx: 0, dy: -0.03, isPull: false };
     }
-    if (name.includes('counter')) {
-      return olKey === 'RG' ? -2 : (olKey === 'RT' ? -1.5 : 0.3);
+
+    // Bootleg / PA Boot: slide protection away from rollout
+    if (name.includes('boot') || name.includes('bootleg')) {
+      if (olKey === 'RT' || olKey === 'RG') return { dx: -0.04, dy: -0.03, isPull: false };
+      return { dx: -0.02, dy: -0.03, isPull: false };
     }
-    if (name.includes('power')) {
-      return olKey === 'RG' ? -1.5 : 0.3;
+
+    // Power / Duo: pulling guard (RG pulls across)
+    if ((name.includes('power') || name === 'duo') && !name.includes('rpo') && !name.includes('pa ')) {
+      if (olKey === 'RG') return { dx: -0.18, dy: -0.10, isPull: true };
+      return { dx: 0.02, dy: -0.03, isPull: false };
     }
-    return 0; // Inside zone / dive: straight ahead
+
+    // Counter: RG + RT pull to opposite side
+    if (name.includes('counter') && !name.includes('rpo') && !name.includes('pa ')) {
+      if (olKey === 'RG') return { dx: -0.22, dy: -0.10, isPull: true };
+      if (olKey === 'RT') return { dx: -0.16, dy: -0.08, isPull: true };
+      return { dx: 0.02, dy: -0.03, isPull: false };
+    }
+
+    // Zone runs: entire OL slides one direction
+    if (name.includes('stretch') || name.includes('toss') || name.includes('outside zone') || name.includes('wide zone') || name.includes('sweep')) {
+      return { dx: 0.05, dy: -0.03, isPull: false };
+    }
+
+    // Trap: guard pulls across to kick out
+    if (name === 'trap' || name.includes('trap')) {
+      if (olKey === 'RG') return { dx: -0.14, dy: -0.08, isPull: true };
+      return { dx: 0, dy: -0.03, isPull: false };
+    }
+
+    // Default: straight ahead fire off
+    return { dx: 0, dy: -0.03, isPull: false };
+  }
+
+  // Backward compat wrapper
+  _getRunBlockDirection(olKey, playFamily) {
+    const target = this._getOLBlockTarget(olKey, playFamily);
+    return target.dx / 0.03;
   }
 
   _getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos) {
@@ -1470,64 +1552,112 @@ class PlayArtRenderer {
     ctx.globalAlpha = 1;
   }
 
-  // Draw RB running lanes - highlighted corridors showing where RB targets
-  _drawRunLanes(offPositions, playFamily, fade, isOffSide) {
+  // Draw RB running lanes - dynamically computed from OL blocking vs DL positions
+  // Finds actual holes where blockers have sealed defenders, determines primary + cutback
+  _drawRunLanes(offPositions, playFamily, fade, isOffSide, defPositions) {
     const ctx = this.ctx;
     const playData = this.getPlayRoutes(playFamily);
     if (!playData.isRun) return;
 
     const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
-    const olPositions = olKeys.filter(k => offPositions[k]).map(k => offPositions[k]);
-    if (olPositions.length < 3) return;
+    const olEntries = olKeys.filter(k => offPositions[k]).map(k => ({ key: k, pos: offPositions[k] }));
+    if (olEntries.length < 3) return;
 
     const rbPos = offPositions['RB'] || offPositions['FB'];
     if (!rbPos) return;
 
-    const routes = playData.routes;
-    const rbRoute = routes['RB'] || routes['FB'] || 'run_inside';
+    // Compute OL end positions after blocking
+    const olEndPositions = olEntries.map(ol => {
+      const blockDir = this._getRunBlockDirection(ol.key, playFamily);
+      return {
+        key: ol.key,
+        startX: ol.pos[0],
+        endX: ol.pos[0] + blockDir * 0.03,
+        endY: ol.pos[1] - 0.03
+      };
+    });
 
-    // Determine primary lane and cutback based on route type
-    let primaryGapIdx, cutbackGapIdx, laneWidth;
-    const midIdx = Math.floor(olPositions.length / 2);
+    // Compute gaps between OL players at their end positions
+    const gapOpenings = [];
+    for (let i = 0; i < olEndPositions.length - 1; i++) {
+      const left = olEndPositions[i];
+      const right = olEndPositions[i + 1];
+      const gapCenterX = (left.endX + right.endX) / 2;
+      const gapWidth = Math.abs(right.endX - left.endX);
+      gapOpenings.push({ idx: i, x: gapCenterX, width: gapWidth, blocked: false });
+    }
+    // Add outside gaps
+    gapOpenings.unshift({ idx: -1, x: olEndPositions[0].endX - 0.07, width: 0.08, blocked: false });
+    gapOpenings.push({ idx: olEndPositions.length - 1, x: olEndPositions[olEndPositions.length - 1].endX + 0.07, width: 0.08, blocked: false });
 
-    if (rbRoute === 'run_inside' || rbRoute === 'run_dive') {
-      // Inside zone / dive - A gap, cutback to opposite A
-      primaryGapIdx = midIdx;
-      cutbackGapIdx = midIdx - 1;
-      laneWidth = 0.06;
-    } else if (rbRoute === 'run_power') {
-      // Power - B gap strong side, cutback A
-      primaryGapIdx = midIdx + 1;
-      cutbackGapIdx = midIdx;
-      laneWidth = 0.07;
-    } else if (rbRoute === 'run_stretch' || rbRoute === 'run_outside') {
-      // Stretch / outside - C gap, cutback B
-      primaryGapIdx = Math.min(midIdx + 2, olPositions.length - 1);
-      cutbackGapIdx = midIdx + 1;
-      laneWidth = 0.08;
-    } else if (rbRoute === 'run_counter') {
-      // Counter - misdirection, B gap weak side, cutback C
-      primaryGapIdx = Math.max(midIdx - 2, 0);
-      cutbackGapIdx = midIdx - 1;
-      laneWidth = 0.07;
-    } else if (rbRoute === 'option_give') {
-      primaryGapIdx = midIdx;
-      cutbackGapIdx = midIdx + 1;
-      laneWidth = 0.06;
-    } else {
-      return; // non-standard run, skip
+    // If we have defensive positions, check which gaps are blocked by unblocked DL
+    if (defPositions) {
+      const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
+      const dlPositions = Object.entries(defPositions)
+        .filter(([k]) => dlKeys.includes(k))
+        .map(([k, pos]) => ({ key: k, x: pos[0], y: pos[1] }));
+
+      // Each OL blocks nearest DL - remaining DL clog gaps
+      const blockedDL = new Set();
+      for (const ol of olEndPositions) {
+        let nearest = null, minDist = Infinity;
+        for (const dl of dlPositions) {
+          if (blockedDL.has(dl.key)) continue;
+          const d = Math.abs(ol.endX - dl.x);
+          if (d < minDist) { minDist = d; nearest = dl; }
+        }
+        if (nearest && minDist < 0.15) blockedDL.add(nearest.key);
+      }
+
+      // Unblocked DL clog gaps they sit in
+      for (const dl of dlPositions) {
+        if (blockedDL.has(dl.key)) continue;
+        for (const gap of gapOpenings) {
+          if (Math.abs(dl.x - gap.x) < gap.width * 0.7) {
+            gap.blocked = true;
+          }
+        }
+      }
     }
 
-    // Clamp indices
-    primaryGapIdx = Math.max(0, Math.min(primaryGapIdx, olPositions.length - 2));
-    cutbackGapIdx = Math.max(0, Math.min(cutbackGapIdx, olPositions.length - 2));
+    // Score each gap: wider + unblocked = better
+    for (const gap of gapOpenings) {
+      gap.score = gap.blocked ? 0 : gap.width;
+    }
+
+    // Use play family to prefer inside/outside gaps
+    const routes = playData.routes;
+    const rbRoute = routes['RB'] || routes['FB'] || 'run_inside';
+    const midIdx = Math.floor(gapOpenings.length / 2);
+
+    // Weight gaps by run direction
+    for (let i = 0; i < gapOpenings.length; i++) {
+      const distFromCenter = Math.abs(i - midIdx);
+      if (rbRoute === 'run_inside' || rbRoute === 'run_dive') {
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromCenter)); // prefer center
+      } else if (rbRoute === 'run_stretch' || rbRoute === 'run_outside') {
+        gapOpenings[i].score *= (1 + distFromCenter * 0.15); // prefer edges
+      } else if (rbRoute === 'run_power') {
+        gapOpenings[i].score *= i > midIdx ? 1.3 : 0.8; // prefer strong side
+      } else if (rbRoute === 'run_counter') {
+        gapOpenings[i].score *= i < midIdx ? 1.3 : 0.8; // prefer weak side
+      }
+    }
+
+    // Find best gap (primary) and second best (cutback)
+    const sorted = [...gapOpenings].sort((a, b) => b.score - a.score);
+    const primary = sorted[0];
+    const cutback = sorted.length > 1 ? sorted[1] : null;
+
+    if (!primary || primary.score === 0) return;
 
     const losY = 0.60;
     const laneEndY = losY - 0.25;
+    const laneWidth = Math.max(0.05, Math.min(primary.width + 0.02, 0.10));
 
     // Draw primary lane
-    const pLeft = olPositions[primaryGapIdx][0] - laneWidth / 2;
-    const pRight = olPositions[primaryGapIdx][0] + laneWidth / 2;
+    const pLeft = primary.x - laneWidth / 2;
+    const pRight = primary.x + laneWidth / 2;
     const px = pLeft * this.width;
     const py = laneEndY * this.height;
     const pw = (pRight - pLeft) * this.width;
@@ -1546,7 +1676,7 @@ class PlayArtRenderer {
     ctx.setLineDash([]);
 
     // Arrow inside primary lane pointing up
-    const arrowX = (pLeft + pRight) / 2 * this.width;
+    const arrowX = primary.x * this.width;
     const arrowY = (laneEndY + 0.03) * this.height;
     ctx.globalAlpha = fade * 0.8;
     ctx.fillStyle = '#00FFFF';
@@ -1557,9 +1687,10 @@ class PlayArtRenderer {
     ctx.fill();
 
     // Draw cutback lane (dimmer)
-    if (cutbackGapIdx !== primaryGapIdx) {
-      const cLeft = olPositions[cutbackGapIdx][0] - laneWidth / 2;
-      const cRight = olPositions[cutbackGapIdx][0] + laneWidth / 2;
+    if (cutback && cutback.score > 0 && Math.abs(cutback.x - primary.x) > 0.04) {
+      const cWidth = Math.max(0.04, Math.min(cutback.width + 0.01, 0.08));
+      const cLeft = cutback.x - cWidth / 2;
+      const cRight = cutback.x + cWidth / 2;
       const cx = cLeft * this.width;
       const cw = (cRight - cLeft) * this.width;
 
@@ -1581,7 +1712,7 @@ class PlayArtRenderer {
       ctx.fillStyle = '#8A2BE2';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText('CUT', (cLeft + cRight) / 2 * this.width, (laneEndY + 0.01) * this.height);
+      ctx.fillText('CUT', cutback.x * this.width, (laneEndY + 0.01) * this.height);
     }
 
     ctx.globalAlpha = 1;
@@ -1747,14 +1878,16 @@ class PlayArtRenderer {
         const path = ROUTE_PATHS[routeName] || [];
         let endX = startPos[0], endY = startPos[1];
         for (const [dx, dy] of path) { endX += dx; endY += dy; }
+        let isPull = false;
         if (isOL) {
-          const blockDir = playData.isRun ? this._getRunBlockDirection(key, playFamily) : 0;
-          endX = startPos[0] + blockDir * 0.03;
-          endY = startPos[1] - 0.03;
+          const blockTarget = this._getOLBlockTarget(key, playFamily);
+          endX = startPos[0] + blockTarget.dx;
+          endY = startPos[1] + blockTarget.dy;
+          isPull = blockTarget.isPull;
         }
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],
-          routeName, path, isOL, isQB,
+          routeName, path, isOL, isQB, isPull,
           label: key.replace(/\d/g, '').substring(0, 2),
           color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
           size: isQB ? 9 : (isOL ? 7 : 8)

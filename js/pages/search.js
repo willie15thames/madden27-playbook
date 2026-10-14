@@ -214,7 +214,7 @@ function render() {
 
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <canvas id="searchArt${i}" width="80" height="64" class="rounded-lg flex-shrink-0" style="background:#1a472a;"></canvas>
+        <canvas id="searchArt${i}" width="140" height="112" class="rounded-lg flex-shrink-0" style="background:#1a472a;"></canvas>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1 flex-wrap">
             <h3 class="font-bold text-white">${item.name}</h3>
@@ -233,7 +233,7 @@ function render() {
     // Render play art thumbnail
     const canvas = document.getElementById(`searchArt${i}`);
     if (canvas) {
-      const r = new PlayArtRenderer(canvas, { width: 80, height: 64 });
+      const r = new PlayArtRenderer(canvas, { width: 140, height: 112 });
       if (item.category === 'offense') {
         const fm = item.formation || 'Shotgun';
         const sf = item.subFormation || 'Spread Y-Flex';
@@ -344,7 +344,7 @@ function startLiveAnimation(item) {
   cleanupRenderers();
   const c = document.getElementById('modalSearchArt');
   if (!c) return;
-  const r = new PlayArtRenderer(c, { width: 340, height: 260 });
+  const r = new PlayArtRenderer(c, { width: 440, height: 340 });
 
   const offFormation = item.offFormation || 'Shotgun';
   const offSubFormation = item.offSubFormation || 'Spread Y-Flex';
@@ -405,7 +405,7 @@ function openOffenseTypeDetail(name, play, variants) {
     </div>
     ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalSearchArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${play.description}</p>
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -466,7 +466,7 @@ function openCoverageDetail(cov, variants) {
     </div>
     ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalSearchArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${cov.description}</p>
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -532,7 +532,7 @@ function openOffenseVariantDetail(v) {
     </div>
     ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalSearchArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${v.description}</p>
     <div class="text-xs text-gray-500 mb-4"><i class="bi bi-people-fill mr-1"></i>${v.personnel}</div>
@@ -588,7 +588,7 @@ function openDefenseVariantDetail(v) {
     </div>
     ${getSideToggleHTML()}
     <div class="flex justify-center mb-4">
-      <canvas id="modalSearchArt" width="340" height="260" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalSearchArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <p class="text-gray-300 mb-4">${v.description}</p>
     <div class="text-xs text-gray-500 mb-4"><i class="bi bi-people-fill mr-1"></i>${v.personnel}</div>
@@ -685,39 +685,7 @@ searchInput.addEventListener('input', () => {
   debounceTimer = setTimeout(render, 150);
 });
 
-// CSS for search result cards (injected)
-const style = document.createElement('style');
-style.textContent = `
-  .search-result-card {
-    background: #1a0033;
-    border: 1px solid #2F4F4F;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .search-result-card:hover {
-    border-color: #8A2BE2;
-    background: #2a0055;
-    transform: translateX(4px);
-  }
-  .side-btn {
-    padding: 6px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    background: #1a0033;
-    color: #6b7280;
-    border: none;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .side-btn:hover { background: #2a0055; color: #d1d5db; }
-  .side-btn.active[data-side="offense"] { background: rgba(0,255,255,0.15); color: #8A2BE2; }
-  .side-btn.active[data-side="defense"] { background: rgba(255,20,147,0.15); color: #FF1493; }
-`;
-document.head.appendChild(style);
+// Search result card styles are in main styles.css
 
 // Initial render
 render();
