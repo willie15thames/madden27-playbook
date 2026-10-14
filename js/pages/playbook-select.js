@@ -170,7 +170,7 @@ function openOffenseDetail(playName, formation, subFormation) {
       <p class="text-gray-300 mb-4">This play is available in the selected playbook.</p>
       <div class="results-section">
         <h4 class="text-[#00FFFF]">Play Information</h4>
-        <p class="text-sm text-gray-400">Detailed matchup data for this specific play variation is not yet available. Check the general play type categories on the <a href="offenses.html" class="text-neon-green underline">Offenses page</a> for similar plays.</p>
+        <p class="text-sm text-gray-400">Detailed matchup data for this specific play variation is not yet available. Check the general play type categories on the <a href="offenses.html" class="text-neon-cyan underline">Offenses page</a> for similar plays.</p>
       </div>
       ${getSimilarPlaysHTML(playName)}
     `;
@@ -242,7 +242,7 @@ function openDefenseDetail(coverageName, formation) {
       <p class="text-gray-300 mb-4">This coverage is available in the selected playbook.</p>
       <div class="results-section">
         <h4 class="text-[#FF1493]">Coverage Information</h4>
-        <p class="text-sm text-gray-400">Check the <a href="coverages.html" class="text-neon-green underline">Coverages page</a> for detailed breakdowns of similar coverages.</p>
+        <p class="text-sm text-gray-400">Check the <a href="coverages.html" class="text-neon-cyan underline">Coverages page</a> for detailed breakdowns of similar coverages.</p>
       </div>
     `;
   } else {
@@ -266,13 +266,13 @@ function openDefenseDetail(coverageName, formation) {
       <div class="results-section">
         <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
         <ul class="space-y-1">
-          ${cov.strengths.map(s => `<li class="text-sm text-gray-300 flex items-start gap-2"><i class="bi bi-plus-circle text-green-500 mt-0.5"></i>${s}</li>`).join('')}
+          ${cov.strengths.map(s => `<li class="text-sm text-gray-300 flex items-start gap-2"><i class="bi bi-plus-circle text-[#00FFFF] mt-0.5"></i>${s}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section">
         <h4 class="text-[#FF1493]"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
         <ul class="space-y-1">
-          ${cov.weaknesses.map(w => `<li class="text-sm text-gray-300 flex items-start gap-2"><i class="bi bi-dash-circle text-red-500 mt-0.5"></i>${w}</li>`).join('')}
+          ${cov.weaknesses.map(w => `<li class="text-sm text-gray-300 flex items-start gap-2"><i class="bi bi-dash-circle text-[#FF1493] mt-0.5"></i>${w}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section">

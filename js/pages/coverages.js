@@ -246,13 +246,13 @@ function openModal(cov, variants) {
       <div class="results-section mb-0">
         <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
         <ul class="space-y-1">
-          ${cov.strengths.map(s => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-plus-circle text-green-500 mt-0.5 flex-shrink-0"></i>${s}</li>`).join('')}
+          ${cov.strengths.map(s => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-plus-circle text-[#00FFFF] mt-0.5 flex-shrink-0"></i>${s}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section mb-0">
         <h4 class="text-[#FF1493]"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
         <ul class="space-y-1">
-          ${cov.weaknesses.map(w => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-dash-circle text-red-500 mt-0.5 flex-shrink-0"></i>${w}</li>`).join('')}
+          ${cov.weaknesses.map(w => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-dash-circle text-[#FF1493] mt-0.5 flex-shrink-0"></i>${w}</li>`).join('')}
         </ul>
       </div>
     </div>

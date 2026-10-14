@@ -12,7 +12,7 @@ const COVERAGES = [
     beatenBy: ["Streaks", "Post routes", "Corner routes", "Double moves", "Wheel routes", "Deep crossers"],
     bestAgainst: ["West Coast", "Short passing", "Screen heavy"],
     tips: "User the MLB to take away the middle. Only call when you need a big play on defense.",
-    color: "#ef4444"
+    color: "#FF1493"
   },
   {
     id: "cover1",
@@ -68,7 +68,7 @@ const COVERAGES = [
     beatenBy: ["Post routes", "Seam routes", "4 Verticals", "Deep crossers", "Smash concepts", "Skinny post"],
     bestAgainst: ["West Coast", "Horizontal stretch", "Outside runs"],
     tips: "User a MLB and sit in the deep middle hole to take away posts and seams.",
-    color: "#eab308"
+    color: "#8A2BE2"
   },
   {
     id: "cover2man",
@@ -124,7 +124,7 @@ const COVERAGES = [
     beatenBy: ["Flood concepts", "Flat routes", "Out routes", "Curl-flat combos", "Smash concept", "Spot concept", "Levels"],
     bestAgainst: ["Vertical offense", "Deep passing", "Play action"],
     tips: "User a hook/curl zone defender. Watch for flood concepts attacking the vacated flat.",
-    color: "#22c55e"
+    color: "#00FFFF"
   },
   {
     id: "cover3sky",

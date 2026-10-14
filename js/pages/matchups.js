@@ -142,17 +142,17 @@ function checkMatchup() {
       verdictText.textContent = `${offPlay} BEATS ${defCoverageData.name}`;
       verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
       verdictDetail.textContent = 'The offense has the advantage in this matchup.';
-      verdictPanel.style.borderColor = '#22c55e';
+      verdictPanel.style.borderColor = '#00FFFF';
     } else if (defWins && !offWins) {
       verdictText.textContent = `${defCoverageData.name} STOPS ${offPlay}`;
       verdictText.className = 'text-2xl font-black mb-2 text-[#FF1493]';
       verdictDetail.textContent = 'The defense has the advantage in this matchup.';
-      verdictPanel.style.borderColor = '#ef4444';
+      verdictPanel.style.borderColor = '#FF1493';
     } else if (offWins && defWins) {
       verdictText.textContent = 'EVEN MATCHUP';
       verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
       verdictDetail.textContent = 'Both sides have answers. Execution and user skill decide.';
-      verdictPanel.style.borderColor = '#eab308';
+      verdictPanel.style.borderColor = '#8A2BE2';
     } else {
       verdictText.textContent = 'NEUTRAL MATCHUP';
       verdictText.className = 'text-2xl font-black mb-2 text-gray-400';

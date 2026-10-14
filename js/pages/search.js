@@ -261,12 +261,12 @@ function render() {
 
 function getIcon(item) {
   if (item.data.kind === 'offenseType' || item.data.kind === 'offenseVariant') {
-    return { icon: 'bi-lightning-fill', bg: 'bg-blue-500/20 text-[#00FFFF]' };
+    return { icon: 'bi-lightning-fill', bg: 'bg-cyan-500/20 text-[#00FFFF]' };
   }
   if (item.data.kind === 'coverage') {
-    return { icon: 'bi-shield-fill', bg: 'bg-red-500/20 text-[#FF1493]' };
+    return { icon: 'bi-shield-fill', bg: 'bg-pink-500/20 text-[#FF1493]' };
   }
-  return { icon: 'bi-shield-fill-check', bg: 'bg-purple-500/20 text-[#8A2BE2]' };
+  return { icon: 'bi-shield-fill-check', bg: 'bg-violet-500/20 text-[#8A2BE2]' };
 }
 
 function getBadge(item) {
@@ -285,7 +285,7 @@ function getBadge(item) {
     return `<span class="play-type-badge ${item.data.variant.playType === 'Run' ? 'run' : 'pass'}">${item.data.variant.playType}</span>`;
   }
   if (item.data.kind === 'defenseVariant') {
-    return `<span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-[#B45CFF]">${item.data.variant.coverage}</span>`;
+    return `<span class="text-xs px-2 py-0.5 rounded bg-violet-500/20 text-[#B45CFF]">${item.data.variant.coverage}</span>`;
   }
   return '';
 }
@@ -473,13 +473,13 @@ function openCoverageDetail(cov, variants) {
       <div class="results-section mb-0">
         <h4 class="text-[#00FFFF]"><i class="bi bi-check-circle-fill mr-1"></i> Strengths</h4>
         <ul class="space-y-1">
-          ${cov.strengths.map(s => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-plus-circle text-green-500 mt-0.5 flex-shrink-0"></i>${s}</li>`).join('')}
+          ${cov.strengths.map(s => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-plus-circle text-[#00FFFF] mt-0.5 flex-shrink-0"></i>${s}</li>`).join('')}
         </ul>
       </div>
       <div class="results-section mb-0">
         <h4 class="text-[#FF1493]"><i class="bi bi-exclamation-circle-fill mr-1"></i> Weaknesses</h4>
         <ul class="space-y-1">
-          ${cov.weaknesses.map(w => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-dash-circle text-red-500 mt-0.5 flex-shrink-0"></i>${w}</li>`).join('')}
+          ${cov.weaknesses.map(w => `<li class="text-xs text-gray-300 flex items-start gap-1"><i class="bi bi-dash-circle text-[#FF1493] mt-0.5 flex-shrink-0"></i>${w}</li>`).join('')}
         </ul>
       </div>
     </div>
@@ -580,7 +580,7 @@ function openDefenseVariantDetail(v) {
       <div>
         <h2 class="text-2xl font-black">${v.name}</h2>
         <div class="flex gap-2 mt-1">
-          <span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-[#B45CFF]">${v.coverage}</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-violet-500/20 text-[#B45CFF]">${v.coverage}</span>
           <span class="text-sm text-gray-400">${v.formation} / ${v.subFormation}</span>
         </div>
       </div>
@@ -714,8 +714,8 @@ style.textContent = `
     letter-spacing: 0.5px;
   }
   .side-btn:hover { background: #2a0055; color: #d1d5db; }
-  .side-btn.active[data-side="offense"] { background: #1e3a5f; color: #8A2BE2; }
-  .side-btn.active[data-side="defense"] { background: #5f1e1e; color: #FF1493; }
+  .side-btn.active[data-side="offense"] { background: rgba(0,255,255,0.15); color: #8A2BE2; }
+  .side-btn.active[data-side="defense"] { background: rgba(255,20,147,0.15); color: #FF1493; }
 `;
 document.head.appendChild(style);
 
