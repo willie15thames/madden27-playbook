@@ -1,6 +1,39 @@
 import PLAY_TYPES from '../data/plays.js';
 import OFFENSIVE_PLAYS from '../data/offensive-plays.js';
+import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
+
+// Build a lookup: playName -> Set of playbook names that contain it
+function buildPlaybookLookup() {
+  const lookup = {};
+  for (const book of OFFENSIVE_PLAYBOOKS) {
+    for (const [formation, subs] of Object.entries(book.formations)) {
+      for (const [subFormation, plays] of Object.entries(subs)) {
+        for (const play of plays) {
+          const key = play.toLowerCase();
+          if (!lookup[key]) lookup[key] = new Set();
+          lookup[key].add(book.name);
+        }
+      }
+    }
+  }
+  return lookup;
+}
+const PLAYBOOK_LOOKUP = buildPlaybookLookup();
+
+function getPlaybooks(playName) {
+  const key = playName.toLowerCase();
+  const exact = PLAYBOOK_LOOKUP[key];
+  if (exact) return [...exact].sort();
+  // Partial match
+  const matches = new Set();
+  for (const [k, books] of Object.entries(PLAYBOOK_LOOKUP)) {
+    if (k.includes(key) || key.includes(k)) {
+      for (const b of books) matches.add(b);
+    }
+  }
+  return [...matches].sort();
+}
 
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
   document.getElementById('mobileMenu')?.classList.toggle('hidden');
@@ -14,17 +47,12 @@ const filterBtns = document.querySelectorAll('.filter-btn');
 
 let activeFilter = 'all';
 let renderers = [];
-let observer = null;
-let activeCards = new Set();
-const MAX_ACTIVE = 3;
 let visibleGroups = null;
 let animSpeed = 3500;
 
 function cleanup() {
   renderers.forEach(r => r.destroy());
   renderers = [];
-  activeCards.clear();
-  if (observer) { observer.disconnect(); observer = null; }
 }
 
 function getSubtypeBadgeClass(subtype) {
@@ -35,14 +63,8 @@ function getSubtypeBadgeClass(subtype) {
 }
 
 function activateCard(card) {
-  if (activeCards.has(card) || !card.isConnected) return;
-
-  if (activeCards.size >= MAX_ACTIVE) {
-    const oldest = activeCards.values().next().value;
-    deactivateCard(oldest);
-  }
-
-  activeCards.add(card);
+  if (card._hoverActive || !card.isConnected) return;
+  card._hoverActive = true;
   const canvas = card.querySelector('.play-art-canvas');
   const playName = card.dataset.playName;
   if (!canvas || !playName) return;
@@ -62,13 +84,12 @@ function activateCard(card) {
 }
 
 function deactivateCard(card) {
-  if (!activeCards.has(card)) return;
-  activeCards.delete(card);
+  if (!card._hoverActive) return;
+  card._hoverActive = false;
   if (card._renderer) {
     card._renderer.destroy();
     renderers = renderers.filter(r => r !== card._renderer);
     card._renderer = null;
-    // Redraw static
     const canvas = card.querySelector('.play-art-canvas');
     const playName = card.dataset.playName;
     if (canvas && playName) {
@@ -80,44 +101,9 @@ function deactivateCard(card) {
   card.classList.remove('live-active');
 }
 
-function setupObserver() {
-  if (observer) observer.disconnect();
-
-  const cards = Array.from(grid.querySelectorAll('.play-card'));
-  if (cards.length === 0) return;
-
-  const visibleCards = [];
-
-  observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      const card = entry.target;
-      if (entry.isIntersecting) {
-        if (!visibleCards.includes(card)) visibleCards.push(card);
-      } else {
-        const idx = visibleCards.indexOf(card);
-        if (idx !== -1) visibleCards.splice(idx, 1);
-        deactivateCard(card);
-      }
-    }
-
-    visibleCards.sort((a, b) => {
-      const ra = a.getBoundingClientRect();
-      const rb = b.getBoundingClientRect();
-      return ra.top - rb.top || ra.left - rb.left;
-    });
-
-    for (const card of activeCards) {
-      if (visibleCards.indexOf(card) >= MAX_ACTIVE || !visibleCards.includes(card)) {
-        deactivateCard(card);
-      }
-    }
-
-    for (let i = 0; i < Math.min(MAX_ACTIVE, visibleCards.length); i++) {
-      activateCard(visibleCards[i]);
-    }
-  }, { threshold: 0.3 });
-
-  cards.forEach(card => observer.observe(card));
+function bindHoverEvents(card) {
+  card.addEventListener('mouseenter', () => activateCard(card));
+  card.addEventListener('mouseleave', () => deactivateCard(card));
 }
 
 function renderCards(filter = 'all', search = '') {
@@ -152,7 +138,7 @@ function renderCards(filter = 'all', search = '') {
           <span class="play-type-badge ${getSubtypeBadgeClass(play.subtype)}">${play.subtype}</span>
         </div>
         <p class="text-gray-400 text-xs line-clamp-2">${play.description}</p>
-        <div class="text-xs text-gray-500 mt-1">${variants.length} variant${variants.length !== 1 ? 's' : ''}</div>
+        <div class="text-xs text-gray-500 mt-1">${variants.length} variant${variants.length !== 1 ? 's' : ''} &middot; ${getPlaybooks(name).length} playbook${getPlaybooks(name).length !== 1 ? 's' : ''}</div>
         <div class="mb-1 mt-2">
           <span class="text-xs text-gray-500 font-semibold">BEATS:</span>
           <div class="mt-1 flex flex-wrap">${play.goodVsCoverages.slice(0, 3).map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
@@ -164,6 +150,7 @@ function renderCards(filter = 'all', search = '') {
       </div>
     `;
     card.addEventListener('click', () => openModal(name, play, variants));
+    bindHoverEvents(card);
     grid.appendChild(card);
 
     // Static play art
@@ -178,8 +165,6 @@ function renderCards(filter = 'all', search = '') {
   if (filtered.length === 0) {
     grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">No plays match your search.</div>';
   }
-
-  requestAnimationFrame(() => setupObserver());
 }
 
 function openModal(name, play, variants) {
@@ -225,6 +210,11 @@ function openModal(name, play, variants) {
     </div>
 
     <p class="text-gray-300 mb-4">${play.description}</p>
+
+    <div class="results-section mb-4">
+      <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getPlaybooks(name).length})</h4>
+      <div class="flex flex-wrap">${getPlaybooks(name).map(p => `<span class="tag-purple">${p}</span>`).join('')}</div>
+    </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
@@ -471,7 +461,7 @@ function updateVisibleGroups() {
 }
 
 function refreshActiveCards() {
-  const cards = [...activeCards];
+  const cards = grid.querySelectorAll('.play-card.live-active');
   cards.forEach(card => {
     deactivateCard(card);
     activateCard(card);

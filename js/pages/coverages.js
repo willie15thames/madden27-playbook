@@ -1,6 +1,38 @@
 import COVERAGES from '../data/coverages.js';
 import DEFENSIVE_PLAYS from '../data/defensive-plays.js';
+import { DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
+
+// Build lookup: coverageName -> Set of defensive playbook names containing it
+function buildDefPlaybookLookup() {
+  const lookup = {};
+  for (const book of DEFENSIVE_PLAYBOOKS) {
+    for (const [formation, subs] of Object.entries(book.formations || {})) {
+      for (const [subFormation, plays] of Object.entries(subs)) {
+        for (const play of plays) {
+          const key = play.toLowerCase();
+          if (!lookup[key]) lookup[key] = new Set();
+          lookup[key].add(book.name);
+        }
+      }
+    }
+  }
+  return lookup;
+}
+const DEF_PLAYBOOK_LOOKUP = buildDefPlaybookLookup();
+
+function getDefPlaybooks(covName) {
+  const key = covName.toLowerCase();
+  const exact = DEF_PLAYBOOK_LOOKUP[key];
+  if (exact) return [...exact].sort();
+  const matches = new Set();
+  for (const [k, books] of Object.entries(DEF_PLAYBOOK_LOOKUP)) {
+    if (k.includes(key) || key.includes(k)) {
+      for (const b of books) matches.add(b);
+    }
+  }
+  return [...matches].sort();
+}
 
 // Mobile menu
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
@@ -17,17 +49,12 @@ const shellFilter = document.getElementById('shellFilter');
 let activeFilter = 'all';
 let activeShell = 'all';
 let renderers = [];
-let observer = null;
-let activeCards = new Set();
-const MAX_ACTIVE = 3;
-let visibleGroups = null; // null = show all, Set = filtered
+let visibleGroups = null;
 let animSpeed = 3500;
 
 function cleanup() {
   renderers.forEach(r => r.destroy());
   renderers = [];
-  activeCards.clear();
-  if (observer) { observer.disconnect(); observer = null; }
 }
 
 function getTypeClass(type) {
@@ -38,21 +65,13 @@ function getTypeClass(type) {
 }
 
 function activateCard(card) {
-  if (activeCards.has(card) || !card.isConnected) return;
-
-  // If already at max, deactivate the oldest
-  if (activeCards.size >= MAX_ACTIVE) {
-    const oldest = activeCards.values().next().value;
-    deactivateCard(oldest);
-  }
-
-  activeCards.add(card);
+  if (card._hoverActive || !card.isConnected) return;
+  card._hoverActive = true;
   const canvas = card.querySelector('.play-art-canvas');
   const idx = card.dataset.covIdx;
   const cov = COVERAGES[parseInt(idx)];
   if (!canvas || !cov) return;
 
-  // Start live single-play animation
   const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
   r.renderSinglePlayLive({
     mode: 'defense',
@@ -67,13 +86,12 @@ function activateCard(card) {
 }
 
 function deactivateCard(card) {
-  if (!activeCards.has(card)) return;
-  activeCards.delete(card);
+  if (!card._hoverActive) return;
+  card._hoverActive = false;
   if (card._renderer) {
     card._renderer.destroy();
     renderers = renderers.filter(r => r !== card._renderer);
     card._renderer = null;
-    // Redraw static frame
     const canvas = card.querySelector('.play-art-canvas');
     const idx = card.dataset.covIdx;
     const cov = COVERAGES[parseInt(idx)];
@@ -86,48 +104,9 @@ function deactivateCard(card) {
   card.classList.remove('live-active');
 }
 
-function setupObserver() {
-  if (observer) observer.disconnect();
-
-  const cards = Array.from(grid.querySelectorAll('.coverage-card'));
-  if (cards.length === 0) return;
-
-  // Track visible cards ordered by position
-  const visibleCards = [];
-
-  observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      const card = entry.target;
-      if (entry.isIntersecting) {
-        if (!visibleCards.includes(card)) visibleCards.push(card);
-      } else {
-        const idx = visibleCards.indexOf(card);
-        if (idx !== -1) visibleCards.splice(idx, 1);
-        deactivateCard(card);
-      }
-    }
-
-    // Sort by DOM position and activate first 3 visible
-    visibleCards.sort((a, b) => {
-      const ra = a.getBoundingClientRect();
-      const rb = b.getBoundingClientRect();
-      return ra.top - rb.top || ra.left - rb.left;
-    });
-
-    // Deactivate cards no longer in top 3
-    for (const card of activeCards) {
-      if (visibleCards.indexOf(card) >= MAX_ACTIVE || !visibleCards.includes(card)) {
-        deactivateCard(card);
-      }
-    }
-
-    // Activate top 3 visible
-    for (let i = 0; i < Math.min(MAX_ACTIVE, visibleCards.length); i++) {
-      activateCard(visibleCards[i]);
-    }
-  }, { threshold: 0.3 });
-
-  cards.forEach(card => observer.observe(card));
+function bindHoverEvents(card) {
+  card.addEventListener('mouseenter', () => activateCard(card));
+  card.addEventListener('mouseleave', () => deactivateCard(card));
 }
 
 function renderCards(filter = 'all', search = '', shell = 'all') {
@@ -179,6 +158,7 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
       </div>
     `;
     card.addEventListener('click', () => openModal(cov, variants));
+    bindHoverEvents(card);
     grid.appendChild(card);
 
     // Render static play art initially
@@ -194,8 +174,6 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
     grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">No coverages match your search.</div>';
   }
 
-  // Set up scroll-based activation
-  requestAnimationFrame(() => setupObserver());
 }
 
 function openModal(cov, variants) {
@@ -241,6 +219,11 @@ function openModal(cov, variants) {
     </div>
 
     <p class="text-gray-300 mb-4">${cov.description}</p>
+
+    <div class="results-section mb-4">
+      <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getDefPlaybooks(cov.name).length})</h4>
+      <div class="flex flex-wrap">${getDefPlaybooks(cov.name).map(p => `<span class="tag-purple">${p}</span>`).join('')}</div>
+    </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="results-section mb-0">
@@ -500,7 +483,7 @@ function updateVisibleGroups() {
 }
 
 function refreshActiveCards() {
-  const cards = [...activeCards];
+  const cards = grid.querySelectorAll('.coverage-card.live-active');
   cards.forEach(card => {
     deactivateCard(card);
     activateCard(card);

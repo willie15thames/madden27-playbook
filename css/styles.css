@@ -63,9 +63,10 @@ html { scroll-behavior: smooth; }
   cursor: pointer;
 }
 .coverage-card:hover {
-  border-color: #8A2BE2;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 24px rgba(138,43,226,0.15);
+  border-color: #00FFFF;
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(0,255,255,0.2), 0 0 20px rgba(138,43,226,0.15);
+  z-index: 10;
 }
 .coverage-card.live-active {
   border-color: #FF1493;
@@ -96,8 +97,10 @@ html { scroll-behavior: smooth; }
   cursor: pointer;
 }
 .play-card:hover {
-  border-color: #8A2BE2;
-  transform: translateY(-2px);
+  border-color: #00FFFF;
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(0,255,255,0.2), 0 0 20px rgba(138,43,226,0.15);
+  z-index: 10;
 }
 .play-card.live-active {
   border-color: #00FFFF;

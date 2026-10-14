@@ -843,6 +843,11 @@ class PlayArtRenderer {
     const playData = this.getPlayRoutes(playFamily);
     const routes = playData.routes;
 
+    // Draw the box zone on run plays (static preview)
+    if (playData.isRun) {
+      this._drawBoxZoneOnly(positions, 0.8);
+    }
+
     // Draw OL first (no routes)
     for (const key of ['LT', 'LG', 'C', 'RG', 'RT']) {
       if (positions[key]) this.drawPlayer(positions[key][0], positions[key][1], '#4B0082', '', 7);
