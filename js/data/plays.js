@@ -303,7 +303,7 @@ const PLAY_TYPES = {
   },
 
   // ===== DEEP SHOT PASSES =====
-  "4 Verticals": {
+  "Four Verticals": {
     type: "Pass", subtype: "Deep Shot",
     description: "All receivers run vertical routes, stretching the defense deep. The ultimate deep shot play.",
     beats: ["Cover 2 Zone", "Cover 3", "Tampa 2", "Cover 6 (Cover 2 side)", "Man with slow CBs"],
