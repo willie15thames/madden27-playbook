@@ -51,6 +51,7 @@ let activeShell = 'all';
 let renderers = [];
 let visibleGroups = null;
 let animSpeed = 3500;
+let liveAnimEnabled = true;
 
 function cleanup() {
   renderers.forEach(r => r.destroy());
@@ -65,7 +66,7 @@ function getTypeClass(type) {
 }
 
 function activateCard(card) {
-  if (card._hoverActive || !card.isConnected) return;
+  if (!liveAnimEnabled || card._hoverActive || !card.isConnected) return;
   card._hoverActive = true;
   const canvas = card.querySelector('.play-art-canvas');
   const idx = card.dataset.covIdx;
@@ -442,6 +443,8 @@ function buildPosFilter() {
   if (!container) return;
   container.innerHTML = `
     <div class="pos-filter-bar">
+      <button class="pos-toggle active" id="liveAnimToggle" title="Toggle hover animation"><i class="bi bi-broadcast"></i> Live</button>
+      <span class="label">|</span>
       <span class="label"><i class="bi bi-funnel-fill"></i> Show:</span>
       <button class="pos-toggle active def-group" data-group="DL">DL</button>
       <button class="pos-toggle active def-group" data-group="LB">LB</button>
@@ -452,7 +455,16 @@ function buildPosFilter() {
       <button class="speed-btn" data-speed="5500" title="Slow">0.5x</button>
     </div>
   `;
-  container.querySelectorAll('.pos-toggle').forEach(btn => {
+  // Live animation toggle
+  const liveBtn = container.querySelector('#liveAnimToggle');
+  liveBtn.addEventListener('click', () => {
+    liveAnimEnabled = !liveAnimEnabled;
+    liveBtn.classList.toggle('active', liveAnimEnabled);
+    if (!liveAnimEnabled) {
+      grid.querySelectorAll('.coverage-card.live-active').forEach(card => deactivateCard(card));
+    }
+  });
+  container.querySelectorAll('.pos-toggle[data-group]').forEach(btn => {
     btn.addEventListener('click', () => {
       btn.classList.toggle('active');
       updateVisibleGroups();

@@ -394,19 +394,47 @@ html { scroll-behavior: smooth; }
   background: #2F4F4F;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
+  position: relative;
+  min-width: 88px;
 }
 .play-chip-art:hover {
   border-color: #00FFFF;
   background: rgba(0,255,255,0.1);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(0,255,255,0.2);
+  z-index: 5;
 }
-.play-chip-art span {
+.play-chip-label {
   color: #d1d5db;
   font-weight: 600;
+  font-size: 0.7rem;
+  text-align: center;
+  display: block;
+  margin-top: 0.25rem;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.play-chip-art:hover span {
+.play-chip-art:hover .play-chip-label {
   color: #00FFFF;
 }
+.play-chip-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 0.55rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 700;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.play-chip-badge.run { background: rgba(0,255,255,0.3); color: #00FFFF; }
+.play-chip-badge.pass { background: rgba(138,43,226,0.3); color: #8A2BE2; }
+.play-chip-badge.screen { background: rgba(75,0,130,0.3); color: #8A2BE2; }
+.play-chip-badge.rpo { background: rgba(0,255,255,0.2); color: #00FFFF; }
 
 /* Results Panel */
 .results-panel {

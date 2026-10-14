@@ -40,22 +40,36 @@
       </div>
 
       <!-- Playbook Selector -->
-      <div class="mb-6">
-        <select id="playbookSelector" class="custom-select">
+      <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <select id="playbookSelector" class="custom-select flex-1">
           <option value="">Choose a playbook...</option>
         </select>
+        <div class="relative flex-1">
+          <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+          <input type="text" id="playbookSearch" class="search-input" placeholder="Search plays in this book...">
+        </div>
       </div>
 
       <!-- Playbook Info -->
       <div id="playbookInfo" class="hidden results-panel mb-6">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h2 class="text-2xl font-black" id="playbookName"></h2>
             <p class="text-gray-400 text-sm" id="playbookStyle"></p>
           </div>
-          <div class="text-right">
-            <div class="text-sm text-gray-500">Formations</div>
-            <div class="text-2xl font-black text-neon-cyan" id="formationCount">0</div>
+          <div class="flex gap-6 text-center">
+            <div>
+              <div class="text-2xl font-black text-[#00FFFF]" id="formationCount">0</div>
+              <div class="text-xs text-gray-500">Formations</div>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-[#8A2BE2]" id="setCount">0</div>
+              <div class="text-xs text-gray-500">Sets</div>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-[#FF1493]" id="playCount">0</div>
+              <div class="text-xs text-gray-500">Plays</div>
+            </div>
           </div>
         </div>
       </div>

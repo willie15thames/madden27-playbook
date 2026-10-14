@@ -843,8 +843,9 @@ class PlayArtRenderer {
     const playData = this.getPlayRoutes(playFamily);
     const routes = playData.routes;
 
-    // Draw the box zone on run plays (static preview)
+    // Draw run lanes and box zone on run plays (static preview)
     if (playData.isRun) {
+      this._drawRunLanes(positions, playFamily, 0.8, true);
       this._drawBoxZoneOnly(positions, 0.8);
     }
 
@@ -939,9 +940,11 @@ class PlayArtRenderer {
       const playData = this.getPlayRoutes(playFamily);
       const routes = playData.routes;
 
-      // Draw the box on run plays
+      // Draw run lanes and box on run plays
       if (playData.isRun && progress > 0.15) {
-        this._drawBox(offPositions, defPositions, Math.min((progress - 0.15) * 3, 1), true);
+        const runFade = Math.min((progress - 0.15) * 3, 1);
+        this._drawRunLanes(offPositions, playFamily, runFade, true);
+        this._drawBox(offPositions, defPositions, runFade, true);
       }
 
       // OL
@@ -1132,6 +1135,7 @@ class PlayArtRenderer {
       // === The Box + Gap fit labels for run plays ===
       if (isRun && developPhase) {
         const gapFade = Math.min(routeT * 2.5, 1);
+        this._drawRunLanes(offPositions, playFamily, gapFade, isOffSide);
         this._drawBox(offPositions, defPositions, gapFade, isOffSide);
         if (gaps.length > 0) this._drawGaps(gaps, gapFade, isOffSide);
       }
@@ -1466,6 +1470,123 @@ class PlayArtRenderer {
     ctx.globalAlpha = 1;
   }
 
+  // Draw RB running lanes - highlighted corridors showing where RB targets
+  _drawRunLanes(offPositions, playFamily, fade, isOffSide) {
+    const ctx = this.ctx;
+    const playData = this.getPlayRoutes(playFamily);
+    if (!playData.isRun) return;
+
+    const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
+    const olPositions = olKeys.filter(k => offPositions[k]).map(k => offPositions[k]);
+    if (olPositions.length < 3) return;
+
+    const rbPos = offPositions['RB'] || offPositions['FB'];
+    if (!rbPos) return;
+
+    const routes = playData.routes;
+    const rbRoute = routes['RB'] || routes['FB'] || 'run_inside';
+
+    // Determine primary lane and cutback based on route type
+    let primaryGapIdx, cutbackGapIdx, laneWidth;
+    const midIdx = Math.floor(olPositions.length / 2);
+
+    if (rbRoute === 'run_inside' || rbRoute === 'run_dive') {
+      // Inside zone / dive - A gap, cutback to opposite A
+      primaryGapIdx = midIdx;
+      cutbackGapIdx = midIdx - 1;
+      laneWidth = 0.06;
+    } else if (rbRoute === 'run_power') {
+      // Power - B gap strong side, cutback A
+      primaryGapIdx = midIdx + 1;
+      cutbackGapIdx = midIdx;
+      laneWidth = 0.07;
+    } else if (rbRoute === 'run_stretch' || rbRoute === 'run_outside') {
+      // Stretch / outside - C gap, cutback B
+      primaryGapIdx = Math.min(midIdx + 2, olPositions.length - 1);
+      cutbackGapIdx = midIdx + 1;
+      laneWidth = 0.08;
+    } else if (rbRoute === 'run_counter') {
+      // Counter - misdirection, B gap weak side, cutback C
+      primaryGapIdx = Math.max(midIdx - 2, 0);
+      cutbackGapIdx = midIdx - 1;
+      laneWidth = 0.07;
+    } else if (rbRoute === 'option_give') {
+      primaryGapIdx = midIdx;
+      cutbackGapIdx = midIdx + 1;
+      laneWidth = 0.06;
+    } else {
+      return; // non-standard run, skip
+    }
+
+    // Clamp indices
+    primaryGapIdx = Math.max(0, Math.min(primaryGapIdx, olPositions.length - 2));
+    cutbackGapIdx = Math.max(0, Math.min(cutbackGapIdx, olPositions.length - 2));
+
+    const losY = 0.60;
+    const laneEndY = losY - 0.25;
+
+    // Draw primary lane
+    const pLeft = olPositions[primaryGapIdx][0] - laneWidth / 2;
+    const pRight = olPositions[primaryGapIdx][0] + laneWidth / 2;
+    const px = pLeft * this.width;
+    const py = laneEndY * this.height;
+    const pw = (pRight - pLeft) * this.width;
+    const ph = (losY - laneEndY + 0.12) * this.height;
+
+    ctx.globalAlpha = fade * 0.2;
+    ctx.fillStyle = '#00FFFF';
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 4);
+    ctx.fill();
+    ctx.globalAlpha = fade * 0.6;
+    ctx.strokeStyle = '#00FFFF';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.strokeRect(px, py, pw, ph);
+    ctx.setLineDash([]);
+
+    // Arrow inside primary lane pointing up
+    const arrowX = (pLeft + pRight) / 2 * this.width;
+    const arrowY = (laneEndY + 0.03) * this.height;
+    ctx.globalAlpha = fade * 0.8;
+    ctx.fillStyle = '#00FFFF';
+    ctx.beginPath();
+    ctx.moveTo(arrowX, arrowY - 6);
+    ctx.lineTo(arrowX - 5, arrowY + 2);
+    ctx.lineTo(arrowX + 5, arrowY + 2);
+    ctx.fill();
+
+    // Draw cutback lane (dimmer)
+    if (cutbackGapIdx !== primaryGapIdx) {
+      const cLeft = olPositions[cutbackGapIdx][0] - laneWidth / 2;
+      const cRight = olPositions[cutbackGapIdx][0] + laneWidth / 2;
+      const cx = cLeft * this.width;
+      const cw = (cRight - cLeft) * this.width;
+
+      ctx.globalAlpha = fade * 0.1;
+      ctx.fillStyle = '#8A2BE2';
+      ctx.beginPath();
+      ctx.roundRect(cx, py, cw, ph, 4);
+      ctx.fill();
+      ctx.globalAlpha = fade * 0.35;
+      ctx.strokeStyle = '#8A2BE2';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.strokeRect(cx, py, cw, ph);
+      ctx.setLineDash([]);
+
+      // Cutback label
+      ctx.globalAlpha = fade * 0.6;
+      ctx.font = `bold ${Math.max(7, this.width * 0.022)}px system-ui`;
+      ctx.fillStyle = '#8A2BE2';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('CUT', (cLeft + cRight) / 2 * this.width, (laneEndY + 0.01) * this.height);
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
   _drawGaps(gaps, fade, isOffSide) {
     const ctx = this.ctx;
     ctx.globalAlpha = fade * (isOffSide ? 0.7 : 0.5);
@@ -1678,6 +1799,7 @@ class PlayArtRenderer {
         // Draw the box zone on run plays
         if (playData.isRun && developPhase && offPositions) {
           const boxFade = Math.min(routeT * 2.5, 1);
+          this._drawRunLanes(offPositions, playFamily, boxFade, true);
           this._drawBoxZoneOnly(offPositions, boxFade);
         }
 
