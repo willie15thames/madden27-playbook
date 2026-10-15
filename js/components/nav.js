@@ -11,6 +11,7 @@ export function initNav() {
     { id: 'offenses', label: 'Offenses', icon: 'bi-lightning-fill', href: `${prefix}pages/offenses.html` },
     { id: 'matchups', label: 'Matchups', icon: 'bi-arrows-angle-expand', href: `${prefix}pages/matchups.html` },
     { id: 'playbook-select', label: 'Playbooks', icon: 'bi-book-fill', href: `${prefix}pages/playbook-select.html` },
+    { id: 'scheme-builder', label: 'Scheme Builder', icon: 'bi-gear-fill', href: `${prefix}pages/scheme-builder.html` },
     { id: 'search', label: 'Search', icon: 'bi-search', href: `${prefix}pages/search.html` }
   ];
 

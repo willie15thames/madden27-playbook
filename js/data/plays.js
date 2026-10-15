@@ -865,6 +865,169 @@ const PLAY_TYPES = {
     goodVsCoverages: ["Cover 1", "Cover 0", "Man coverages"],
     badVsCoverages: ["Cover 2 Zone", "Cover 3"],
     tips: "The orbit motion creates a numbers advantage on the edge. Quick throw with blockers."
+  },
+
+  // ===== PLAY ACTION VARIANTS =====
+  "PA Boot": {
+    type: "Pass", subtype: "Play Action",
+    description: "Play action bootleg — QB fakes the run then rolls out to the opposite side with routes clearing out.",
+    beats: ["Cover 3", "Cover 1", "Man coverage", "Aggressive LBs"],
+    beatenBy: ["Contain", "QB spy", "Cover 4 with contain"],
+    goodVsCoverages: ["Cover 3", "Cover 1", "Man coverages"],
+    badVsCoverages: ["Cover 4", "Spy"],
+    tips: "Roll out and read the flat then deep cross. Great change of pace after running."
+  },
+  "PA Cross": {
+    type: "Pass", subtype: "Play Action",
+    description: "Play action with a deep crossing route as the primary read. Attacks the middle at depth.",
+    beats: ["Cover 1", "Cover 3", "Man coverage", "Aggressive front"],
+    beatenBy: ["Cover 4", "Pattern matching", "Quick pressure"],
+    goodVsCoverages: ["Cover 1", "Cover 3", "Tampa 2"],
+    badVsCoverages: ["Cover 4", "Cover 3 Match"],
+    tips: "The deep crosser gets open against man coverage. Let it develop — don't throw early."
+  },
+  "PA Seams": {
+    type: "Pass", subtype: "Play Action",
+    description: "Play action with seam routes up the hash marks. Attacks the deep middle between safeties.",
+    beats: ["Cover 2 Zone", "Cover 3", "Tampa 2", "Cover 6"],
+    beatenBy: ["Cover 4", "Cover 4 Palms", "Deep help in seams"],
+    goodVsCoverages: ["Cover 2 Zone", "Cover 3", "Tampa 2"],
+    badVsCoverages: ["Cover 4", "Cover 4 Palms"],
+    tips: "Seam routes split the safeties. Best against two-deep looks where the middle is open."
+  },
+  "PA Slide": {
+    type: "Pass", subtype: "Play Action",
+    description: "Play action with receivers running slide routes underneath. Quick PA with easy reads.",
+    beats: ["Cover 3", "Cover 1", "Aggressive front", "Man coverage"],
+    beatenBy: ["Cover 4", "Zone drops", "Quick pressure"],
+    goodVsCoverages: ["Cover 3", "Cover 1"],
+    badVsCoverages: ["Cover 4", "Cover 3 Match"],
+    tips: "Quick play action with easy underneath reads. Good checkdown option."
+  },
+
+  // ===== ADDITIONAL CONCEPTS =====
+  "Verticals": {
+    type: "Pass", subtype: "Deep Shot",
+    description: "Multiple receivers running vertical/streak routes. Stretches the defense deep.",
+    beats: ["Cover 2 Zone", "Cover 3", "Tampa 2", "Cover 6"],
+    beatenBy: ["Cover 4", "Cover 4 Palms", "Prevent"],
+    goodVsCoverages: ["Cover 2 Zone", "Cover 3", "Tampa 2"],
+    badVsCoverages: ["Cover 4", "Cover 4 Palms", "Prevent"],
+    tips: "Similar to Four Verticals. Read the safeties and throw to the open seam."
+  },
+  "Curl Combo": {
+    type: "Pass", subtype: "Concept",
+    description: "Combination of curl routes at different depths. Creates easy reads against zone coverage.",
+    beats: ["Cover 3", "Cover 4", "Zone coverage", "Soft zones"],
+    beatenBy: ["Man coverage", "Cover 1 Robber", "Press man"],
+    goodVsCoverages: ["Cover 3", "Cover 4", "Tampa 2"],
+    badVsCoverages: ["Cover 1", "Cover 0", "Man coverages"],
+    tips: "Multiple curls create easy windows in zone. Read the intermediate defender."
+  },
+  "Double Slants": {
+    type: "Pass", subtype: "Quick Game",
+    description: "Two receivers running slant routes. Quick inside throws that beat man coverage.",
+    beats: ["Cover 0", "Cover 1", "Man coverage", "Blitzes"],
+    beatenBy: ["Cover 1 Robber", "Inside shade man", "User MLB"],
+    goodVsCoverages: ["Cover 0", "Cover 1", "Cover 4"],
+    badVsCoverages: ["Cover 1 Robber", "Cover 3 Match"],
+    tips: "Two quick slants give you options on both sides. Beat blitzes with fast throws."
+  },
+  "Levels Switch": {
+    type: "Pass", subtype: "Concept",
+    description: "Levels concept with receivers switching depths — one goes deep, one comes short.",
+    beats: ["Cover 3", "Cover 1", "Zone coverage", "Tampa 2"],
+    beatenBy: ["Cover 4", "Cover 3 Match", "Pattern matching"],
+    goodVsCoverages: ["Cover 3", "Cover 1", "Tampa 2"],
+    badVsCoverages: ["Cover 4", "Cover 3 Match"],
+    tips: "The switch action confuses zone defenders tracking receivers through levels."
+  },
+
+  // ===== TRICK PLAYS =====
+  "Trick Play": {
+    type: "Pass", subtype: "Trick",
+    description: "Trick play — flea flicker, WR pass, double reverse, or other misdirection play.",
+    beats: ["Aggressive defense", "Man coverage", "Run-focused D"],
+    beatenBy: ["Disciplined defense", "Zone coverage", "Contain"],
+    goodVsCoverages: ["Cover 1", "Cover 0", "Man coverages"],
+    badVsCoverages: ["Cover 4", "Cover 3", "Zone coverages"],
+    tips: "High risk, high reward. Only call when the defense isn't expecting it."
+  },
+  "Flea Flicker": {
+    type: "Pass", subtype: "Trick",
+    description: "QB hands off to RB who pitches it back to the QB for a deep throw downfield.",
+    beats: ["Cover 1", "Cover 3", "Aggressive safeties", "Run-focused defense"],
+    beatenBy: ["Cover 4", "Prevent", "Deep zones", "Spy"],
+    goodVsCoverages: ["Cover 1", "Cover 3"],
+    badVsCoverages: ["Cover 4", "Prevent"],
+    tips: "Set up with run plays first. The deep safety bites on the run fake."
+  },
+  "HB Pass": {
+    type: "Pass", subtype: "Trick",
+    description: "Halfback takes the handoff then throws a pass downfield. Surprise passing play.",
+    beats: ["Aggressive defense", "Man coverage", "Run defense alignment"],
+    beatenBy: ["Zone coverage", "Discipline", "User safety"],
+    goodVsCoverages: ["Cover 1", "Cover 0"],
+    badVsCoverages: ["Cover 4", "Cover 3", "Zone coverages"],
+    tips: "Very risky. The HB usually can't throw accurately. Only use in desperation or for fun."
+  },
+  "Philly Special": {
+    type: "Pass", subtype: "Trick",
+    description: "Direct snap to RB who pitches to a WR/TE who throws to the QB. The famous Eagles play.",
+    beats: ["Goal line defense", "Cover 0", "Man coverage", "Aggressive D"],
+    beatenBy: ["Zone coverage", "Contain", "Discipline"],
+    goodVsCoverages: ["Cover 0", "Cover 1"],
+    badVsCoverages: ["Cover 3", "Cover 4", "Zone coverages"],
+    tips: "Only works with the element of surprise. Best in goal line situations."
+  },
+
+  // ===== ADDITIONAL RUN PLAYS =====
+  "Mid Zone": {
+    type: "Run", subtype: "Zone Run",
+    description: "Zone run between the tackles. RB reads the first down lineman and cuts accordingly.",
+    beats: ["Nickel", "Dime", "Cover 4", "Light boxes"],
+    beatenBy: ["Stuff the box", "46 Bear", "Run commit"],
+    goodVsCoverages: ["Cover 4", "Cover 2 Zone", "Dime"],
+    badVsCoverages: ["Cover 0", "46"],
+    tips: "Read the first down lineman. Cut back if the play side is clogged."
+  },
+  "HB Stretch": {
+    type: "Run", subtype: "Zone Run",
+    description: "Same as Stretch — wide zone run getting the RB to the edge with zone blocking.",
+    beats: ["Cover 0", "Cover 4", "Nickel", "Dime"],
+    beatenBy: ["Contain", "Cover 3 Sky", "46 Bear"],
+    goodVsCoverages: ["Cover 4", "Cover 2 Zone", "Cover 6"],
+    badVsCoverages: ["Cover 3 Sky", "46", "Cover 1"],
+    tips: "One of the best meta runs. Gets to the edge with zone blocking in front."
+  },
+  "Pin Pull Sweep": {
+    type: "Run", subtype: "Outside Run",
+    description: "Pin and pull sweep where the backside guard pulls to lead the RB outside.",
+    beats: ["Nickel", "Dime", "Interior-focused defense"],
+    beatenBy: ["Contain", "Edge speed", "Cover 3 Sky"],
+    goodVsCoverages: ["Cover 4", "Cover 2 Zone", "Dime"],
+    badVsCoverages: ["Cover 3 Sky", "46"],
+    tips: "Follow the pulling guard to the edge. Cut upfield behind the lead block."
+  },
+  "HB Toss": {
+    type: "Run", subtype: "Outside Run",
+    description: "Toss play to the RB heading outside with lead blockers.",
+    beats: ["Interior pressure", "Nickel", "Dime", "Dollar"],
+    beatenBy: ["Contain", "Speed on edge", "Outside run commit"],
+    goodVsCoverages: ["Cover 4", "Cover 2 Zone", "Dime"],
+    badVsCoverages: ["Cover 3 Sky", "46", "Cover 1"],
+    tips: "Speed play to the outside. Great against heavy interior fronts."
+  },
+
+  // ===== MOTION / JET PLAYS =====
+  "Jet Touch Pass": {
+    type: "Pass", subtype: "Concept",
+    description: "Jet motion WR receives a quick shovel/touch pass from the QB while running full speed.",
+    beats: ["Cover 3", "Cover 4", "Slow adjustments", "Interior-focused D"],
+    beatenBy: ["Contain", "Man on jet man", "Pre-snap read"],
+    goodVsCoverages: ["Cover 3", "Cover 4"],
+    badVsCoverages: ["Cover 1", "Man coverage"],
+    tips: "Like a jet sweep but as a pass. Gets the WR the ball in space."
   }
 };
 

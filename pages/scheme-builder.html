@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheme Builder - Madden 27 Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: { 900: '#0d001a', 800: '#1a0033', 700: '#2a0055', 600: '#2F4F4F' },
+            neon: { green: '#00FFFF', blue: '#8A2BE2', purple: '#4B0082', red: '#FF1493', yellow: '#00FFFF', cyan: '#00FFFF' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-dark-900 text-white min-h-screen">
+  <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600"></nav>
+  <script type="module">import { initNav } from '../js/components/nav.js'; initNav();</script>
+
+  <main class="pt-24 pb-16 px-4">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-black mb-2">
+          <i class="bi bi-gear-fill text-neon-cyan mr-2"></i>
+          <span class="bg-gradient-to-r from-neon-cyan to-neon-blue bg-clip-text text-transparent">Scheme Builder</span>
+        </h1>
+        <p class="text-gray-400 max-w-2xl mx-auto">Build custom schemes with adjustments, hot routes, macros, and play creation. Set up your game plan before kickoff.</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="flex flex-wrap gap-2 justify-center mb-8">
+        <button class="filter-btn active" data-tab="macros">
+          <i class="bi bi-collection-fill mr-1"></i> Macros
+        </button>
+        <button class="filter-btn" data-tab="adjustments">
+          <i class="bi bi-sliders mr-1"></i> Adjustments
+        </button>
+        <button class="filter-btn" data-tab="hotroutes">
+          <i class="bi bi-signpost-split-fill mr-1"></i> Hot Routes
+        </button>
+        <button class="filter-btn" data-tab="playcreator">
+          <i class="bi bi-pencil-square mr-1"></i> Play Creator
+        </button>
+      </div>
+
+      <!-- ===== MACROS TAB ===== -->
+      <div id="tabMacros" class="tab-content">
+        <div class="flex flex-wrap gap-2 justify-center mb-6">
+          <button class="filter-btn active" data-macro-filter="all">All</button>
+          <button class="filter-btn" data-macro-filter="offense">
+            <i class="bi bi-lightning-fill mr-1"></i> Offense
+          </button>
+          <button class="filter-btn" data-macro-filter="defense">
+            <i class="bi bi-shield-fill mr-1"></i> Defense
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="macrosGrid"></div>
+      </div>
+
+      <!-- ===== ADJUSTMENTS TAB ===== -->
+      <div id="tabAdjustments" class="tab-content hidden">
+        <div class="flex flex-wrap gap-2 justify-center mb-6">
+          <button class="filter-btn active" data-adj-filter="all">All</button>
+          <button class="filter-btn" data-adj-filter="offense">
+            <i class="bi bi-lightning-fill mr-1"></i> Offense
+          </button>
+          <button class="filter-btn" data-adj-filter="defense">
+            <i class="bi bi-shield-fill mr-1"></i> Defense
+          </button>
+        </div>
+        <div id="adjustmentsContainer"></div>
+      </div>
+
+      <!-- ===== HOT ROUTES TAB ===== -->
+      <div id="tabHotroutes" class="tab-content hidden">
+        <div class="flex flex-wrap gap-2 justify-center mb-6">
+          <button class="filter-btn active" data-hr-filter="all">All</button>
+          <button class="filter-btn" data-hr-filter="deep">Deep</button>
+          <button class="filter-btn" data-hr-filter="intermediate">Intermediate</button>
+          <button class="filter-btn" data-hr-filter="short">Short</button>
+          <button class="filter-btn" data-hr-filter="protection">Protection</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="hotRoutesGrid"></div>
+      </div>
+
+      <!-- ===== PLAY CREATOR TAB ===== -->
+      <div id="tabPlaycreator" class="tab-content hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left: Play Setup -->
+          <div class="results-panel">
+            <h3 class="text-lg font-bold text-neon-cyan mb-4">
+              <i class="bi bi-pencil-square mr-1"></i> Play Setup
+            </h3>
+
+            <!-- Template Selection -->
+            <div class="mb-4">
+              <label class="text-sm text-gray-400 mb-1 block">Start From</label>
+              <div class="flex gap-2 flex-wrap">
+                <button class="filter-btn active" data-create="scratch">From Scratch</button>
+                <button class="filter-btn" data-create="template">Template</button>
+                <button class="filter-btn" data-create="existing">Existing Play</button>
+              </div>
+            </div>
+
+            <!-- Template / Existing Play Selectors -->
+            <div id="templateSelect" class="mb-4 hidden">
+              <label class="text-sm text-gray-400 mb-1 block">Choose Template</label>
+              <select class="custom-select" id="templateDropdown">
+                <option value="">Select a template...</option>
+                <option value="passing">Passing Play</option>
+                <option value="running">Running Play</option>
+                <option value="screen">Screen Play</option>
+                <option value="rpo">RPO Play</option>
+              </select>
+            </div>
+
+            <div id="existingSelect" class="mb-4 hidden">
+              <label class="text-sm text-gray-400 mb-1 block">Choose Playbook</label>
+              <select class="custom-select mb-2" id="existingPlaybook">
+                <option value="">Choose a playbook...</option>
+              </select>
+              <select class="custom-select mb-2" id="existingFormation">
+                <option value="">Choose a formation...</option>
+              </select>
+              <select class="custom-select mb-2" id="existingSub">
+                <option value="">Choose a sub-formation...</option>
+              </select>
+              <select class="custom-select" id="existingPlay">
+                <option value="">Choose a play...</option>
+              </select>
+            </div>
+
+            <!-- Formation -->
+            <div class="mb-4">
+              <label class="text-sm text-gray-400 mb-1 block">Formation</label>
+              <select class="custom-select" id="creatorFormation">
+                <option value="Shotgun">Shotgun</option>
+                <option value="Singleback">Singleback</option>
+                <option value="I Form">I Form</option>
+                <option value="Pistol">Pistol</option>
+              </select>
+            </div>
+
+            <!-- Play Name -->
+            <div class="mb-4">
+              <label class="text-sm text-gray-400 mb-1 block">Play Name</label>
+              <input type="text" class="search-input w-full" id="playNameInput" placeholder="My Custom Play" />
+            </div>
+
+            <!-- Route Assignments -->
+            <h4 class="text-sm font-bold text-gray-300 mb-2">Route Assignments</h4>
+            <div class="space-y-2" id="routeAssignments">
+              <!-- Dynamically filled -->
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2 mt-4">
+              <button class="filter-btn active" id="flipPlayBtn">
+                <i class="bi bi-arrow-left-right mr-1"></i> Flip Play
+              </button>
+              <button class="filter-btn" id="resetPlayBtn">
+                <i class="bi bi-arrow-counterclockwise mr-1"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Preview -->
+          <div class="results-panel">
+            <h3 class="text-lg font-bold text-neon-cyan mb-4">
+              <i class="bi bi-eye-fill mr-1"></i> Preview
+            </h3>
+            <div class="flex justify-center mb-4">
+              <canvas id="creatorCanvas" width="480" height="380" style="background: #1a472a; border-radius: 12px; max-width: 100%;"></canvas>
+            </div>
+
+            <!-- Play Info -->
+            <div id="creatorPlayInfo" class="text-sm text-gray-400">
+              <p>Set up your routes and see the play art update in real-time.</p>
+            </div>
+
+            <!-- Coverage Test -->
+            <div class="mt-4">
+              <label class="text-sm text-gray-400 mb-1 block">Test Against Coverage</label>
+              <select class="custom-select" id="testCoverage">
+                <option value="">No coverage (offense only)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-content" id="detailModalContent"></div>
+  </div>
+
+  <script type="module" src="../js/pages/scheme-builder.js"></script>
+</body>
+</html>
