@@ -703,27 +703,57 @@ const DEFENSE_POSITIONS = {};
 
 // Route paths (waypoints as delta from start position, normalized)
 const ROUTE_PATHS = {
+  // Vertical routes
   'streak': [[0, -0.30]],
-  'post': [[0, -0.12], [-0.08, -0.22]],
-  'corner': [[0, -0.12], [0.06, -0.22]],
-  'out': [[0, -0.10], [0.06, 0]],
-  'in': [[0, -0.10], [-0.06, 0]],
-  'slant': [[-0.06, -0.14]],
+  'go': [[0, -0.30]],
+  'fade': [[0.03, -0.30]],
+  'seam': [[0, -0.26]],
+  // Post family
+  'post': [[0, -0.12], [-0.08, -0.18]],
+  'deep_post': [[0, -0.16], [-0.06, -0.16]],
+  'skinny_post': [[0, -0.10], [-0.03, -0.18]],
+  'post_corner': [[0, -0.10], [-0.05, -0.10], [0.06, -0.12]],
+  // Corner / Out family
+  'corner': [[0, -0.12], [0.06, -0.18]],
+  'deep_corner': [[0, -0.16], [0.06, -0.14]],
+  'out': [[0, -0.10], [0.08, 0]],
+  'deep_out': [[0, -0.14], [0.08, 0]],
+  'speed_out': [[0.08, -0.04]],
+  // In / Cross family
+  'in': [[0, -0.10], [-0.08, 0]],
+  'deep_in': [[0, -0.14], [-0.08, 0]],
+  'dig': [[0, -0.14], [-0.08, 0]],
+  'shallow_cross': [[0, -0.03], [0.18, -0.02]],
   'drag': [[0, -0.03], [0.22, 0]],
   'drag_left': [[0, -0.03], [-0.22, 0]],
+  // Slant
+  'slant': [[-0.06, -0.14]],
+  // Curl / Comeback / Hitch
   'curl': [[0, -0.13], [0, 0.03]],
   'comeback': [[0, -0.14], [0.03, 0.04]],
+  'hitch': [[0, -0.07], [0, 0.02]],
+  // Flat / Swing / Check-down
   'flat': [[0.10, -0.03]],
   'flat_left': [[-0.10, -0.03]],
+  'swing': [[0.06, 0.02], [0.08, -0.04]],
+  'swing_left': [[-0.06, 0.02], [-0.08, -0.04]],
+  'check_down': [[0.04, 0.01], [0.06, -0.03]],
+  'texas': [[0.06, 0.02], [0.04, -0.14]],
+  // Wheel / Whip / Angle
   'wheel': [[0.06, -0.02], [0.04, -0.26]],
-  'seam': [[0, -0.26]],
-  'hitch': [[0, -0.07], [0, 0.02]],
-  'fade': [[0.03, -0.30]],
+  'whip': [[0, -0.06], [0.05, 0.03], [0.06, -0.04]],
+  'angle': [[0.03, 0.03], [0.10, -0.10]],
+  // Screen
   'screen': [[-0.04, 0.03], [-0.06, 0.01]],
   'screen_right': [[0.04, 0.03], [0.06, 0.01]],
   'screen_left': [[-0.04, 0.03], [-0.06, 0.01]],
-  'angle': [[0.03, 0.03], [0.10, -0.10]],
+  // Blocking
   'block': [],
+  'pass_block': [[0, -0.01]],
+  'lead_block': [[0.04, -0.08]],
+  'stalk_block': [[0, -0.04]],
+  'crack_block': [[-0.06, -0.06]],
+  // Run paths
   'run_right': [[0.10, -0.06]],
   'run_left': [[-0.10, -0.06]],
   'run_inside': [[0.02, -0.10]],
@@ -732,6 +762,7 @@ const ROUTE_PATHS = {
   'run_stretch': [[0.16, -0.04]],
   'run_dive': [[0.01, -0.07]],
   'run_outside': [[0.14, -0.05]],
+  // Option / QB
   'option_give': [[0.08, -0.06]],
   'option_keep': [[-0.06, -0.08]],
   'qb_boot_right': [[0.16, 0.02], [0.04, -0.10]],
@@ -739,12 +770,11 @@ const ROUTE_PATHS = {
   'qb_drop': [[0, 0.03]],
   'qb_scramble': [[-0.04, -0.08]],
   'qb_handoff': [[0, 0.02]],
+  // OL movement
   'pull_left': [[-0.08, 0.0], [-0.06, -0.08]],
   'pull_right': [[0.08, 0.0], [0.06, -0.08]],
   'ol_release_right': [[0.10, -0.02], [0.05, -0.05]],
-  'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]],
-  'lead_block': [[0.04, -0.08]],
-  'pass_block': [[0, -0.01]]
+  'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]]
 };
 
 // Coverage zone shapes (center + radius, normalized)
@@ -810,19 +840,19 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Crossers': {
-    routes: { WR1: 'drag', WR2: 'post', WR3: 'in', WR4: 'streak', TE: 'drag', RB: 'block' },
+    routes: { WR1: 'shallow_cross', WR2: 'deep_post', WR3: 'deep_in', WR4: 'streak', TE: 'drag', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Mesh': {
-    routes: { WR1: 'streak', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'drag', RB: 'flat' },
+    routes: { WR1: 'go', WR2: 'shallow_cross', WR3: 'drag_left', WR4: 'go', TE: 'drag', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Levels': {
-    routes: { WR1: 'streak', WR2: 'in', WR3: 'drag', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'go', WR2: 'deep_in', WR3: 'shallow_cross', WR4: 'curl', TE: 'seam', RB: 'swing' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Flood': {
-    routes: { WR1: 'streak', WR2: 'corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    routes: { WR1: 'go', WR2: 'deep_corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Smash': {
@@ -870,7 +900,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Corner Strike': {
-    routes: { WR1: 'corner', WR2: 'hitch', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'deep_corner', WR2: 'hitch', WR3: 'go', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Inside Zone': {
@@ -934,7 +964,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'PA Boot': {
-    routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', TE: 'in', RB: 'block', FB: 'block' },
+    routes: { WR1: 'shallow_cross', WR2: 'deep_corner', WR3: 'flat', TE: 'dig', RB: 'block', FB: 'block' },
     qb: 'qb_boot_right', ball_target: 'WR2'
   },
   'FB Dive': {
@@ -1026,7 +1056,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Post Corner': {
-    routes: { WR1: 'corner', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_corner', WR2: 'post_corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Read': {
@@ -1066,27 +1096,27 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Dagger': {
-    routes: { WR1: 'streak', WR2: 'seam', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Mills': {
-    routes: { WR1: 'post', WR2: 'in', WR3: 'corner', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'skinny_post', WR2: 'dig', WR3: 'corner', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Bench': {
-    routes: { WR1: 'curl', WR2: 'out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'curl', WR2: 'speed_out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Sail': {
-    routes: { WR1: 'streak', WR2: 'corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    routes: { WR1: 'streak', WR2: 'deep_corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Dig Under': {
-    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'dig', WR2: 'shallow_cross', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Mesh Traffic': {
-    routes: { WR1: 'post', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'flat' },
+    routes: { WR1: 'skinny_post', WR2: 'shallow_cross', WR3: 'shallow_cross', WR4: 'streak', TE: 'dig', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Bunch Trail': {
@@ -1182,23 +1212,23 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Play Action': {
-    routes: { WR1: 'streak', WR2: 'post', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'go', WR2: 'deep_post', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Cross': {
-    routes: { WR1: 'in', WR2: 'drag', WR3: 'post', WR4: 'streak', TE: 'drag', RB: 'block' },
+    routes: { WR1: 'deep_in', WR2: 'shallow_cross', WR3: 'deep_post', WR4: 'streak', TE: 'drag', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'PA Seams': {
-    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'go', WR2: 'seam', WR3: 'seam', WR4: 'go', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Slide': {
-    routes: { WR1: 'drag', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
+    routes: { WR1: 'shallow_cross', WR2: 'curl', WR3: 'flat', WR4: 'go', TE: 'dig', RB: 'block' },
     qb: 'qb_boot_right', ball_target: 'WR2'
   },
   'Verticals': {
-    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'go', WR2: 'seam', WR3: 'seam', WR4: 'go', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Curl Combo': {
@@ -1344,19 +1374,19 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR4'
   },
   'Texas': {
-    routes: { WR1: 'streak', WR2: 'curl', WR3: 'streak', WR4: 'streak', TE: 'flat', RB: 'wheel' },
+    routes: { WR1: 'go', WR2: 'curl', WR3: 'go', WR4: 'go', TE: 'flat', RB: 'texas' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'Whip': {
-    routes: { WR1: 'out', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
+    routes: { WR1: 'whip', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'China': {
-    routes: { WR1: 'streak', WR2: 'corner', WR3: 'flat', WR4: 'curl', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'go', WR2: 'deep_corner', WR3: 'flat', WR4: 'curl', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Scissors': {
-    routes: { WR1: 'post', WR2: 'corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'deep_post', WR2: 'deep_corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Y Stick': {
@@ -1678,7 +1708,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'TE'
   },
   'Slot Out': {
-    routes: { WR1: 'streak', WR2: 'out', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'go', WR2: 'speed_out', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Slot Post': {
@@ -1714,7 +1744,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Out Route': {
-    routes: { WR1: 'out', WR2: 'curl', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'deep_out', WR2: 'curl', WR3: 'go', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'In Route': {
@@ -2106,7 +2136,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Cross': {
-    routes: { WR1: 'in', WR2: 'drag', WR3: 'post', WR4: 'streak', TE: 'drag', RB: 'block' },
+    routes: { WR1: 'deep_in', WR2: 'drag', WR3: 'skinny_post', WR4: 'streak', TE: 'drag', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'PA Draw Shot': {
@@ -2126,7 +2156,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Seams': {
-    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'go', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Shot Portland': {
@@ -2230,23 +2260,23 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Dagger': {
-    routes: { WR1: 'post', WR2: 'streak', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_post', WR2: 'streak', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Dagger Deep Curl': {
-    routes: { WR1: 'post', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_post', WR2: 'curl', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Dbl Dig': {
-    routes: { WR1: 'in', WR2: 'in', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'dig', WR2: 'dig', WR3: 'shallow_cross', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Deep In': {
-    routes: { WR1: 'in', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_in', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Dig Under': {
-    routes: { WR1: 'in', WR2: 'drag', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'dig', WR2: 'shallow_cross', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Divide Wheel': {
@@ -2534,7 +2564,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Texas': {
-    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'wheel' },
+    routes: { WR1: 'go', WR2: 'curl', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'texas' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'RE': {
@@ -2550,7 +2580,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'TE'
   },
   'Mesh Traffic': {
-    routes: { WR1: 'streak', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'flat' },
+    routes: { WR1: 'streak', WR2: 'shallow_cross', WR3: 'shallow_cross', WR4: 'streak', TE: 'dig', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Mesh HB Sneak': {
@@ -3851,18 +3881,29 @@ class PlayArtRenderer {
     const px = midX * this.width;
     const py = midY * this.height - 10;
     const ROUTE_DISPLAY = {
-      'streak': 'Streak', 'post': 'Post', 'corner': 'Corner', 'out': 'Out', 'in': 'In',
-      'slant': 'Slant', 'drag': 'Drag', 'drag_left': 'Drag', 'curl': 'Curl',
-      'comeback': 'Comeback', 'flat': 'Flat', 'flat_left': 'Flat', 'wheel': 'Wheel',
-      'seam': 'Seam', 'hitch': 'Hitch', 'fade': 'Fade', 'screen': 'Screen',
-      'screen_left': 'Screen', 'screen_right': 'Screen', 'angle': 'Angle',
+      'streak': 'Streak', 'go': 'Go', 'fade': 'Fade', 'seam': 'Seam',
+      'post': 'Post', 'deep_post': 'Deep Post', 'skinny_post': 'Skinny Post',
+      'post_corner': 'Post Corner',
+      'corner': 'Corner', 'deep_corner': 'Deep Corner',
+      'out': 'Out', 'deep_out': 'Deep Out', 'speed_out': 'Speed Out',
+      'in': 'In', 'deep_in': 'Deep In', 'dig': 'Dig',
+      'shallow_cross': 'Shallow', 'drag': 'Drag', 'drag_left': 'Drag',
+      'slant': 'Slant',
+      'curl': 'Curl', 'comeback': 'Comeback', 'hitch': 'Hitch',
+      'flat': 'Flat', 'flat_left': 'Flat',
+      'swing': 'Swing', 'swing_left': 'Swing',
+      'check_down': 'Check Down', 'texas': 'Texas',
+      'wheel': 'Wheel', 'whip': 'Whip', 'angle': 'Angle',
+      'screen': 'Screen', 'screen_left': 'Screen', 'screen_right': 'Screen',
+      'block': 'Block', 'pass_block': 'Pass Block', 'lead_block': 'Lead',
+      'stalk_block': 'Stalk', 'crack_block': 'Crack',
       'run_right': 'Run', 'run_left': 'Run', 'run_inside': 'A Gap', 'run_power': 'B Gap',
       'run_counter': 'Counter', 'run_stretch': 'Stretch', 'run_dive': 'Dive',
       'run_outside': 'C Gap', 'option_give': 'Give', 'option_keep': 'Keep',
       'qb_boot_right': 'Boot', 'qb_boot_left': 'Boot', 'qb_drop': 'Drop',
       'qb_scramble': 'Scramble', 'qb_handoff': 'Handoff',
-      'pull_left': 'Pull', 'pull_right': 'Pull', 'lead_block': 'Lead',
-      'pass_block': 'Block', 'ol_release_right': 'Release', 'ol_release_left': 'Release'
+      'pull_left': 'Pull', 'pull_right': 'Pull',
+      'ol_release_right': 'Release', 'ol_release_left': 'Release'
     };
     const name = ROUTE_DISPLAY[player.routeName] || player.routeName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     ctx.globalAlpha = fade * 0.85;
