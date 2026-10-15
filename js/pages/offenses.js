@@ -96,7 +96,7 @@ function deactivateCard(card) {
     const playName = card.dataset.playName;
     if (canvas && playName) {
       const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
-      r.renderPlayCard('Shotgun', 'Spread Y-Flex', playName);
+      r.renderPlayCard('Gun', 'Spread Y-Flex', playName);
       card._staticRenderer = r;
     }
   }
@@ -159,7 +159,7 @@ function renderCards(filter = 'all', search = '') {
     const canvas = card.querySelector('.play-art-canvas');
     if (canvas) {
       const r = new PlayArtRenderer(canvas, { width: 400, height: 280 });
-      r.renderPlayCard('Shotgun', 'Spread Y-Flex', name);
+      r.renderPlayCard('Gun', 'Spread Y-Flex', name);
       card._staticRenderer = r;
     }
   });
@@ -348,7 +348,7 @@ function openModal(name, play, variants) {
     if (mainCanvas) {
       const r = new PlayArtRenderer(mainCanvas, { width: 440, height: 340 });
       r.renderLivePlay({
-        side: offModalSide, offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex',
+        side: offModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
         playFamily: name, defFormation: 'Nickel', coverageName: 'Cover 3',
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });

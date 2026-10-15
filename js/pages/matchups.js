@@ -143,9 +143,10 @@ function checkMatchup() {
 
   const offPlayData = PLAY_TYPES[offPlay] || null;
   const defCoverageData = findCoverage(defPlay);
-  const offFormation = offFormationSelect.value || 'Shotgun';
+  const offFormation = offFormationSelect.value || 'Gun';
   const offSubForm = offSubFormationSelect.value || 'Spread Y-Flex';
   const defFormation = defFormationSelect.value || 'Nickel';
+  const defSubForm = defSubFormationSelect.value || '';
 
   document.getElementById('offPlayName').textContent = offPlay || '—';
   document.getElementById('offPlayType').textContent = offPlayData ? `${offPlayData.type} / ${offPlayData.subtype}` : 'Select a play';
@@ -236,7 +237,7 @@ function checkMatchup() {
         vsRenderer.renderLivePlay({
           side: matchupSide,
           offFormation, offSubFormation: offSubForm, playFamily: offPlay,
-          defFormation, coverageName: defPlay,
+          defFormation, defSubFormation: defSubForm, coverageName: defPlay,
           duration: 4000
         });
       };
@@ -279,7 +280,7 @@ function checkMatchup() {
       defArtContainer.appendChild(c);
       if (defStaticRenderer) defStaticRenderer.destroy();
       defStaticRenderer = new PlayArtRenderer(c, { width: 280, height: 220 });
-      defStaticRenderer.renderCoverageCard(defFormation, defPlay);
+      defStaticRenderer.renderCoverageCard(defFormation, defPlay, defSubForm);
     }
   }
 

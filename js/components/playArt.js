@@ -12,131 +12,694 @@ const ZONE_BORDER = 'rgba(255,20,147,0.5)';
 const BALL_COLOR = '#8A2BE2';
 const LOS_COLOR = 'rgba(255,255,255,0.5)';
 
-// Player positions on the field (normalized 0-1 coordinates)
-// Offense faces UP (toward top of canvas)
-const OFFENSE_POSITIONS = {
-  'Shotgun': {
-    'Spread Y-Flex': {
-      QB: [0.5, 0.72], RB: [0.42, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], WR2: [0.22, 0.58], WR3: [0.78, 0.58], WR4: [0.92, 0.58]
-    },
-    'Bunch': {
-      QB: [0.5, 0.72], RB: [0.42, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], TE: [0.78, 0.56], WR2: [0.82, 0.60], WR3: [0.86, 0.56]
-    },
-    'Trips TE': {
-      QB: [0.5, 0.72], RB: [0.42, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], TE: [0.72, 0.62], WR2: [0.80, 0.56], WR3: [0.90, 0.56]
-    },
-    'Doubles': {
-      QB: [0.5, 0.72], RB: [0.42, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], WR2: [0.25, 0.58], TE: [0.72, 0.62], WR3: [0.92, 0.58]
-    },
-    'Empty Trey': {
-      QB: [0.5, 0.72], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.06, 0.58], WR2: [0.22, 0.58], TE: [0.72, 0.62], WR3: [0.82, 0.56], WR4: [0.94, 0.56]
-    },
-    '5 Wide': {
-      QB: [0.5, 0.72], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.06, 0.58], WR2: [0.22, 0.58], WR3: [0.5, 0.56], WR4: [0.78, 0.58], WR5: [0.94, 0.58]
-    },
-    'Split Close': {
-      QB: [0.5, 0.72], RB: [0.42, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.10, 0.58], TE: [0.72, 0.62], WR2: [0.28, 0.58], WR3: [0.90, 0.58]
-    },
-    'Cluster': {
-      QB: [0.5, 0.72], RB: [0.42, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], WR2: [0.22, 0.54], WR3: [0.26, 0.60], WR4: [0.92, 0.58]
+// ===== DYNAMIC FORMATION POSITION GENERATOR =====
+// Builds player positions from formation + sub-formation names using NFL logic
+// Handles all 392+ offensive and 100+ defensive sub-formations dynamically
+
+const OL_BASE = { LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62] };
+const OL_TIGHT = { LT: [0.30, 0.62], LG: [0.38, 0.62], C: [0.5, 0.62], RG: [0.62, 0.62], RT: [0.70, 0.62] };
+const OL_WIDE = { LT: [0.28, 0.62], LG: [0.36, 0.62], C: [0.5, 0.62], RG: [0.64, 0.62], RT: [0.72, 0.62] };
+
+// Build offensive positions dynamically from formation + subFormation names
+function buildOffensePositions(formation, subFormation) {
+  const form = (formation || '').toLowerCase();
+  const sub = (subFormation || '').toLowerCase();
+  const full = form + ' ' + sub;
+
+  // OL base
+  const isGoalLine = form.includes('goal');
+  const isTight = sub.includes('tight') || sub.includes('close') || isGoalLine;
+  const ol = isGoalLine ? { ...OL_WIDE } : (isTight ? { ...OL_TIGHT } : { ...OL_BASE });
+  const pos = { ...ol };
+
+  // QB depth based on formation type
+  if (form === 'gun' || form === 'shotgun') {
+    pos.QB = [0.5, 0.72];
+  } else if (form === 'pistol') {
+    pos.QB = [0.5, 0.68];
+  } else {
+    // Under center: Singleback, I Form, Strong, Weak, Split Backs, etc.
+    pos.QB = [0.5, 0.65];
+  }
+
+  // Determine if empty backfield
+  const isEmpty = sub.includes('empty') || sub.includes('5wr');
+
+  // Determine backfield
+  if (isGoalLine) {
+    pos.FB = [0.45, 0.75];
+    pos.RB = [0.5, 0.82];
+    pos.TE1 = [0.22, 0.62];
+    pos.TE2 = [0.78, 0.62];
+    pos.WR1 = [0.92, 0.58];
+    return pos;
+  }
+
+  if (form === 'hail mary') {
+    pos.QB = [0.5, 0.72];
+    pos.WR1 = [0.08, 0.58];
+    pos.WR2 = [0.30, 0.58];
+    pos.WR3 = [0.50, 0.58];
+    pos.WR4 = [0.70, 0.58];
+    pos.WR5 = [0.92, 0.58];
+    return pos;
+  }
+
+  if (form === 'wildcat') {
+    pos.QB = [0.20, 0.62]; // QB splits out as WR
+    pos.RB = [0.5, 0.72]; // RB takes direct snap
+    pos.WR1 = [0.06, 0.58];
+    pos.WR2 = [0.92, 0.58];
+    pos.WR3 = [0.80, 0.58];
+    pos.TE = [0.75, 0.62];
+    return pos;
+  }
+
+  // I Form / Strong I / Power I / Maryland I
+  const isIForm = form.includes('i form') || form === 'strong i' || form === 'power i' || form === 'maryland i';
+  if (isIForm) {
+    pos.QB = [0.5, 0.65];
+    pos.FB = [0.5, 0.73];
+    pos.RB = [0.5, 0.80];
+    if (form === 'power i' || form === 'maryland i') {
+      pos.FB = [0.48, 0.73];
     }
-  },
-  'Singleback': {
-    'Ace': {
-      QB: [0.5, 0.68], RB: [0.5, 0.78], LT: [0.30, 0.62], LG: [0.38, 0.62], C: [0.5, 0.62], RG: [0.62, 0.62], RT: [0.70, 0.62],
-      TE1: [0.25, 0.62], WR1: [0.08, 0.58], TE2: [0.75, 0.62], WR2: [0.92, 0.58]
-    },
-    'Bunch': {
-      QB: [0.5, 0.68], RB: [0.5, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], TE: [0.78, 0.56], WR2: [0.82, 0.60], WR3: [0.86, 0.56]
-    },
-    'Y Trips': {
-      QB: [0.5, 0.68], RB: [0.5, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], TE: [0.72, 0.62], WR2: [0.82, 0.56], WR3: [0.92, 0.56]
+    // Receivers
+    if (sub.includes('ace') || sub.includes('tight')) {
+      pos.TE1 = [0.25, 0.62]; pos.TE2 = [0.75, 0.62];
+      pos.WR1 = [0.08, 0.58];
+    } else if (sub.includes('slot')) {
+      pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    } else {
+      // Pro default
+      pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
     }
-  },
-  'I-Form': {
-    'Pro': {
-      QB: [0.5, 0.68], FB: [0.5, 0.75], RB: [0.5, 0.82], LT: [0.30, 0.62], LG: [0.38, 0.62], C: [0.5, 0.62], RG: [0.62, 0.62], RT: [0.70, 0.62],
-      TE: [0.75, 0.62], WR1: [0.08, 0.58], WR2: [0.92, 0.58]
-    },
-    'Tight': {
-      QB: [0.5, 0.68], FB: [0.5, 0.75], RB: [0.5, 0.82], LT: [0.30, 0.62], LG: [0.38, 0.62], C: [0.5, 0.62], RG: [0.62, 0.62], RT: [0.70, 0.62],
-      TE1: [0.25, 0.62], TE2: [0.75, 0.62], WR1: [0.08, 0.58]
+    return pos;
+  }
+
+  // Strong / Near
+  if (form === 'strong' || form === 'near') {
+    pos.QB = [0.5, 0.65];
+    pos.FB = [0.56, 0.73];
+    pos.RB = [0.5, 0.80];
+    if (sub.includes('slot')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else {
+      pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
     }
-  },
-  'Pistol': {
-    'Trips': {
-      QB: [0.5, 0.68], RB: [0.5, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], TE: [0.72, 0.62], WR2: [0.82, 0.56], WR3: [0.92, 0.56]
-    },
-    'Strong': {
-      QB: [0.5, 0.68], RB: [0.5, 0.78], LT: [0.30, 0.62], LG: [0.38, 0.62], C: [0.5, 0.62], RG: [0.62, 0.62], RT: [0.70, 0.62],
-      TE1: [0.25, 0.62], TE2: [0.75, 0.62], WR1: [0.08, 0.58], WR2: [0.92, 0.58]
-    },
-    'Bunch': {
-      QB: [0.5, 0.68], RB: [0.5, 0.78], LT: [0.32, 0.62], LG: [0.39, 0.62], C: [0.5, 0.62], RG: [0.61, 0.62], RT: [0.68, 0.62],
-      WR1: [0.08, 0.58], TE: [0.78, 0.56], WR2: [0.82, 0.60], WR3: [0.86, 0.56]
+    if (sub.includes('wing')) { pos.TE = [0.74, 0.64]; }
+    return pos;
+  }
+
+  // Weak / Far
+  if (form === 'weak' || form === 'far' || form === 'weak i') {
+    pos.QB = [0.5, 0.65];
+    pos.FB = [0.44, 0.73];
+    pos.RB = [0.5, 0.80];
+    if (sub.includes('slot')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.78, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else {
+      pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
     }
-  },
-  'Goal Line': {
-    'Normal': {
-      QB: [0.5, 0.68], FB: [0.45, 0.75], RB: [0.5, 0.82], LT: [0.28, 0.62], LG: [0.36, 0.62], C: [0.5, 0.62], RG: [0.64, 0.62], RT: [0.72, 0.62],
-      TE1: [0.22, 0.62], TE2: [0.78, 0.62], WR1: [0.92, 0.58]
+    return pos;
+  }
+
+  // Full House / Split Backs / Split T
+  if (form === 'full house' || form === 'split backs' || form === 'split t') {
+    pos.QB = [0.5, 0.65];
+    pos.RB = [0.44, 0.76];
+    pos.FB = [0.56, 0.76];
+    pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    if (sub.includes('wide')) { pos.WR3 = [0.22, 0.58]; }
+    return pos;
+  }
+
+  // === GUN / SHOTGUN / PISTOL / SINGLEBACK with dynamic receiver placement ===
+  const isGun = form === 'gun' || form === 'shotgun';
+  const isPistol = form === 'pistol';
+  const isSingleback = form === 'singleback';
+
+  // Backfield
+  if (!isEmpty) {
+    if (isGun) {
+      // RB position varies
+      if (sub.includes('hb str') || sub.includes('hb strong')) pos.RB = [0.58, 0.78];
+      else if (sub.includes('hb wk') || sub.includes('hb weak')) pos.RB = [0.42, 0.78];
+      else if (sub.includes('split') && sub.includes('backfield')) {
+        pos.RB = [0.44, 0.78]; pos.FB = [0.56, 0.78];
+        pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.WR3 = [0.92, 0.58];
+        return pos;
+      }
+      else if (sub.includes('box')) pos.RB = [0.50, 0.78];
+      else pos.RB = [0.42, 0.78];
+    } else if (isPistol) {
+      pos.RB = [0.5, 0.78];
+    } else if (isSingleback) {
+      pos.RB = [0.5, 0.76];
     }
   }
-};
 
-const DEFENSE_POSITIONS = {
-  '3-4 Odd': {
-    DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.70, 0.56],
-    LOLB: [0.18, 0.50], ILB1: [0.40, 0.48], ILB2: [0.60, 0.48], ROLB: [0.82, 0.50],
-    CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
-  },
-  '4-3 Over': {
-    LE: [0.25, 0.56], DT1: [0.40, 0.56], DT2: [0.58, 0.56], RE: [0.72, 0.56],
-    LOLB: [0.18, 0.48], MLB: [0.50, 0.46], ROLB: [0.80, 0.48],
-    CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.32], FS: [0.50, 0.22]
-  },
-  '4-3 Under': {
-    LE: [0.28, 0.56], DT1: [0.42, 0.56], DT2: [0.60, 0.56], RE: [0.75, 0.56],
-    LOLB: [0.15, 0.48], MLB: [0.48, 0.46], ROLB: [0.82, 0.48],
-    CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.35, 0.32], FS: [0.50, 0.22]
-  },
-  'Nickel': {
+  // Count available receiver slots (11 players - 5 OL - 1 QB - backfield)
+  const backfieldCount = isEmpty ? 0 : (pos.FB ? 2 : 1);
+  const receiverSlots = 11 - 5 - 1 - backfieldCount;
+
+  // Determine receiver distribution from sub-formation name
+  const hasBunch = sub.includes('bunch');
+  const hasTrips = sub.includes('trips') || sub.includes('trey') || sub.includes('trio');
+  const hasQuads = sub.includes('quads') || sub.includes('4wr');
+  const hasDoubles = sub.includes('doubles') || sub.includes('dbls');
+  const hasCluster = sub.includes('cluster');
+  const hasStack = sub.includes('stack');
+  const hasSpread = sub.includes('spread') || sub.includes('flex');
+  const hasSplit = sub.includes('split');
+  const hasAce = sub.includes('ace');
+  const hasWing = sub.includes('wing');
+  const hasTE = sub.includes(' te') || sub.includes('tight') || sub.includes('y off') || sub.includes('y-flex') || sub.includes('deuce') || sub.includes('ace');
+  const hasNormal = sub.includes('normal') || sub.includes('off ') || sub === '';
+
+  // Wing formation adds a wing TE
+  if (hasWing && isSingleback) {
+    pos.TE = [0.74, 0.64];
+    if (sub.includes('pair')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('slot')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('close')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else {
+      // Default wing - 3 WR + TE
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.92, 0.58];
+    }
+    return pos;
+  }
+
+  // Empty formations - 5 receivers, no RB
+  if (isEmpty) {
+    if (hasBunch) {
+      if (hasQuads) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.76, 0.56]; pos.WR3 = [0.80, 0.60]; pos.WR4 = [0.84, 0.56]; pos.WR5 = [0.94, 0.58];
+      } else if (sub.includes('wide')) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.20, 0.58]; pos.TE = [0.78, 0.56]; pos.WR3 = [0.82, 0.60]; pos.WR4 = [0.86, 0.56];
+      } else if (sub.includes('open')) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.20, 0.58]; pos.WR3 = [0.74, 0.56]; pos.WR4 = [0.80, 0.60]; pos.WR5 = [0.94, 0.58];
+      } else {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.58]; pos.TE = [0.78, 0.56]; pos.WR3 = [0.82, 0.60]; pos.WR4 = [0.86, 0.56];
+      }
+    } else if (hasTrips || sub.includes('trey')) {
+      if (hasStack) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.20, 0.58]; pos.WR3 = [0.80, 0.54]; pos.WR4 = [0.80, 0.60]; pos.WR5 = [0.94, 0.58];
+      } else {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.58]; pos.TE = [0.72, 0.62]; pos.WR3 = [0.82, 0.56]; pos.WR4 = [0.94, 0.56];
+      }
+    } else if (hasQuads) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.72, 0.58]; pos.WR3 = [0.78, 0.56]; pos.WR4 = [0.84, 0.58]; pos.WR5 = [0.94, 0.58];
+    } else if (sub.includes('chips')) {
+      // Chips = compressed, inline receivers
+      if (sub.includes('quads')) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.72, 0.60]; pos.WR3 = [0.76, 0.58]; pos.WR4 = [0.82, 0.60]; pos.WR5 = [0.94, 0.58];
+      } else if (sub.includes('nasty')) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.18, 0.60]; pos.WR3 = [0.24, 0.58]; pos.WR4 = [0.82, 0.60]; pos.WR5 = [0.94, 0.58];
+      } else if (sub.includes('tight')) {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.72, 0.62]; pos.WR3 = [0.78, 0.60]; pos.WR4 = [0.84, 0.62]; pos.WR5 = [0.94, 0.58];
+      } else {
+        pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.72, 0.60]; pos.WR4 = [0.78, 0.58]; pos.WR5 = [0.94, 0.58];
+      }
+    } else if (sub.includes('ace')) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.24, 0.58]; pos.TE = [0.72, 0.62]; pos.WR3 = [0.76, 0.58]; pos.WR4 = [0.94, 0.58];
+    } else if (sub.includes('slot')) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.50, 0.56]; pos.WR4 = [0.78, 0.58]; pos.WR5 = [0.94, 0.58];
+    } else if (sub.includes('base')) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.72, 0.62]; pos.WR4 = [0.82, 0.58]; pos.WR5 = [0.94, 0.58];
+    } else if (sub.includes('sketch')) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.56]; pos.WR3 = [0.22, 0.62]; pos.WR4 = [0.78, 0.58]; pos.WR5 = [0.94, 0.58];
+    } else if (sub.includes('strong')) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.72, 0.58]; pos.WR3 = [0.78, 0.56]; pos.WR4 = [0.86, 0.58]; pos.WR5 = [0.94, 0.58];
+    } else if (sub.includes('hb wide')) {
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.50, 0.58]; pos.WR4 = [0.78, 0.58]; pos.WR5 = [0.94, 0.58];
+    } else {
+      // Default empty 5-wide spread
+      pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.50, 0.56]; pos.WR4 = [0.76, 0.58]; pos.WR5 = [0.94, 0.58];
+    }
+    return pos;
+  }
+
+  // === NON-EMPTY RECEIVER PLACEMENT ===
+
+  // Bunch formations
+  if (hasBunch) {
+    pos.WR1 = [0.08, 0.58];
+    if (sub.includes('quads')) {
+      pos.WR2 = [0.72, 0.56]; pos.WR3 = [0.80, 0.60]; pos.WR4 = [0.88, 0.56];
+    } else if (sub.includes('wide')) {
+      pos.TE = [0.76, 0.56]; pos.WR2 = [0.80, 0.60]; pos.WR3 = [0.86, 0.56];
+    } else if (sub.includes('open')) {
+      if (sub.includes('te')) {
+        pos.TE = [0.72, 0.62]; pos.WR2 = [0.78, 0.56]; pos.WR3 = [0.84, 0.58];
+      } else if (sub.includes('offset')) {
+        pos.WR2 = [0.74, 0.56]; pos.WR3 = [0.80, 0.60]; pos.WR4 = [0.94, 0.58];
+      } else {
+        pos.WR2 = [0.76, 0.56]; pos.WR3 = [0.80, 0.60]; pos.WR4 = [0.94, 0.58];
+      }
+    } else if (sub.includes('spread')) {
+      pos.WR2 = [0.22, 0.58]; pos.TE = [0.78, 0.56]; pos.WR3 = [0.86, 0.58];
+    } else if (sub.includes('str') || sub.includes('strong')) {
+      pos.WR2 = [0.78, 0.56]; pos.WR3 = [0.82, 0.60]; pos.WR4 = [0.86, 0.56];
+    } else if (sub.includes('te')) {
+      pos.TE = [0.72, 0.62]; pos.WR2 = [0.80, 0.56]; pos.WR3 = [0.88, 0.56];
+    } else if (sub.includes('y-trips') || sub.includes('trio')) {
+      pos.TE = [0.72, 0.62]; pos.WR2 = [0.82, 0.56]; pos.WR3 = [0.92, 0.56];
+    } else if (sub.includes('y-flex')) {
+      pos.TE = [0.72, 0.58]; pos.WR2 = [0.82, 0.56]; pos.WR3 = [0.92, 0.58];
+    } else {
+      pos.TE = [0.78, 0.56]; pos.WR2 = [0.82, 0.60]; pos.WR3 = [0.86, 0.56];
+    }
+    return pos;
+  }
+
+  // Cluster
+  if (hasCluster) {
+    pos.WR1 = [0.08, 0.58];
+    pos.WR2 = [0.22, 0.54]; pos.WR3 = [0.26, 0.60]; pos.WR4 = [0.92, 0.58];
+    if (sub.includes('hb str')) { pos.RB = [0.58, 0.78]; }
+    return pos;
+  }
+
+  // Quads (without bunch)
+  if (hasQuads) {
+    pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.72, 0.58]; pos.WR3 = [0.80, 0.56]; pos.WR4 = [0.92, 0.58];
+    return pos;
+  }
+
+  // Trips / Trey / Trio
+  if (hasTrips) {
+    pos.WR1 = [0.08, 0.58];
+    if (sub.includes('te')) {
+      pos.TE = [0.72, 0.62]; pos.WR2 = [0.82, 0.56]; pos.WR3 = [0.92, 0.56];
+    } else if (sub.includes('open')) {
+      pos.WR2 = [0.74, 0.56]; pos.WR3 = [0.82, 0.58]; pos.WR4 = [0.94, 0.58];
+    } else if (sub.includes('strong') || sub.includes('str')) {
+      pos.WR2 = [0.74, 0.58]; pos.WR3 = [0.82, 0.56]; pos.WR4 = [0.92, 0.56];
+    } else if (sub.includes('wk') || sub.includes('weak')) {
+      pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.82, 0.56]; pos.WR4 = [0.92, 0.56];
+    } else {
+      pos.TE = [0.72, 0.62]; pos.WR2 = [0.82, 0.56]; pos.WR3 = [0.92, 0.56];
+    }
+    return pos;
+  }
+
+  // Doubles (2x2)
+  if (hasDoubles) {
+    if (sub.includes('y off') || sub.includes('y-flex')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('flex')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.76, 0.58]; pos.WR4 = [0.92, 0.58];
+    } else if (sub.includes('hip')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.62]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('off close') || sub.includes('z close')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.78, 0.58]; pos.WR4 = [0.92, 0.58];
+    } else if (sub.includes('stack')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.08, 0.54]; pos.WR3 = [0.92, 0.58]; pos.WR4 = [0.92, 0.54];
+    } else if (sub.includes('clamp')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.20, 0.56]; pos.WR3 = [0.80, 0.56]; pos.WR4 = [0.92, 0.58];
+    } else if (sub.includes('offset')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.56]; pos.WR3 = [0.76, 0.56]; pos.WR4 = [0.92, 0.58];
+    } else {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.62]; pos.WR3 = [0.92, 0.58];
+    }
+    return pos;
+  }
+
+  // Stack
+  if (hasStack && !hasDoubles) {
+    pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.08, 0.54]; pos.WR3 = [0.92, 0.58]; pos.WR4 = [0.92, 0.54];
+    return pos;
+  }
+
+  // Ace formations
+  if (hasAce) {
+    if (sub.includes('slot')) {
+      pos.TE = [0.72, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('offset')) {
+      pos.TE1 = [0.25, 0.62]; pos.TE2 = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    } else {
+      pos.TE1 = [0.25, 0.62]; pos.TE2 = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    }
+    return pos;
+  }
+
+  // Deuce formations
+  if (sub.includes('deuce')) {
+    pos.TE1 = [0.25, 0.62]; pos.TE2 = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    return pos;
+  }
+
+  // Wing TE
+  if (hasWing) {
+    pos.TE = [0.74, 0.64];
+    if (sub.includes('close')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('pair')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.58]; pos.WR3 = [0.92, 0.58];
+    }
+    return pos;
+  }
+
+  // Singleback-specific sub-formations
+  if (isSingleback) {
+    if (sub.includes('bunch te')) {
+      pos.TE = [0.72, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.80, 0.56]; pos.WR3 = [0.88, 0.56];
+    } else if (sub.includes('bunch')) {
+      pos.TE = [0.78, 0.56]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.60]; pos.WR3 = [0.86, 0.56];
+    } else if (sub.includes('toad') || sub.includes('nasty')) {
+      pos.TE = [0.72, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else if (sub.includes('stack')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.78, 0.58]; pos.WR4 = [0.92, 0.58];
+    } else if (sub.includes('off close')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.78, 0.58]; pos.WR4 = [0.92, 0.58];
+    } else {
+      // Default singleback: 1 TE, 3 WR
+      pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.92, 0.58];
+    }
+    return pos;
+  }
+
+  // Pistol-specific
+  if (isPistol) {
+    if (sub.includes('strong') || sub.includes('ace')) {
+      pos.TE1 = [0.25, 0.62]; pos.TE2 = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    } else if (sub.includes('bunch')) {
+      pos.TE = [0.78, 0.56]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.60]; pos.WR3 = [0.86, 0.56];
+    } else if (sub.includes('trips') || sub.includes('trey')) {
+      pos.TE = [0.72, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.56]; pos.WR3 = [0.92, 0.56];
+    } else if (sub.includes('flex') || sub.includes('spread')) {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.78, 0.58]; pos.WR4 = [0.92, 0.58];
+    } else {
+      pos.TE = [0.72, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.82, 0.56]; pos.WR3 = [0.92, 0.56];
+    }
+    return pos;
+  }
+
+  // === GUN/SHOTGUN - main formation ===
+  // Normal / Y Off / Default
+  if (sub.includes('normal') || sub.includes('y off') || sub.includes('y-flex') || sub.includes('y-option')) {
+    pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.58]; pos.WR3 = [0.92, 0.58];
+    return pos;
+  }
+
+  // Split formations
+  if (sub.includes('split') && !sub.includes('backfield')) {
+    if (sub.includes('close')) {
+      pos.WR1 = [0.10, 0.58]; pos.TE = [0.72, 0.62]; pos.WR2 = [0.28, 0.58]; pos.WR3 = [0.90, 0.58];
+    } else {
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.WR3 = [0.75, 0.58]; pos.WR4 = [0.92, 0.58];
+    }
+    return pos;
+  }
+
+  // Spread
+  if (hasSpread) {
+    pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.78, 0.58]; pos.WR4 = [0.92, 0.58];
+    return pos;
+  }
+
+  // Box formation (tight slot)
+  if (sub.includes('box')) {
+    pos.TE = [0.72, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.78, 0.58]; pos.WR3 = [0.92, 0.58];
+    return pos;
+  }
+
+  // 5WR / 4WR
+  if (sub.includes('5wr')) {
+    pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.50, 0.56]; pos.WR4 = [0.78, 0.58]; pos.WR5 = [0.94, 0.58];
+    delete pos.RB;
+    return pos;
+  }
+  if (sub.includes('4wr')) {
+    pos.WR1 = [0.06, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.78, 0.58]; pos.WR4 = [0.94, 0.58];
+    return pos;
+  }
+
+  // TE-heavy formations
+  if (sub.includes('tight') && isGun) {
+    pos.TE1 = [0.25, 0.62]; pos.TE2 = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    return pos;
+  }
+
+  // Default Gun: 2x2 with TE
+  pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.62]; pos.WR3 = [0.92, 0.58];
+  return pos;
+}
+
+// Build defensive positions dynamically from formation + subFormation names
+function buildDefensePositions(formation, subFormation) {
+  const form = (formation || '').toLowerCase();
+  const sub = (subFormation || '').toLowerCase();
+  const full = form + ' ' + sub;
+
+  // Goal Line
+  if (form.includes('goal')) {
+    if (sub.includes('6-2')) {
+      return {
+        DL1: [0.22, 0.56], DL2: [0.32, 0.56], DL3: [0.42, 0.56], DL4: [0.58, 0.56], DL5: [0.68, 0.56], DL6: [0.78, 0.56],
+        LB1: [0.35, 0.48], LB2: [0.65, 0.48],
+        CB1: [0.08, 0.42], CB2: [0.92, 0.42], S: [0.50, 0.30]
+      };
+    }
+    if (sub.includes('pinch')) {
+      return {
+        DL1: [0.30, 0.56], DL2: [0.40, 0.56], DL3: [0.50, 0.56], DL4: [0.60, 0.56], DL5: [0.70, 0.56],
+        LB1: [0.25, 0.48], LB2: [0.50, 0.48], LB3: [0.75, 0.48],
+        CB1: [0.08, 0.42], CB2: [0.92, 0.42], S: [0.50, 0.30]
+      };
+    }
+    // 5-3 default
+    return {
+      DL1: [0.25, 0.56], DL2: [0.38, 0.56], DL3: [0.50, 0.56], DL4: [0.62, 0.56], DL5: [0.75, 0.56],
+      LB1: [0.30, 0.48], LB2: [0.50, 0.48], LB3: [0.70, 0.48],
+      CB1: [0.08, 0.42], CB2: [0.92, 0.42], S: [0.50, 0.30]
+    };
+  }
+
+  // Prevent
+  if (form.includes('prevent')) {
+    return {
+      DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.70, 0.56],
+      LB: [0.50, 0.48],
+      CB1: [0.06, 0.30], CB2: [0.94, 0.30], NCB1: [0.25, 0.32], NCB2: [0.75, 0.32],
+      SS: [0.60, 0.18], FS: [0.40, 0.18], S: [0.50, 0.12]
+    };
+  }
+
+  // Quarter / Dollar
+  if (form.includes('quarter') || form.includes('dollar')) {
+    return {
+      DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.70, 0.56],
+      LB: [0.50, 0.48],
+      CB1: [0.06, 0.40], NCB1: [0.22, 0.40], NCB2: [0.50, 0.40], NCB3: [0.78, 0.40], CB2: [0.94, 0.40],
+      SS: [0.65, 0.25], FS: [0.42, 0.18]
+    };
+  }
+
+  // Dime formations
+  if (form.includes('dime') || form.includes('2-4-5') || form.includes('2-5')) {
+    const isDblMug = full.includes('dbl mug') || full.includes('double mug');
+    const isSingleMug = full.includes('single mug');
+
+    if (isDblMug || full.includes('1-4')) {
+      // 1-4 Dbl Mug: 1 DL, 4 LB-types mugged up at the LOS
+      return {
+        NT: [0.50, 0.56],
+        LB1: [0.34, 0.57], LB2: [0.42, 0.57], LB3: [0.58, 0.57], LB4: [0.66, 0.57],
+        CB1: [0.06, 0.42], NCB1: [0.22, 0.42], CB2: [0.94, 0.42], NCB2: [0.78, 0.42],
+        SS: [0.65, 0.28], FS: [0.50, 0.18]
+      };
+    }
+    if (isSingleMug) {
+      return {
+        LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
+        LB: [0.50, 0.57],
+        CB1: [0.06, 0.42], NCB1: [0.22, 0.42], CB2: [0.94, 0.42], NCB2: [0.78, 0.42],
+        SS: [0.65, 0.28], FS: [0.50, 0.18]
+      };
+    }
+    if (full.includes('3-2 odd')) {
+      return {
+        DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.70, 0.56],
+        LB1: [0.38, 0.48], LB2: [0.62, 0.48],
+        CB1: [0.06, 0.42], NCB1: [0.22, 0.42], CB2: [0.94, 0.42], NCB2: [0.78, 0.42],
+        SS: [0.65, 0.28], FS: [0.50, 0.18]
+      };
+    }
+    // Default Dime
+    return {
+      LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
+      LB: [0.50, 0.48],
+      CB1: [0.06, 0.42], NCB1: [0.22, 0.42], NCB2: [0.78, 0.42], CB2: [0.94, 0.42],
+      SS: [0.65, 0.28], FS: [0.50, 0.18]
+    };
+  }
+
+  // Nickel formations (4 DL, 2 LB, 5 DB) or 3-3-5
+  if (form.includes('nickel') || form.includes('3-3-5') || form.includes('4-2-5')) {
+    const isDblMug = full.includes('dbl mug') || full.includes('double mug');
+    const isSwapDblMug = full.includes('swap dbl mug') || full.includes('swap double mug');
+
+    if (isDblMug || isSwapDblMug) {
+      // Double Mug: 2 LBs mugged up at the LOS between DL
+      return {
+        LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
+        LB1: [0.38, 0.57], LB2: [0.62, 0.57],
+        CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
+        SS: [0.65, 0.30], FS: [0.50, 0.20]
+      };
+    }
+    if (full.includes('3-3') && !full.includes('3-3-5')) {
+      // Nickel 3-3: 3 DL, 3 LBs
+      const isCub = full.includes('cub');
+      const isJack = full.includes('jack');
+      const isWide = full.includes('wide');
+      return {
+        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
+        LB1: [isCub ? 0.20 : 0.30, isCub ? 0.52 : 0.48],
+        LB2: [0.50, 0.48],
+        LB3: [isJack ? 0.80 : 0.70, isJack ? 0.52 : 0.48],
+        CB1: [0.06, isWide ? 0.40 : 0.42], NCB: [0.25, 0.42], CB2: [0.94, isWide ? 0.40 : 0.42],
+        SS: [0.65, 0.30], FS: [0.50, 0.20]
+      };
+    }
+    if (full.includes('wide')) {
+      return {
+        LE: [0.20, 0.56], DT1: [0.40, 0.56], DT2: [0.60, 0.56], RE: [0.80, 0.56],
+        LB1: [0.35, 0.48], LB2: [0.65, 0.48],
+        CB1: [0.04, 0.40], NCB: [0.22, 0.40], CB2: [0.96, 0.40],
+        SS: [0.65, 0.28], FS: [0.50, 0.18]
+      };
+    }
+    if (full.includes('over g') || full.includes('4-2-5')) {
+      return {
+        LE: [0.22, 0.56], DT1: [0.38, 0.56], DT2: [0.55, 0.56], RE: [0.72, 0.56],
+        LB1: [0.35, 0.48], LB2: [0.65, 0.48],
+        CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
+        SS: [0.65, 0.30], FS: [0.50, 0.20]
+      };
+    }
+    // Default Nickel Over
+    return {
+      LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
+      LB1: [0.35, 0.48], LB2: [0.65, 0.48],
+      CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
+      SS: [0.65, 0.30], FS: [0.50, 0.20]
+    };
+  }
+
+  // 46 Defense
+  if (form.includes('46')) {
+    if (sub.includes('bear')) {
+      return {
+        LE: [0.22, 0.56], DT1: [0.36, 0.56], NT: [0.50, 0.56], DT2: [0.64, 0.56], RE: [0.78, 0.56],
+        MLB: [0.48, 0.46], ROLB: [0.82, 0.48],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42],
+        SS: [0.62, 0.52], FS: [0.50, 0.22]
+      };
+    }
+    return {
+      LE: [0.22, 0.56], DT1: [0.38, 0.56], DT2: [0.55, 0.56], RE: [0.72, 0.56],
+      LOLB: [0.15, 0.50], MLB: [0.48, 0.46], ROLB: [0.82, 0.50],
+      CB1: [0.06, 0.42], CB2: [0.94, 0.42],
+      SS: [0.62, 0.52], FS: [0.50, 0.22]
+    };
+  }
+
+  // 5-2 Defense
+  if (form.includes('5-2')) {
+    return {
+      LE: [0.22, 0.56], DT1: [0.36, 0.56], NT: [0.50, 0.56], DT2: [0.64, 0.56], RE: [0.78, 0.56],
+      LB1: [0.35, 0.48], LB2: [0.65, 0.48],
+      CB1: [0.06, 0.42], CB2: [0.94, 0.42],
+      SS: [0.65, 0.32], FS: [0.50, 0.22]
+    };
+  }
+
+  // 4-4 Defense
+  if (form.includes('4-4')) {
+    return {
+      LE: [0.22, 0.56], DT1: [0.40, 0.56], DT2: [0.60, 0.56], RE: [0.78, 0.56],
+      LOLB: [0.18, 0.50], ILB1: [0.40, 0.48], ILB2: [0.60, 0.48], ROLB: [0.82, 0.50],
+      CB1: [0.06, 0.42], CB2: [0.94, 0.42], FS: [0.50, 0.22]
+    };
+  }
+
+  // 4-3 Defense
+  if (form.includes('4-3')) {
+    if (sub.includes('under')) {
+      return {
+        LE: [0.28, 0.56], DT1: [0.42, 0.56], DT2: [0.60, 0.56], RE: [0.75, 0.56],
+        LOLB: [0.15, 0.48], MLB: [0.48, 0.46], ROLB: [0.82, 0.48],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.35, 0.32], FS: [0.50, 0.22]
+      };
+    }
+    if (sub.includes('wide')) {
+      return {
+        LE: [0.20, 0.56], DT1: [0.38, 0.56], DT2: [0.62, 0.56], RE: [0.80, 0.56],
+        LOLB: [0.15, 0.48], MLB: [0.50, 0.46], ROLB: [0.85, 0.48],
+        CB1: [0.04, 0.42], CB2: [0.96, 0.42], SS: [0.65, 0.32], FS: [0.50, 0.22]
+      };
+    }
+    if (sub.includes('odd')) {
+      return {
+        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56], RE: [0.82, 0.54],
+        LOLB: [0.18, 0.48], MLB: [0.50, 0.46], ROLB: [0.82, 0.48],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.32], FS: [0.50, 0.22]
+      };
+    }
+    // Over (default), Solid, Even
+    return {
+      LE: [0.25, 0.56], DT1: [0.40, 0.56], DT2: [0.58, 0.56], RE: [0.72, 0.56],
+      LOLB: [0.18, 0.48], MLB: [0.50, 0.46], ROLB: [0.80, 0.48],
+      CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.32], FS: [0.50, 0.22]
+    };
+  }
+
+  // 3-4 Defense
+  if (form.includes('3-4')) {
+    const isCub = sub.includes('cub');
+    const isBear = sub.includes('bear');
+    if (isBear) {
+      return {
+        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
+        LOLB: [0.18, 0.54], ILB1: [0.40, 0.48], ILB2: [0.60, 0.48], ROLB: [0.82, 0.54],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    if (isCub) {
+      return {
+        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
+        LOLB: [0.18, 0.52], ILB1: [0.38, 0.48], ILB2: [0.62, 0.48], ROLB: [0.82, 0.52],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    // Default 3-4 Odd
+    return {
+      DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.70, 0.56],
+      LOLB: [0.18, 0.50], ILB1: [0.40, 0.48], ILB2: [0.60, 0.48], ROLB: [0.82, 0.50],
+      CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+    };
+  }
+
+  // Fallback: Nickel Over
+  return {
     LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
     LB1: [0.35, 0.48], LB2: [0.65, 0.48],
-    CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.30], FS: [0.50, 0.20]
-  },
-  'Dime': {
-    LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
-    LB: [0.50, 0.48],
-    CB1: [0.06, 0.42], NCB1: [0.22, 0.42], NCB2: [0.78, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.28], FS: [0.50, 0.18]
-  },
-  'Quarter': {
-    DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.70, 0.56],
-    LB: [0.50, 0.48],
-    CB1: [0.06, 0.40], NCB1: [0.22, 0.40], NCB2: [0.50, 0.40], NCB3: [0.78, 0.40], CB2: [0.94, 0.40], SS: [0.65, 0.25], FS: [0.42, 0.18]
-  },
-  '46': {
-    LE: [0.22, 0.56], DT1: [0.38, 0.56], DT2: [0.55, 0.56], RE: [0.72, 0.56],
-    LOLB: [0.15, 0.50], MLB: [0.48, 0.46], ROLB: [0.82, 0.50],
-    CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.62, 0.52], FS: [0.50, 0.22]
-  },
-  'Goal Line': {
-    DL1: [0.22, 0.56], DL2: [0.34, 0.56], DL3: [0.46, 0.56], DL4: [0.54, 0.56], DL5: [0.66, 0.56], DL6: [0.78, 0.56],
-    LB1: [0.30, 0.48], LB2: [0.50, 0.48], LB3: [0.70, 0.48],
-    CB1: [0.08, 0.42], S: [0.50, 0.30]
-  }
-};
+    CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
+    SS: [0.65, 0.30], FS: [0.50, 0.20]
+  };
+}
+
+// Legacy constants kept for backward compatibility but not used by the dynamic system
+const OFFENSE_POSITIONS = {};
+const DEFENSE_POSITIONS = {};
 
 // Route paths (waypoints as delta from start position, normalized)
 const ROUTE_PATHS = {
@@ -2204,25 +2767,13 @@ class PlayArtRenderer {
     ctx.strokeRect(x, y, w, h);
   }
 
-  // Get closest formation match
+  // Dynamic formation position resolution
   getOffensePositions(formation, subFormation) {
-    const formGroup = OFFENSE_POSITIONS[formation];
-    if (formGroup && formGroup[subFormation]) return formGroup[subFormation];
-    if (formGroup) return Object.values(formGroup)[0];
-    return OFFENSE_POSITIONS['Shotgun']['Spread Y-Flex'];
+    return buildOffensePositions(formation, subFormation);
   }
 
-  getDefensePositions(formation) {
-    // Map sub-formations to base
-    if (formation.includes('3-4') || formation.includes('Bear')) return DEFENSE_POSITIONS['3-4 Odd'];
-    if (formation.includes('4-3 Under')) return DEFENSE_POSITIONS['4-3 Under'];
-    if (formation.includes('4-3')) return DEFENSE_POSITIONS['4-3 Over'];
-    if (formation.includes('Nickel') || formation.includes('3-3-5') || formation.includes('2-4-5')) return DEFENSE_POSITIONS['Nickel'];
-    if (formation.includes('Dime')) return DEFENSE_POSITIONS['Dime'];
-    if (formation.includes('Dollar') || formation.includes('Quarter')) return DEFENSE_POSITIONS['Quarter'];
-    if (formation.includes('46')) return DEFENSE_POSITIONS['46'];
-    if (formation.includes('Goal')) return DEFENSE_POSITIONS['Goal Line'];
-    return DEFENSE_POSITIONS['Nickel'];
+  getDefensePositions(formation, subFormation) {
+    return buildDefensePositions(formation, subFormation || '');
   }
 
   getPlayRoutes(playFamily) {
@@ -2305,8 +2856,8 @@ class PlayArtRenderer {
     }
   }
 
-  renderDefense(formation, coverageName) {
-    const positions = this.getDefensePositions(formation);
+  renderDefense(formation, coverageName, subFormation) {
+    const positions = this.getDefensePositions(formation, subFormation);
     const coverageData = this.getCoverageZones(coverageName);
 
     // Draw zones
@@ -2329,14 +2880,14 @@ class PlayArtRenderer {
     this.renderOffense(offFormation, offSubFormation, playFamily);
   }
 
-  renderCoverageCard(defFormation, coverageName) {
+  renderCoverageCard(defFormation, coverageName, defSubFormation) {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.drawField();
-    this.renderDefense(defFormation, coverageName);
+    this.renderDefense(defFormation, coverageName, defSubFormation);
   }
 
   // ANIMATED VS matchup
-  renderMatchupAnimated(offFormation, offSubFormation, playFamily, defFormation, coverageName, duration = 4000) {
+  renderMatchupAnimated(offFormation, offSubFormation, playFamily, defFormation, coverageName, duration = 4000, defSubFormation) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     const startTime = performance.now();
@@ -2350,7 +2901,7 @@ class PlayArtRenderer {
       this.drawField();
 
       // Defense zones (fade in)
-      const defPositions = this.getDefensePositions(defFormation);
+      const defPositions = this.getDefensePositions(defFormation, defSubFormation);
       const coverageData = this.getCoverageZones(coverageName);
       if (coverageData.type === 'zone') {
         for (const zone of coverageData.zones) {
@@ -2448,12 +2999,12 @@ class PlayArtRenderer {
   // ============================
   // Players physically move: WRs run routes, OL engages DL, DBs drop/follow, gaps fill
   // side: 'offense' | 'defense' - which side is highlighted
-  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, coverageName, duration = 4000, visibleGroups = null }) {
+  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
 
     const offPositions = this.getOffensePositions(offFormation, offSubFormation);
-    const defPositions = this.getDefensePositions(defFormation);
+    const defPositions = this.getDefensePositions(defFormation, defSubFormation);
     const playData = this.getPlayRoutes(playFamily);
     const coverageData = this.getCoverageZones(coverageName);
     const routes = playData.routes;
@@ -2701,7 +3252,7 @@ class PlayArtRenderer {
         this.isAnimating = false;
         this._loopTimeout = setTimeout(() => {
           if (this.canvas.isConnected) {
-            this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, coverageName, duration, visibleGroups });
+            this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups });
           }
         }, 1500);
       }
@@ -3278,14 +3829,14 @@ class PlayArtRenderer {
   // === SINGLE-PLAY LIVE ANIMATION (no opponent, card view) ===
   // Shows only offense OR defense animated, for card previews
   // visibleGroups: null (all) or Set of group names: 'OL','QB','WR','TE','RB','DL','LB','DB'
-  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, coverageName, duration = 3500, visibleGroups = null }) {
+  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
 
     const isOff = mode === 'offense';
     const offPositions = isOff ? this.getOffensePositions(offFormation, offSubFormation) : null;
     const playData = isOff ? this.getPlayRoutes(playFamily) : null;
-    const defPositions = !isOff ? this.getDefensePositions(defFormation) : null;
+    const defPositions = !isOff ? this.getDefensePositions(defFormation, defSubFormation) : null;
     const coverageData = !isOff ? this.getCoverageZones(coverageName) : null;
 
     // Build player data
@@ -3472,7 +4023,7 @@ class PlayArtRenderer {
         this.isAnimating = false;
         this._loopTimeout = setTimeout(() => {
           if (this.canvas.isConnected) {
-            this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, coverageName, duration });
+            this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration });
           }
         }, 1200);
       }

@@ -252,7 +252,7 @@ function buildFormationTree(pb, search) {
       if (currentSide === 'offense') {
         r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
       } else {
-        r.renderSinglePlayLive({ mode: 'defense', defFormation: fm, coverageName: pn, duration: 3000 });
+        r.renderSinglePlayLive({ mode: 'defense', defFormation: fm, defSubFormation: sf, coverageName: pn, duration: 3000 });
       }
       canvas._hoverAnim = r;
       renderers.push(r);
@@ -282,7 +282,7 @@ function renderChipCanvas(canvas) {
   if (currentSide === 'offense') {
     r.renderPlayCard(fm, sf, pn);
   } else {
-    r.renderCoverageCard(fm, pn);
+    r.renderCoverageCard(fm, pn, sf);
   }
   renderers.push(r);
 }
@@ -560,7 +560,7 @@ function openDefenseDetail(coverageName, formation) {
     if (pbModalCanvas) {
       const r = new PlayArtRenderer(pbModalCanvas, { width: 440, height: 340 });
       r.renderLivePlay({
-        side: modalSide, offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex',
+        side: modalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
         playFamily: 'Inside Zone', defFormation: fm, coverageName: coverageName,
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });

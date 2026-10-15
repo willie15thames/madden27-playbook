@@ -345,7 +345,7 @@ function openModal(cov, variants) {
     if (mainCanvas) {
       const r = new PlayArtRenderer(mainCanvas, { width: 440, height: 340 });
       r.renderLivePlay({
-        side: covModalSide, offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex',
+        side: covModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
         playFamily: 'PA Crossers', defFormation: 'Nickel', coverageName: cov.name,
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });

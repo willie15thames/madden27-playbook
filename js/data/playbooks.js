@@ -9,49 +9,49 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "Spread / Pass Heavy",
     formations: {
       "Singleback": {
-        "Bunch TE": ["Cross Drag", "HB Pump Draw", "Inside Zone", "Jet Sweep", "MTN Dbl Swing", "MTN FK Swing", "MTN HB Screen", "PA Draw Shot", "PA Jet Sweep", "Spacing", "Stretch Alert Bubble", "Zone Fake Jet"],
-        "Doubles Off Close": ["HB Duo", "Inside Zone", "PA Boot LT", "PA Cross", "Stick", "Stretch Alert Smoke", "Y Corner"],
-        "Toad X Nasty": ["HB Mid Zone", "Inside Zone", "MTN HB Toss", "PA Boot", "Spacing", "Stick", "Stretch Alert Bubble"],
-        "U Off Stack": ["HB Duo", "Inside Zone", "PA Boot", "PA Cross", "Spacing", "Stick", "Zone Split"],
+        "Bunch TE": ["Cross Drag", "HB Pump Draw", "HB Duo", "Inside Zone", "Jet Sweep", "MTN Dbl Swing", "MTN FK Swing", "MTN HB Screen", "MTN Spot", "PA Draw Shot", "PA Jet Sweep", "PA Boot", "Spacing", "Stretch Alert Bubble", "Zone Fake Jet"],
+        "Doubles Off Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot LT", "PA Cross", "PA TE Flood", "Power O", "Spacing", "Stick", "Stretch Alert Smoke", "Y Corner"],
+        "Toad X Nasty": ["Counter", "HB Mid Zone", "HB Duo", "Inside Zone", "MTN HB Toss", "MTN Spacing", "PA Boot", "PA Cross", "Spacing", "Stick", "Stretch Alert Bubble"],
+        "U Off Stack": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA Cross", "PA TE Flood", "Spacing", "Stick", "Zone Split"],
         "Wing": ["Close PA Cross", "Close PA Post", "Close Zone Strg", "Curl Combo", "HB Duo", "HB Mid Zone", "HB Stretch Alert Smoke", "MTN H Zone Wk", "MTN HB Toss Crack", "MTN PA FK Slide", "MTN PA Poco Slide", "MTN Spacing", "MTN Z Spot", "PA Boot LT", "PA TE Flood", "TE Attack", "Y Stick", "Zone Split Alert Lookie"],
-        "Wing Close": ["HB Duo", "HB Stretch", "Inside Zone", "MTN PA Slide", "PA Boot", "Spacing", "Stick"],
-        "Wing Pair": ["HB Duo", "Inside Zone", "MTN FK Swing", "PA Boot", "PA Cross", "Spacing", "Stick"],
-        "Wing Slot": ["HB Duo", "Inside Zone", "MTN Spacing", "PA Boot LT", "PA TE Flood", "Stick", "Stretch Alert Smoke"]
+        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN PA Slide", "MTN Spacing", "PA Boot", "PA Cross", "Power O", "Spacing", "Stick"],
+        "Wing Pair": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN FK Swing", "MTN Spacing", "PA Boot", "PA Cross", "PA TE Flood", "Spacing", "Stick"],
+        "Wing Slot": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "MTN Z Spot", "PA Boot LT", "PA Cross", "PA TE Flood", "Stick", "Stretch Alert Smoke"]
       },
       "I Form": {
-        "Pro": ["94 Will", "Alert Z Lookie", "Curls", "FB Dive Fake HB", "FB Fake HB Flip", "HB Counter Str", "HB Duo", "ISO", "PA Boot", "PA Comeback Slide", "PA Power O", "PA WR In", "PA X Dig", "Power O", "Quick Slants", "Stretch Alert X Smoke", "Texas", "X Post"],
-        "Y Off Close": ["FB Dive", "HB Counter", "HB Duo", "ISO", "PA Boot", "PA Power O", "Power O", "Quick Slants"]
+        "Pro": ["94 Will", "Alert Z Lookie", "Curls", "FB Dive Fake HB", "FB Fake HB Flip", "HB Counter Str", "HB Duo", "HB Stretch", "ISO", "PA Boot", "PA Comeback Slide", "PA Power O", "PA WR In", "PA X Dig", "Power O", "Quick Slants", "Stretch Alert X Smoke", "Texas", "X Post"],
+        "Y Off Close": ["Counter", "FB Dive", "HB Counter", "HB Dive", "HB Duo", "ISO", "PA Boot", "PA Power O", "PA WR In", "Power O", "Quick Slants", "Stretch"]
       },
       "Strong": {
-        "Wing": ["Counter", "HB Dive", "HB Toss", "PA Boot", "Power O", "Stretch"],
-        "Z Close": ["Counter", "HB Dive", "PA Boot", "Power O", "Sweep"]
+        "Wing": ["Counter", "HB Dive", "HB Stretch", "HB Toss", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Quick Slants", "Stretch"],
+        "Z Close": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Quick Slants", "Stretch", "Sweep"]
       },
       "Pistol": {
-        "Open Flex Close": ["HB Stretch", "Inside Zone", "PA Read", "QB Scramble", "Read Option", "RPO Alert"],
-        "Strong Slot Close": ["Inside Zone", "PA Boot", "Power Read", "QB Scramble", "Read Option", "RPO Peek"]
+        "Open Flex Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Read", "QB Scramble", "Read Option", "RPO Alert", "RPO Peek"],
+        "Strong Slot Close": ["Counter", "Inside Zone", "Levels", "Mesh", "PA Boot", "Power Read", "QB Scramble", "Read Option", "RPO Alert", "RPO Peek"]
       },
       "Gun": {
-        "Bunch TE": ["Corner Strike", "Curl Flat", "HB Slip Screen", "Inside Zone", "MTN Bench", "MTN Return Levels", "MTN Z Spot", "Orbit Cross Screen", "Orbit PA HB Wheel", "Orbit RPO Alert Screen"],
-        "Bunch Y Nasty": ["Choice Shallow Dig", "Counter Y", "Inside Zone", "Mesh HB Sneak", "MTN China Cross", "MTN HB Choice", "MTN Outside Zone", "MTN Smash Sluggo", "MTN Speed Dig Under", "MTN Spot HB Under", "PA Cross X Whip", "RPO Zone Alert", "Y Flat Goalline", "Z Mesh Goalline", "Z Spot Goalline"],
-        "Bunch Y-Trips": ["Corner Strike", "HB Draw", "Inside Zone", "Mesh", "MTN Drive", "PA Seams", "Spacing", "Verticals"],
-        "Cluster HB Str": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "Orbit Screen", "Smash", "Stick"],
+        "Bunch TE": ["Corner Strike", "Curl Flat", "Deep Post", "Four Verticals", "HB Slip Screen", "Inside Zone", "Levels", "MTN Bench", "MTN Drive", "MTN Return Levels", "MTN Z Spot", "Orbit Cross Screen", "Orbit PA HB Wheel", "Orbit RPO Alert Screen", "Stick"],
+        "Bunch Y Nasty": ["Choice Shallow Dig", "Corner Strike", "Counter Y", "Inside Zone", "Mesh HB Sneak", "MTN China Cross", "MTN HB Choice", "MTN Outside Zone", "MTN Smash Sluggo", "MTN Speed Dig Under", "MTN Spot HB Under", "PA Cross X Whip", "RPO Zone Alert", "Y Flat Goalline", "Z Mesh Goalline", "Z Spot Goalline"],
+        "Bunch Y-Trips": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Seams", "Spacing", "Stick", "Verticals"],
+        "Cluster HB Str": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "Orbit Screen", "PA Crossers", "Smash", "Stick", "Verticals"],
         "Doubles HB Wk": ["Boomerang 01 Trap", "Boomerang Slot Swing", "Boomerang Y Delay", "Corner Strike", "Curl Combo", "Double Slants", "Four Verticals", "HB Base", "HB Cross Screen", "HB Mid Draw", "HB Slip Screen", "Inside Zone", "PA Y-Cross", "Pin Pull Sweep", "RE", "Read Option"],
-        "Doubles Z Close Wk": ["Corner Strike", "Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "PA Read"],
-        "Empty Bunch": ["Curl Flats", "Divide Wheel", "L Spot", "QB Draw", "Spacing", "Trail", "Verticals", "Y Curl", "Z Spot N Go"],
-        "Empty Chips": ["Curl Flats", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Tunnel Screen", "Verticals"],
-        "Empty Y Slot": ["Curl Flats", "Mesh", "QB Draw", "Spacing", "Stick", "Verticals"],
+        "Doubles Z Close Wk": ["Corner Strike", "Curl Combo", "Dagger", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "Stick"],
+        "Empty Bunch": ["Corner Strike", "Curl Flats", "Dig Under", "Divide Wheel", "L Spot", "Levels", "QB Draw", "Quick Slants", "Spacing", "Trail", "Verticals", "Y Curl", "Z Spot N Go"],
+        "Empty Chips": ["Corner Strike", "Curl Flats", "Levels", "Mesh", "QB Draw", "Quick Slants", "Slant Flat", "Spacing", "Stick", "Tunnel Screen", "Verticals"],
+        "Empty Y Slot": ["Corner Strike", "Curl Flats", "Levels", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Stick", "Verticals", "Y Trail"],
         "Normal Y Off": ["Curl Combo", "Dbl Dig", "Double Slants", "Exit RPO Alert Screen", "Exit Slot Option", "Exit Switch Out", "Fake Jet HB Seam", "Fake Jet Pass Power", "Four Verticals", "HB Scissors", "HB Slip Screen", "Inside Zone", "Jet Touch Pass", "MTN Curls", "MTN HB Off Tackle", "MTN PA Read", "MTN PA Verticals", "MTN Scissors", "MTN Y Lead Read Option", "Orbit PA Curls", "Orbit PA Y Screen", "Orbit RPO Alert Swing", "RPO Peek Slant", "Stick Slot Option"],
-        "Normal Y Off Close": ["Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read"],
-        "Split WR Backfield": ["HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick", "Verticals"],
-        "Split Y Off": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Stick"],
+        "Normal Y Off Close": ["Corner Strike", "Curl Combo", "Dagger", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "Stick"],
+        "Split WR Backfield": ["Corner Strike", "Dagger", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "Stick", "Verticals"],
+        "Split Y Off": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "RPO Alert", "Stick", "Verticals"],
         "Spread Y-Flex": ["Angle Y Sail", "HB Draw", "HB Slip Screen", "Inside Zone", "MTN Drive", "MTN FK Screen Wheel", "MTN FL Screen", "MTN HB Cross Screen", "MTN Out H-Angle", "MTN Replace", "MTN Shallow HB Angle", "MTN Slot Flags", "MTN Sluggo Replace", "PA Seams", "QB Zone", "RPO Alert Screen", "Spot N Go", "Y-Option"],
-        "Tight": ["HB Draw", "Inside Zone", "Mesh", "Mesh Traffic", "PA Boot", "PA Read", "Stick", "Verticals"],
-        "Trey Open HB Str": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Middle Screen", "PA Read", "Stick", "Verticals"],
-        "Trey Y-Flex": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "PA Crossers", "Stick", "Verticals"],
-        "Trips HB Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Verticals"],
+        "Tight": ["Corner Strike", "Deep Post", "HB Draw", "Inside Zone", "Levels", "Mesh", "Mesh Traffic", "MTN Drive", "PA Boot", "PA Read", "Slants", "Stick", "Verticals"],
+        "Trey Open HB Str": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "Middle Screen", "MTN Drive", "PA Read", "RPO Alert", "Stick", "Verticals"],
+        "Trey Y-Flex": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Trips HB Wk": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "Stick", "Verticals"],
         "Trips TE": ["China Y Post", "Curl Flat", "Deep In", "Drive Post", "HB Counter", "HB Slip Screen", "Inside Cross", "Inside Zone", "MTN Bench", "MTN Return Levels", "MTN Z Spot", "Orbit Cross Screen", "Orbit PA HB Wheel", "Orbit RPO Alert Screen", "PA Boot Shot", "PA Counter Go", "QB Strong Power", "QB Zone", "Read Option", "RPO Alert Bubble", "Shallow X Dig", "Shuffle MTN FK Screen Wheel", "Shuffle MTN HB Swing", "Shuffle MTN Levels", "Slot Quick Flat", "Verticals", "WR Short Post"],
-        "Y Off Trio Wk": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Stick"],
-        "Y Off X Close": ["HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick", "Verticals"]
+        "Y Off Trio Wk": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "Stick", "Verticals"],
+        "Y Off X Close": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"]
       },
       "Goal Line": {
         "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak"],
@@ -68,53 +68,53 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "West Coast / Spread",
     formations: {
       "Singleback": {
-        "Ace Slot": ["HB Dive", "HB Duo", "Inside Zone", "PA Boot Over", "PA Crossers", "Spacing", "Stick", "Y Trail"],
-        "Bunch TE": ["Corner Strike", "HB Screen", "Inside Zone", "Jailbreak Screen", "Mesh", "MTN Spot", "PA Draw Shot", "Spacing", "Stick"],
-        "Bunch X Nasty": ["HB Stretch", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "Spot"],
-        "Deuce Close": ["Counter", "HB Toss", "Inside Zone", "PA Scissors", "Quick Slants", "Stretch Alert Bubble", "Zone Split"],
-        "Tight Y Off Flex": ["HB Duo", "Inside Zone", "PA Boot", "PA TE Flood", "Spacing", "Stick", "Stretch"],
-        "Wing Tight Left": ["Counter", "HB Toss", "PA Boot", "Power O", "Quick Slants", "Stretch", "Sweep"],
-        "Wing Tight Nasty": ["Counter", "HB Dive", "PA Boot", "Power O", "Quick Slants", "Stretch", "Sweep"]
+        "Ace Slot": ["HB Dive", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot Over", "PA Crossers", "PA TE Flood", "Spacing", "Stick", "Stretch Alert Smoke", "Y Trail"],
+        "Bunch TE": ["Corner Strike", "HB Screen", "HB Duo", "Inside Zone", "Jailbreak Screen", "Mesh", "MTN Spot", "MTN HB Screen", "PA Draw Shot", "PA Boot", "Spacing", "Stick"],
+        "Bunch X Nasty": ["HB Stretch", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "PA Boot LT", "Spot", "Stick", "Zone Split"],
+        "Deuce Close": ["Counter", "HB Duo", "HB Toss", "Inside Zone", "PA Boot", "PA Scissors", "Power O", "Quick Slants", "Stretch", "Stretch Alert Bubble", "Zone Split"],
+        "Tight Y Off Flex": ["HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA TE Flood", "PA Cross", "Spacing", "Stick", "Stretch", "Y Trail"],
+        "Wing Tight Left": ["Counter", "HB Toss", "HB Dive", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Quick Slants", "Stretch", "Sweep"],
+        "Wing Tight Nasty": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "PA Power O", "Power O", "Quick Slants", "Stretch", "Sweep"]
       },
       "I Form": {
-        "Close": ["Counter", "FB Dive", "HB Dive", "HB Toss", "PA Boot", "PA Crossers", "Power O"]
+        "Close": ["Counter", "FB Dive", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Crossers", "PA Power O", "Power O", "Quick Slants", "Stretch"]
       },
       "Strong": {
-        "Jumbo": ["Counter", "HB Dive", "Power O", "Quick Slants", "Stick", "Stretch", "Sweep"],
-        "Wing": ["Counter", "HB Toss", "PA Boot", "Power O", "Quick Slants", "Stretch", "Sweep"]
+        "Jumbo": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Quick Slants", "Stick", "Stretch", "Sweep"],
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Quick Slants", "Stretch", "Sweep"]
       },
       "Pistol": {
-        "Bunch TE": ["Inside Zone", "Levels", "Mesh", "PA Read", "Read Option", "RPO Peek", "Stick"],
-        "Full House Over Close": ["Counter", "HB Dive", "Inside Zone", "Mesh", "PA Boot", "Power O", "Read Option"]
+        "Bunch TE": ["Counter", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Read Option", "RPO Alert", "RPO Peek", "Stick"],
+        "Full House Over Close": ["Counter", "HB Dive", "Inside Zone", "Mesh", "PA Boot", "PA Read", "Power O", "Read Option", "RPO Alert", "Stretch"]
       },
       "Gun": {
-        "Bunch Spread Nasty": ["Corner Strike", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Spot", "PA Crossers", "Spacing"],
-        "Bunch Str Nasty": ["Corner Strike", "Four Verticals", "Inside Zone", "Levels", "Mesh", "MTN China Cross", "PA Cross", "Spot", "Stick"],
-        "Bunch X Nasty": ["Corner Strike", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Smash", "PA Crossers", "Spot"],
-        "Bunch Y-Flex": ["Corner Strike", "Four Verticals", "HB Screen", "Inside Zone", "Mesh", "Screens", "MTN Spot", "PA Crossers", "Stick", "Verticals"],
-        "Deuce Close": ["Corner Strike", "Counter", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Stretch"],
-        "Doubles Clamp Stack": ["Corner Strike", "Deep Post", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read"],
-        "Doubles Y Off Nasty": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick"],
-        "Empty Bunch Y Flex": ["Corner Strike", "Curl Flats", "Four Verticals", "Mesh", "QB Draw", "Spacing", "Stick", "Verticals"],
-        "Empty Chips Nasty": ["Corner Strike", "Curl Flats", "Four Verticals", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Verticals"],
-        "Empty Trips Speed": ["Corner Strike", "Curl Flats", "Four Verticals", "Levels", "Mesh", "QB Draw", "Quick Slants", "Verticals"],
-        "Flex Y Off Close": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick"],
-        "Normal Off Close Wk": ["Corner Strike", "Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Mesh", "PA Read", "Stick"],
-        "Spread Dbl Flex Wk": ["Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Seams", "RPO Alert Screen", "Spot N Go"],
-        "Stack Y-Flex": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Shallow", "PA Crossers", "Stick"],
-        "Tight Open": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Slants", "Stick"],
+        "Bunch Spread Nasty": ["Corner Strike", "Dagger", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Spot", "PA Crossers", "Spacing", "Stick", "Verticals"],
+        "Bunch Str Nasty": ["Corner Strike", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN China Cross", "MTN HB Screen", "PA Cross", "PA Crossers", "Spot", "Stick", "Verticals"],
+        "Bunch X Nasty": ["Corner Strike", "Deep Post", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Smash", "MTN Drive", "PA Crossers", "RPO Alert", "Spot", "Stick"],
+        "Bunch Y-Flex": ["Corner Strike", "Deep Post", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Spot", "PA Crossers", "Sail", "Stick", "Verticals", "Y Trail"],
+        "Deuce Close": ["Corner Strike", "Counter", "Dagger", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "RPO Alert", "Smash", "Stick", "Stretch"],
+        "Doubles Clamp Stack": ["Corner Strike", "Deep Post", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "Mills", "PA Read", "RPO Alert", "Stick", "Verticals"],
+        "Doubles Y Off Nasty": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Empty Bunch Y Flex": ["Corner Strike", "Curl Flats", "Dig Under", "Four Verticals", "Mesh", "QB Draw", "Spacing", "Stick", "Verticals", "Y Trail"],
+        "Empty Chips Nasty": ["Corner Strike", "Curl Flats", "Four Verticals", "Levels", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Stick", "Verticals"],
+        "Empty Trips Speed": ["Corner Strike", "Curl Flats", "Four Verticals", "Levels", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Stick", "Verticals"],
+        "Flex Y Off Close": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Normal Off Close Wk": ["Corner Strike", "Curl Combo", "Dagger", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Mesh", "MTN PA Read", "PA Read", "RPO Alert", "Stick"],
+        "Spread Dbl Flex Wk": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN FK Screen Wheel", "PA Seams", "RPO Alert Screen", "Spot N Go", "Stick"],
+        "Stack Y-Flex": ["Corner Strike", "Four Verticals", "HB Draw", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Shallow", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Tight Open": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "RPO Alert", "Slants", "Stick", "Y Trail"],
         "Tight Y Off": ["01 Trap", "Cheat Outside Zone", "Cheat RPO Zone Alert Bubble", "Cheat Slash Wheel Cross", "Duo", "Fake Jet HB Seam", "Flood Drive", "HB Scissors", "HB Slip Screen", "Jet Touch Pass", "MTN Mesh Spot", "MTN PA Spinner", "MTN Slot Choice", "MTN Spinner HB Inside", "MTN WR Outside Zone", "MTN Y-Corner", "PA Go Slot Cross", "Read Option", "TE Corner", "Wheel Spot", "Zone Fake Jet"],
-        "Tight Y Off Wk": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Mesh", "PA Boot", "PA Read", "Read Option", "Stick"],
-        "Trey Open Offset": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Stick", "Verticals"],
-        "Trey Y-Flex": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick", "Verticals"],
-        "Trey Y-Flex Str": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick"],
-        "Trio Y-Flex": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Stick"],
-        "Wing Close Offset": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Stick"],
-        "Wing Stack": ["Corner Strike", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Read Option"],
-        "Wing Tight": ["Counter", "Four Verticals", "HB Draw", "Inside Zone", "Mesh", "PA Boot", "PA Read", "Read Option", "Stick"],
-        "Y Off Trio Close": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Stick"],
-        "Y Off Trips Nasty": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Stick"],
-        "Y Off Trips Wk": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Skinny Post"]
+        "Tight Y Off Wk": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "Read Option", "Smash", "Stick"],
+        "Trey Open Offset": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "RPO Alert", "Stick", "Verticals"],
+        "Trey Y-Flex": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Trey Y-Flex Str": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Trio Y-Flex": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "RPO Alert", "Stick", "Verticals"],
+        "Wing Close Offset": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "Read Option", "Stick"],
+        "Wing Stack": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "Read Option", "Stick"],
+        "Wing Tight": ["Corner Strike", "Counter", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "Read Option", "Stick"],
+        "Y Off Trio Close": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Stick", "Verticals"],
+        "Y Off Trips Nasty": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "RPO Alert", "Stick"],
+        "Y Off Trips Wk": ["Corner Strike", "Deep Post", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Skinny Post", "Stick"]
       },
       "Goal Line": {
         "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak"]
@@ -130,56 +130,56 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "RPO / Run Heavy",
     formations: {
       "Singleback": {
-        "Ace Dbl Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"],
-        "Deuce": ["Counter", "HB Dive", "Inside Zone", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
-        "Tight Y Off": ["HB Duo", "Inside Zone", "PA Boot", "PA TE Flood", "Spacing", "Stick", "Stretch"],
-        "Wing": ["HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot LT", "PA TE Flood", "Stick"],
-        "Wing Pair Heavy": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"],
-        "Wing Tight": ["Counter", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch", "Sweep"]
+        "Ace Dbl Wing": ["Counter", "HB Dive", "HB Duo", "HB Toss", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Stretch", "Sweep"],
+        "Deuce": ["Counter", "HB Dive", "HB Duo", "Inside Zone", "PA Boot", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
+        "Tight Y Off": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA TE Flood", "PA Cross", "Spacing", "Stick", "Stretch"],
+        "Wing": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "MTN Z Spot", "PA Boot LT", "PA TE Flood", "Spacing", "Stick", "Stretch Alert Bubble"],
+        "Wing Pair Heavy": ["Counter", "HB Dive", "HB Duo", "HB Toss", "Inside Zone", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"],
+        "Wing Tight": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Stretch", "Sweep"]
       },
       "I Form": {
-        "Pro": ["Counter", "FB Dive", "HB Dive", "ISO", "PA Boot", "PA Power O", "Power O", "Quick Slants"],
-        "Tight": ["Counter", "FB Dive", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O"],
-        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"]
+        "Pro": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "PA WR In", "Power O", "Quick Slants", "Stretch"],
+        "Tight": ["Counter", "FB Dive", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Crossers", "PA Power O", "Power O", "Quick Slants"],
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"]
       },
       "Strong I": {
-        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"]
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"]
       },
       "Wildcat": {
         "Trips Over": ["Counter", "End Around", "HB Power", "Inside Zone", "Jet Sweep", "Power", "Read Option"]
       },
       "Pistol": {
-        "Bunch": ["Counter", "Inside Zone", "Mesh", "PA Read", "Read Option", "RPO Peek", "Stick"],
-        "Deuce": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power Read", "QB Power", "Read Option", "RPO Alert"],
-        "Deuce Close": ["Counter", "Inside Zone", "PA Boot", "Power O", "Read Option", "RPO Peek", "Stretch"],
-        "Full House TE": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power O", "Quick Slants", "Read Option"],
-        "Strong Y Off Close": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power Read", "Read Option", "RPO Alert"],
-        "Wing Flex Close": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Read Option", "RPO Alert", "RPO Power Read", "Stretch"]
+        "Bunch": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Read", "Read Option", "RPO Alert", "RPO Peek", "Stick"],
+        "Deuce": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "Power Read", "QB Power", "Read Option", "RPO Alert"],
+        "Deuce Close": ["Counter", "HB Dive", "Inside Zone", "Levels", "Mesh", "PA Boot", "Power O", "Read Option", "RPO Alert", "RPO Peek", "Stretch"],
+        "Full House TE": ["Counter", "HB Dive", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Power O", "Quick Slants", "Read Option", "RPO Alert"],
+        "Strong Y Off Close": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "Power Read", "Read Option", "RPO Alert", "RPO Peek"],
+        "Wing Flex Close": ["Counter", "HB Dive", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Read Option", "RPO Alert", "RPO Power Read", "Stretch"]
       },
       "Gun": {
-        "Bunch Quads": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Mesh", "MTN Spot", "PA Crossers", "Spacing", "Split Zone"],
-        "Bunch TE": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Mesh", "MTN Spot", "Orbit Cross Screen", "Orbit PA HB Wheel", "RPO Alert Screen"],
-        "Bunch X Nasty": ["Corner Strike", "Counter", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "RPO Zone Alert", "Split Zone"],
-        "Deuce Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stretch"],
-        "Doubles Clamp Stack": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "RPO Read", "Split Zone"],
-        "Doubles Off Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"],
-        "Empty Base Flex": ["Bubble Screen", "Curl Flats", "Four Verticals", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Verticals"],
-        "Empty Trey Stack": ["Corner Strike", "Curl Flats", "Mesh", "QB Draw", "Slant Flat", "Spacing", "Stick", "Verticals"],
-        "Normal Y Off": ["Curl Combo", "Double Slants", "Four Verticals", "HB Slip Screen", "Inside Zone", "MTN PA Read", "Orbit RPO Alert Swing", "Read Option", "RPO Peek Slant", "Stick"],
-        "Normal Y Off Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "RPO Alert", "Split Zone", "Stick"],
-        "Slot Right": ["Counter", "HB Draw", "Inside Zone", "Levels", "PA Read", "RPO Alert", "Split Zone", "Stick", "Verticals"],
-        "Spread Flex Wk": ["Counter", "HB Draw", "Inside Zone", "MTN Drive", "PA Boot", "PA Seams", "RPO Alert Screen", "Split Zone", "Spot N Go"],
-        "Stack Y Off": ["Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Crossers", "RPO Alert", "Split Zone", "Stick"],
-        "Tight Y Off": ["Counter", "Duo", "HB Slip Screen", "Inside Zone", "MTN Mesh Spot", "PA Go Slot Cross", "Read Option", "RPO Zone Alert", "Zone Fake Jet"],
-        "Tight Y Off Wk": ["Counter", "HB Draw", "Inside Zone", "Mesh", "PA Boot", "Read Option", "RPO Alert", "Split Zone", "Stick"],
+        "Bunch Quads": ["Corner Strike", "Counter", "Dagger", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Spot", "PA Crossers", "Spacing", "Stick", "Split Zone"],
+        "Bunch TE": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Spot", "Orbit Cross Screen", "Orbit PA HB Wheel", "PA Boot Shot", "RPO Alert Screen", "Stick"],
+        "Bunch X Nasty": ["Corner Strike", "Counter", "Deep Post", "Inside Zone", "Levels", "Mesh", "MTN China Cross", "MTN Drive", "MTN Smash", "PA Cross", "RPO Alert", "RPO Zone Alert", "Split Zone"],
+        "Deuce Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Smash", "Split Zone", "Stretch"],
+        "Doubles Clamp Stack": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "RPO Alert", "RPO Read", "Split Zone", "Stick"],
+        "Doubles Off Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "Empty Base Flex": ["Bubble Screen", "Corner Strike", "Curl Flats", "Dig Under", "Four Verticals", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Stick", "Verticals"],
+        "Empty Trey Stack": ["Corner Strike", "Curl Flats", "Levels", "Mesh", "QB Draw", "Quick Slants", "Slant Flat", "Spacing", "Stick", "Verticals"],
+        "Normal Y Off": ["Corner Strike", "Curl Combo", "Double Slants", "Four Verticals", "HB Slip Screen", "Inside Zone", "MTN Drive", "MTN PA Read", "Orbit RPO Alert Swing", "Read Option", "RPO Alert", "RPO Peek Slant", "Stick"],
+        "Normal Y Off Close": ["Corner Strike", "Counter", "Dagger", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "Slot Right": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "RPO Alert", "Split Zone", "Stick", "Verticals"],
+        "Spread Flex Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Seams", "RPO Alert Screen", "Split Zone", "Spot N Go"],
+        "Stack Y Off": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Crossers", "RPO Alert", "Split Zone", "Stick"],
+        "Tight Y Off": ["Counter", "Duo", "HB Slip Screen", "Inside Zone", "Levels", "MTN Drive", "MTN Mesh Spot", "PA Go Slot Cross", "Read Option", "RPO Alert", "RPO Zone Alert", "Zone Fake Jet"],
+        "Tight Y Off Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "Read Option", "RPO Alert", "Split Zone", "Stick"],
         "Trey Open": ["Corner Strike", "Dagger Deep Curl", "Double Ins", "Four Verticals", "H MTN Flood H-Sneak", "H MTN Mesh", "H MTN X Shallow Cross", "HB Slip Screen", "Inside Zone", "Jet New Orleans", "Levels Switch", "PA Read", "Read Option", "RPO Alert Draw Stick", "Shock H Option", "Slants", "Slot Drive", "Stick", "WR Mid Screen", "Y Corner", "Y-Drag"],
-        "Trips TE": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Orbit Cross Screen", "PA Boot Shot", "QB Zone", "Read Option", "RPO Alert Bubble", "Shuffle MTN Levels", "Verticals"],
-        "Trips TE Flex": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Read", "RPO Alert", "Split Zone", "Stick"],
-        "Wing": ["Counter", "HB Draw", "Inside Zone", "Outside Zone", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
-        "Wing Slot Offset Wk": ["Counter", "HB Draw", "Inside Zone", "PA Boot", "PA Read", "PA Shot Seams", "PA Zone Shot", "Read Option", "Split Zone"],
-        "Wing Slot Wk": ["Comeback", "Counter", "HB Draw", "Inside Zone", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
-        "Wing Stack": ["Counter", "HB Draw", "Inside Zone", "PA Boot", "PA Read", "PA Zone Shot", "Read Option", "RPO Alert", "Split Zone"],
-        "Y Off Trio Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "RPO Alert", "Split Zone", "Stick"]
+        "Trips TE": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Orbit Cross Screen", "PA Boot Shot", "QB Zone", "Read Option", "RPO Alert Bubble", "Shuffle MTN Levels", "Verticals"],
+        "Trips TE Flex": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "Wing": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "Outside Zone", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
+        "Wing Slot Offset Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Read", "PA Shot Seams", "PA Zone Shot", "Read Option", "Split Zone"],
+        "Wing Slot Wk": ["Comeback", "Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
+        "Wing Stack": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Read", "PA Zone Shot", "Read Option", "RPO Alert", "Split Zone"],
+        "Y Off Trio Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "RPO Alert", "Split Zone", "Stick"]
       },
       "Goal Line": {
         "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak", "Tush Push"],
@@ -196,53 +196,53 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "Run Heavy / RPO",
     formations: {
       "Singleback": {
-        "Ace Double Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"],
-        "Bunch Ace": ["Counter", "HB Stretch", "Inside Zone", "Mesh", "PA Post Shot", "Spacing", "Stick"],
-        "Deuce Close": ["Counter", "HB Dive", "Inside Zone", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
-        "Tight Doubles": ["Counter", "HB Duo", "Inside Zone", "PA Boot", "PA TE Flood", "Spacing", "Stick"],
-        "U Off Stack": ["Counter", "HB Duo", "Inside Zone", "PA Boot", "PA Cross", "Spacing", "Stick"],
-        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "Spacing", "Stick"],
-        "Wing Tight Z": ["Counter", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch", "Sweep"]
+        "Ace Double Wing": ["Counter", "HB Dive", "HB Duo", "HB Toss", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Stretch", "Sweep"],
+        "Bunch Ace": ["Counter", "HB Stretch", "Inside Zone", "Mesh", "MTN Spot", "PA Boot", "PA Post Shot", "Spacing", "Stick", "Verticals"],
+        "Deuce Close": ["Counter", "HB Dive", "HB Duo", "Inside Zone", "PA Boot", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
+        "Tight Doubles": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Cross", "PA TE Flood", "Spacing", "Stick", "Stretch"],
+        "U Off Stack": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA Cross", "PA TE Flood", "Spacing", "Stick"],
+        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA Cross", "Power O", "Spacing", "Stick"],
+        "Wing Tight Z": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Stretch", "Sweep"]
       },
       "I Form": {
-        "H Tight": ["Counter", "FB Dive", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O"],
-        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"],
-        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "ISO", "PA Boot", "PA Power O", "Power O"]
+        "H Tight": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "Power O", "Quick Slants", "Stretch"],
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"],
+        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Crossers", "PA Power O", "Power O", "Quick Slants"]
       },
       "Strong": {
-        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O", "Stretch"],
-        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "Power O"]
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"],
+        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Crossers", "PA Power O", "Power O"]
       },
       "Pistol": {
-        "Ace Double Wing": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power Read", "Read Option", "RPO Alert"],
-        "Full House TE": ["Counter", "HB Dive", "Inside Zone", "Levels", "PA Boot", "Power O", "Read Option"],
-        "Strong": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power Read", "Read Option", "RPO Peek"],
-        "U Off Trips": ["Counter", "HB Dive", "Inside Zone", "PA Read", "Read Option", "RPO Alert", "RPO Peek"],
-        "Wing Tight Z": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power Read", "Read Option", "RPO Alert"]
+        "Ace Double Wing": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "PA Boot", "Power Read", "Read Option", "RPO Alert", "RPO Peek"],
+        "Full House TE": ["Counter", "HB Dive", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Power O", "Read Option", "RPO Alert"],
+        "Strong": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "PA Boot", "Power Read", "Read Option", "RPO Alert", "RPO Peek"],
+        "U Off Trips": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "PA Boot", "PA Read", "Read Option", "RPO Alert", "RPO Peek"],
+        "Wing Tight Z": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "PA Boot", "Power Read", "Read Option", "RPO Alert", "RPO Peek"]
       },
       "Gun": {
-        "Bunch Open Offset": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Mesh", "PA", "Screens Boot", "PA Crossers", "Spacing", "Split Zone"],
-        "Bunch Y-Flex": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Mesh", "PA Crossers", "Split Zone", "Stick", "Verticals"],
-        "Deuce Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "RPO Alert", "Smash", "Split Zone"],
-        "Doubles HB Wk": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "PA Read", "Read Option", "Split Zone"],
-        "Empty Quads": ["Curl Flats", "Levels", "Mesh", "QB Draw", "Quick Hitch", "Quick Slants", "Spacing", "Verticals"],
-        "Heavy Raven": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "PA Zone Shot", "Power O", "Read Option", "Spacing", "Split Zone"],
-        "Normal Y Off Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "RPO Alert", "Split Zone"],
-        "Split Wing Nasty": ["Counter", "HB Draw", "Inside Zone", "PA Boot", "PA Crossers", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
-        "Spread Dbl Flex": ["Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Seams", "RPO Alert Screen", "Split Zone"],
-        "Tight Slot Flip": ["Counter", "HB Draw", "Inside Zone", "Mesh", "PA Boot", "PA Read", "Read Option", "Split Zone", "Stick"],
+        "Bunch Open Offset": ["Corner Strike", "Counter", "Dagger", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "Spacing", "Stick", "Split Zone", "Verticals"],
+        "Bunch Y-Flex": ["Corner Strike", "Counter", "Deep Post", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "Spacing", "Split Zone", "Stick", "Verticals"],
+        "Deuce Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Smash", "Split Zone", "Stretch"],
+        "Doubles HB Wk": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "Read Option", "Split Zone", "Stick"],
+        "Empty Quads": ["Corner Strike", "Curl Flats", "Dig Under", "Levels", "Mesh", "QB Draw", "Quick Hitch", "Quick Slants", "Spacing", "Stick", "Verticals"],
+        "Heavy Raven": ["Counter", "HB Dive", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Zone Shot", "Power O", "Read Option", "Spacing", "Split Zone"],
+        "Normal Y Off Close": ["Corner Strike", "Counter", "Dagger", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "Split Wing Nasty": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Crossers", "PA Read", "Read Option", "RPO Alert", "Split Zone", "Stick"],
+        "Spread Dbl Flex": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Seams", "RPO Alert Screen", "Split Zone", "Stick"],
+        "Tight Slot Flip": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "Read Option", "Split Zone", "Stick"],
         "Tight Slots": ["Bench", "Drive Trail", "HB Quick Base", "HB Sweep", "Inside Zone", "Jet Pass FK Zone", "Mesh", "Mid Zone", "MTN Bench Snag N Go", "MTN HB Draw", "MTN Inside Zone", "MTN PA Flood Under", "MTN PA Slide", "MTN Salem Slot Option", "Out N Ups", "PA Shot Portland", "PA Slide", "PA Zone FK Jet", "PA Seam", "Stick", "Zone Fake Jet"],
-        "Tight Y Off Wk": ["Counter", "HB Draw", "Inside Zone", "Mesh", "PA Boot", "PA Shot Seams", "Read Option", "RPO Alert", "Split Zone"],
-        "Trey Open": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Read", "Read Option", "Split Zone", "Stick"],
-        "Trey Open Str": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "Split Zone", "Stick"],
-        "Trips TE Offset": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Orbit Cross Screen", "PA Boot Shot", "QB Zone", "Read Option", "RPO Alert Bubble"],
-        "Trips TE Offset Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "RPO Alert", "Split Zone"],
-        "Trips X Nasty Off Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "Split Zone", "Stick"],
-        "U Off Trips": ["Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
-        "Wing Slot Offset": ["Counter", "HB Draw", "Inside Zone", "PA Boot", "PA Deep Outs", "PA Read", "PA Shot Seams", "Read Option", "Split Zone"],
-        "Wing Slot Wk": ["Comeback", "Counter", "HB Draw", "Inside Zone", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
-        "Y Off Trio Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Crossers", "RPO Alert", "Split Zone"],
-        "Y Off Trio Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Split Zone"]
+        "Tight Y Off Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Shot Seams", "Read Option", "RPO Alert", "Split Zone", "Stick"],
+        "Trey Open": ["Corner Strike", "Counter", "Dagger", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "Read Option", "RPO Alert", "Split Zone", "Stick"],
+        "Trey Open Str": ["Corner Strike", "Counter", "Dagger", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "Trips TE Offset": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "Orbit Cross Screen", "PA Boot Shot", "QB Zone", "Read Option", "RPO Alert Bubble", "Shuffle MTN Levels", "Verticals"],
+        "Trips TE Offset Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "Trips X Nasty Off Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"],
+        "U Off Trips": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
+        "Wing Slot Offset": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Deep Outs", "PA Read", "PA Shot Seams", "Read Option", "Split Zone"],
+        "Wing Slot Wk": ["Comeback", "Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Split Zone"],
+        "Y Off Trio Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Crossers", "RPO Alert", "Split Zone", "Stick"],
+        "Y Off Trio Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Read", "RPO Alert", "Split Zone", "Stick"]
       },
       "Goal Line": {
         "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak"],
@@ -259,55 +259,55 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "West Coast / Outside Zone",
     formations: {
       "Singleback": {
-        "Bunch X Nasty": ["HB Stretch", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "Spot"],
-        "Deuce Close": ["Counter", "HB Stretch", "Inside Zone", "Outside Zone", "PA Scissors", "Stretch Alert Bubble", "Zone Split"],
-        "Deuce Close Tilt": ["Counter", "HB Stretch", "Inside Zone", "Outside Zone", "PA Scissors", "Stretch", "Wide Zone"],
-        "Doubles Y Off Flex": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "Spacing", "Stick"],
-        "East Tight": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "Outside Zone", "PA Boot", "Power O"],
-        "Tight Y Off": ["HB Duo", "Inside Zone", "Outside Zone", "PA Boot", "PA TE Flood", "Spacing", "Stick"],
-        "U Off": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "PA Cross", "Spacing"],
-        "U Off Close": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "Spacing", "Stick"],
-        "U Off Trips Cluster": ["HB Stretch", "Inside Zone", "Mesh", "Outside Zone", "PA Read", "Spacing", "Stick"],
-        "Wing Close": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "Spacing", "Wide Zone"],
-        "Wing Flex Close": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "Spacing", "Stick"],
-        "Wing Pair": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "PA Cross", "Spacing"],
-        "Wing Slot": ["HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot LT", "PA TE Flood", "Stick"],
-        "Wing Tight Nasty": ["Counter", "HB Toss", "Inside Zone", "Outside Zone", "PA Boot", "Power O", "Sweep"]
+        "Bunch X Nasty": ["Counter", "HB Stretch", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "PA Boot", "Spot", "Stick", "Wide Zone"],
+        "Deuce Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
+        "Deuce Close Tilt": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "PA Scissors", "Stretch", "Wide Zone"],
+        "Doubles Y Off Flex": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA Cross", "Spacing", "Stick"],
+        "East Tight": ["Counter", "HB Dive", "HB Duo", "HB Toss", "Inside Zone", "Outside Zone", "PA Boot", "PA Cross", "Power O", "Stretch"],
+        "Tight Y Off": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA TE Flood", "Spacing", "Stick", "Stretch"],
+        "U Off": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA Cross", "PA TE Flood", "Spacing"],
+        "U Off Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA Cross", "Spacing", "Stick"],
+        "U Off Trips Cluster": ["Counter", "HB Stretch", "Inside Zone", "Mesh", "MTN Spacing", "Outside Zone", "PA Read", "Spacing", "Stick", "Wide Zone"],
+        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA Cross", "Spacing", "Wide Zone"],
+        "Wing Flex Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA Cross", "Spacing", "Stick"],
+        "Wing Pair": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot", "PA Cross", "PA TE Flood", "Spacing"],
+        "Wing Slot": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "Outside Zone", "PA Boot LT", "PA Cross", "PA TE Flood", "Stick"],
+        "Wing Tight Nasty": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "Outside Zone", "PA Boot", "PA Cross", "Power O", "Stretch", "Sweep"]
       },
       "I Form": {
-        "Close": ["Counter", "FB Dive", "HB Dive", "Outside Zone", "PA Boot", "PA Crossers", "Power O"],
-        "Wing": ["Counter", "HB Toss", "Inside Zone", "Outside Zone", "PA Boot", "Power O", "Stretch"],
-        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "ISO", "Outside Zone", "PA Power O", "Power O"]
+        "Close": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "Outside Zone", "PA Boot", "PA Crossers", "PA Power O", "Power O"],
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "Outside Zone", "PA Boot", "PA Power O", "Power O", "Stretch"],
+        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "HB Toss", "ISO", "Outside Zone", "PA Boot", "PA Crossers", "PA Power O", "Power O"]
       },
       "Strong": {
-        "Wing": ["Counter", "HB Toss", "Inside Zone", "Outside Zone", "PA Boot", "Power O", "Stretch"],
-        "Y Off Close": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Outside Zone", "PA Boot", "Power O"]
+        "Wing": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "Outside Zone", "PA Boot", "PA Power O", "Power O", "Stretch"],
+        "Y Off Close": ["Counter", "HB Dive", "HB Stretch", "HB Toss", "Inside Zone", "ISO", "Outside Zone", "PA Boot", "PA Crossers", "Power O"]
       },
       "Pistol": {
-        "Deuce Close": ["Inside Zone", "Outside Zone", "PA Boot", "PA Read", "Power O", "Read Option", "Stretch"],
-        "Strong Y Off Close": ["Inside Zone", "Outside Zone", "PA Boot", "PA Read", "Power Read", "Read Option", "RPO Alert"]
+        "Deuce Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Outside Zone", "PA Boot", "PA Read", "Power O", "Read Option", "Stretch"],
+        "Strong Y Off Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Outside Zone", "PA Boot", "PA Read", "Power Read", "Read Option", "RPO Alert"]
       },
       "Gun": {
-        "Bunch Spread Nasty": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "Outside Zone", "PA Crossers", "PA Read", "Spacing", "Split Zone"],
-        "Bunch X Nasty": ["Corner Strike", "Inside Zone", "Mesh", "MTN Smash", "Outside Zone", "PA Cross", "PA Read", "RPO Zone Alert", "Split Zone"],
-        "Bunch Y-Flex": ["Corner Strike", "HB Screen", "Inside Zone", "Mesh", "Outside Zone", "PA Crossers", "Split Zone", "Stick", "Verticals"],
-        "Deuce Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Split Zone"],
-        "Doubles Flex Y Off Close": ["HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone", "Stick"],
-        "Empty Base Flex": ["Curl Flats", "Mesh", "QB Draw", "Quick Hitch", "Quick Outs", "Quick Slants", "Spacing", "Verticals"],
-        "Empty Bunch Tight": ["Curl Flats", "Four Verticals", "Mesh", "QB Draw", "Quick Slants", "Spacing", "Stick", "Verticals"],
-        "Empty Strong Slots": ["Curl Flats", "Mesh", "QB Draw", "Quick Hitch", "Smash", "Spacing", "Stick", "Verticals"],
-        "Flex Y Off Close": ["HB Draw", "Inside Zone", "Levels", "Mesh", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone"],
-        "Split Close": ["HB Draw", "Inside Zone", "Levels", "Mesh", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone"],
-        "Split Twins Stack": ["HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Split Zone", "Stick"],
-        "Spread Dbl Flex": ["HB Draw", "Inside Zone", "Levels", "MTN Drive", "Outside Zone", "PA Read", "PA Seams", "RPO Alert Screen", "Split Zone"],
-        "Tight Base Flex": ["HB Draw", "Inside Zone", "Outside Zone", "PA Boot", "PA Read", "PA Zone Shot", "Read Option", "RPO Alert", "Split Zone"],
-        "Tight Slot Flip": ["HB Draw", "Inside Zone", "Mesh", "Outside Zone", "PA Read", "PA Zone Shot", "Read Option", "RPO Alert", "Split Zone"],
-        "Tight Y Off": ["Duo", "HB Slip Screen", "Inside Zone", "MTN Mesh Spot", "Outside Zone", "PA Go Slot Cross", "Read Option", "Split Zone", "Zone Fake Jet"],
-        "Trey Y-Flex": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Crossers", "Split Zone", "Stick", "Verticals"],
-        "Trips X Nasty": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Read", "PA Zone Shot", "Split Zone", "Stick"],
-        "U Off Stack": ["HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Split Zone", "Stick"],
-        "Y Off Trio Close": ["HB Draw", "Inside Zone", "Levels", "Mesh", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone"],
-        "Y Off Trips": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "Outside Zone", "PA Crossers", "PA Read", "Split Zone"]
+        "Bunch Spread Nasty": ["Corner Strike", "Dagger", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "PA Read", "Spacing", "Split Zone", "Stick"],
+        "Bunch X Nasty": ["Corner Strike", "Deep Post", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Smash", "Outside Zone", "PA Cross", "PA Read", "RPO Alert", "RPO Zone Alert", "Split Zone"],
+        "Bunch Y-Flex": ["Corner Strike", "Dagger", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "Split Zone", "Stick", "Verticals"],
+        "Deuce Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Smash", "Split Zone"],
+        "Doubles Flex Y Off Close": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone", "Stick"],
+        "Empty Base Flex": ["Corner Strike", "Curl Flats", "Mesh", "QB Draw", "Quick Hitch", "Quick Outs", "Quick Slants", "Slant Flat", "Spacing", "Stick", "Verticals"],
+        "Empty Bunch Tight": ["Corner Strike", "Curl Flats", "Four Verticals", "Mesh", "QB Draw", "Quick Slants", "Slant Flat", "Spacing", "Stick", "Verticals"],
+        "Empty Strong Slots": ["Corner Strike", "Curl Flats", "Mesh", "QB Draw", "Quick Hitch", "Quick Slants", "Slant Flat", "Smash", "Spacing", "Stick", "Verticals"],
+        "Flex Y Off Close": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone", "Stick"],
+        "Split Close": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone", "Stick"],
+        "Split Twins Stack": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Split Zone", "Stick"],
+        "Spread Dbl Flex": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Read", "PA Seams", "RPO Alert Screen", "Split Zone", "Stick"],
+        "Tight Base Flex": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Outside Zone", "PA Boot", "PA Read", "PA Zone Shot", "Read Option", "RPO Alert", "Split Zone", "Stick"],
+        "Tight Slot Flip": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Read", "PA Zone Shot", "Read Option", "RPO Alert", "Split Zone"],
+        "Tight Y Off": ["Corner Strike", "Duo", "HB Slip Screen", "Inside Zone", "Levels", "MTN Drive", "MTN Mesh Spot", "Outside Zone", "PA Go Slot Cross", "Read Option", "Split Zone", "Zone Fake Jet"],
+        "Trey Y-Flex": ["Corner Strike", "Deep Post", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "Split Zone", "Stick", "Verticals"],
+        "Trips X Nasty": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Split Zone", "Stick"],
+        "U Off Stack": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Read", "PA Zone Shot", "RPO Alert", "Split Zone", "Stick"],
+        "Y Off Trio Close": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "PA Read", "PA Zone Shot", "Split Zone", "Stick"],
+        "Y Off Trips": ["Corner Strike", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Outside Zone", "PA Crossers", "PA Read", "Split Zone", "Stick", "Verticals"]
       },
       "Goal Line": {
         "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak"]
@@ -323,52 +323,52 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "Balanced / Power Run",
     formations: {
       "Singleback": {
-        "Ace Close": ["HB Dive", "HB Duo", "Inside Zone", "PA Boot", "PA Cross", "Spacing", "Stick"],
-        "Bunch": ["HB Stretch", "Inside Zone", "Mesh", "PA Post Shot", "Spacing", "Spot", "Stick"],
-        "Deuce Close": ["Counter", "Inside Zone", "ISO", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
-        "Doubles": ["Counter", "HB Duo", "Inside Zone", "PA Boot", "PA Crossers", "Spacing", "Stick"],
-        "Wing": ["HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot LT", "PA TE Flood", "Stick"],
-        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "Power O", "Spacing"],
-        "Wing Pair": ["Counter", "HB Duo", "Inside Zone", "PA Boot", "PA Cross", "Spacing", "Stick"],
-        "Wing Stack": ["Counter", "HB Duo", "Inside Zone", "PA Boot", "Power O", "Spacing", "Stick"],
-        "Wing Tight Left": ["Counter", "HB Toss", "ISO", "PA Boot", "Power O", "Stretch", "Sweep"],
-        "Y Off Trio Close": ["Counter", "HB Duo", "Inside Zone", "PA Crossers", "Power O", "Spacing", "Stick"]
+        "Ace Close": ["Counter", "HB Dive", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Cross", "PA TE Flood", "Power O", "Spacing", "Stick"],
+        "Bunch": ["Corner Strike", "Counter", "HB Screen", "HB Stretch", "Inside Zone", "Mesh", "MTN Spot", "PA Post Shot", "Spacing", "Spot", "Stick"],
+        "Deuce Close": ["Counter", "HB Duo", "Inside Zone", "ISO", "PA Boot", "PA Scissors", "Power O", "Stretch Alert Bubble", "Zone Split"],
+        "Doubles": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Cross", "PA Crossers", "Power O", "Spacing", "Stick"],
+        "Wing": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "MTN Z Spot", "PA Boot LT", "PA TE Flood", "Stick", "Stretch Alert Bubble"],
+        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Spacing", "Stick", "Stretch"],
+        "Wing Pair": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Cross", "PA TE Flood", "Spacing", "Stick"],
+        "Wing Stack": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Cross", "Power O", "Spacing", "Stick"],
+        "Wing Tight Left": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "ISO", "PA Boot", "PA Cross", "Power O", "Stretch", "Sweep"],
+        "Y Off Trio Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "PA Crossers", "Power O", "Spacing", "Stick"]
       },
       "I Form": {
-        "Slot": ["Counter", "FB Dive", "HB Dive", "ISO", "PA Boot", "PA Power O", "Power O"],
-        "Wing": ["Counter", "HB Blast", "HB Toss", "ISO", "PA Boot", "Power O", "Stretch"],
-        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "ISO", "PA Boot", "PA Power O", "Power O"]
+        "Slot": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "Power O", "Quick Slants", "Stretch"],
+        "Wing": ["Counter", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"],
+        "Y Off Close": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "PA WR In", "Power O"]
       },
       "Strong": {
-        "Close": ["Counter", "HB Blast", "HB Dive", "ISO", "PA Boot", "Power O", "Stretch"],
-        "Z Close": ["Counter", "HB Blast", "HB Dive", "ISO", "PA Boot", "Power O", "Trap"]
+        "Close": ["Counter", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Sweep"],
+        "Z Close": ["Counter", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "Power O", "Stretch", "Trap"]
       },
       "Pistol": {
-        "Bunch TE": ["Counter", "Inside Zone", "Mesh", "PA Read", "Read Option", "RPO Peek", "Stick"],
-        "Strong Y Off Close": ["Counter", "HB Dive", "Inside Zone", "PA Boot", "Power Read", "Read Option", "RPO Alert"],
-        "Trips": ["Counter", "Inside Zone", "Levels", "PA Crossers", "Read Option", "RPO Alert", "Verticals"]
+        "Bunch TE": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Read Option", "RPO Alert", "RPO Peek", "Stick"],
+        "Strong Y Off Close": ["Counter", "HB Dive", "HB Stretch", "Inside Zone", "Levels", "PA Boot", "Power Read", "Read Option", "RPO Alert", "RPO Peek"],
+        "Trips": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Crossers", "Read Option", "RPO Alert", "Stick", "Verticals"]
       },
       "Gun": {
-        "Bunch Open TE": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Mesh", "PA Crossers", "Quick Outs", "Spacing", "Stick"],
-        "Bunch Quads Close": ["Corner Strike", "Counter", "HB Draw", "HB Screen", "HB Wheel", "Inside Zone", "Mesh", "MTN Spot", "PA Crossers", "Read Option"],
-        "Bunch Spread Nasty": ["Corner Strike", "Counter", "HB Screen", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Spacing", "Split Zone"],
-        "Bunch Wide": ["Corner Strike", "Counter", "Curl Flat", "Dig Under", "Inside Zone", "Mesh", "Mesh Over", "PA Crossers", "Spacing", "Stick"],
-        "Doubles Clamp Stack": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Sail", "Skinny Post"],
-        "Doubles HB Wk": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "PA Read", "PA Shot Seams", "Read Option"],
-        "Doubles Y Off Nasty": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Boot", "PA Crossers", "Power Read", "Stick"],
-        "Doubles Z Close": ["Corner Strike", "Counter", "HB Draw", "HB Screen", "Inside Zone", "Levels", "Mills", "PA Read", "Snag"],
-        "Empty Base Flex": ["Curl Flats", "Mesh", "QB Draw", "Quick Slants", "Smash", "Spacing", "Stick", "Verticals"],
-        "Empty Bunch Wide": ["Corner Strike", "Curl Flats", "Mesh", "QB Draw", "Quick Outs", "Spacing", "Stick", "Verticals"],
-        "Normal Y Off Wk": ["Bench", "Counter", "Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "PA Read", "Stick"],
-        "Split Close": ["Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Quick Outs", "Spot", "Stick"],
-        "Spread Y-Flex Wk": ["Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Deep Outs", "PA Seams", "RPO Alert Screen", "Spot N Go"],
-        "Tight Open": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Slants", "Stick"],
-        "Tight Slots": ["Counter", "HB Draw", "Inside Zone", "Mesh", "PA Read", "Read Option", "Spot", "Stick", "WR Screen"],
+        "Bunch Open TE": ["Corner Strike", "Counter", "Dagger", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Spot", "PA Crossers", "Quick Outs", "Spacing", "Stick"],
+        "Bunch Quads Close": ["Corner Strike", "Counter", "Dagger", "HB Draw", "HB Screen", "HB Wheel", "Inside Zone", "Levels", "Mesh", "MTN Drive", "MTN Spot", "PA Crossers", "Read Option"],
+        "Bunch Spread Nasty": ["Corner Strike", "Counter", "Dagger", "HB Screen", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "Spacing", "Stick", "Split Zone", "Verticals"],
+        "Bunch Wide": ["Corner Strike", "Counter", "Curl Flat", "Dagger", "Dig Under", "Inside Zone", "Levels", "Mesh", "Mesh Over", "MTN Drive", "PA Crossers", "Spacing", "Stick"],
+        "Doubles Clamp Stack": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "Mills", "Sail", "Skinny Post", "Stick"],
+        "Doubles HB Wk": ["Corner Strike", "Counter", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "PA Read", "PA Shot Seams", "RPO Alert", "Read Option", "Stick"],
+        "Doubles Y Off Nasty": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Boot", "PA Crossers", "Power Read", "RPO Alert", "Stick", "Verticals"],
+        "Doubles Z Close": ["Corner Strike", "Counter", "HB Draw", "HB Screen", "Inside Zone", "Levels", "Mesh", "Mills", "MTN Drive", "PA Read", "Snag", "Stick"],
+        "Empty Base Flex": ["Corner Strike", "Curl Flats", "Dig Under", "Levels", "Mesh", "QB Draw", "Quick Slants", "Smash", "Spacing", "Stick", "Verticals"],
+        "Empty Bunch Wide": ["Corner Strike", "Curl Flats", "Levels", "Mesh", "QB Draw", "Quick Outs", "Quick Slants", "Spacing", "Stick", "Verticals"],
+        "Normal Y Off Wk": ["Bench", "Corner Strike", "Counter", "Curl Combo", "Double Slants", "Four Verticals", "HB Draw", "Inside Zone", "MTN PA Read", "PA Read", "RPO Alert", "Stick"],
+        "Split Close": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "Quick Outs", "Spot", "Stick", "Verticals"],
+        "Spread Y-Flex Wk": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "MTN Drive", "MTN FK Screen Wheel", "PA Deep Outs", "PA Seams", "RPO Alert Screen", "Spot N Go", "Stick"],
+        "Tight Open": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "RPO Alert", "Slants", "Stick", "Verticals"],
+        "Tight Slots": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "Read Option", "Spot", "Stick", "WR Screen"],
         "Trey Open": ["Corner Strike", "Curl HB Burst", "Dagger Deep Curl", "Four Verticals", "HB Angle Screen", "HB Base", "HB Cross Screen", "HB Draw", "HB Off Tackle", "HB Slip Screen", "Inside Zone", "Levels Switch", "Mesh", "PA WR In", "Read Option", "RPO Alert Draw Stick", "Same Side Zone", "Shock H Option", "Slants", "Strong Flood", "Y-Drag"],
-        "Trey Open Str": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "PA Read", "Power Read", "Quick Outs", "Stick"],
-        "Trio Y-Flex": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "PA Read", "Read Option", "Stick"],
-        "Trips TE Offset": ["Corner Strike", "Counter", "Curl Flat", "HB Draw", "Inside Zone", "Orbit Cross Screen", "PA Boot Shot", "QB Zone", "Read Option"],
-        "Wing Slot Offset": ["Counter", "Dagger", "HB Draw", "Inside Zone", "Inverted Veer", "PA Boot", "PA Read", "Read Option", "Speed Option"]
+        "Trey Open Str": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Read", "Power Read", "Quick Outs", "RPO Alert", "Stick", "Verticals"],
+        "Trio Y-Flex": ["Corner Strike", "Counter", "HB Draw", "Inside Zone", "Levels", "Mesh", "MTN Drive", "PA Crossers", "PA Read", "Read Option", "RPO Alert", "Stick", "Verticals"],
+        "Trips TE Offset": ["Corner Strike", "Counter", "Curl Flat", "HB Draw", "Inside Zone", "Levels", "Orbit Cross Screen", "PA Boot Shot", "QB Zone", "Read Option", "RPO Alert Bubble", "Shuffle MTN Levels", "Verticals"],
+        "Wing Slot Offset": ["Corner Strike", "Counter", "Dagger", "HB Draw", "Inside Zone", "Inverted Veer", "Levels", "MTN Drive", "PA Boot", "PA Read", "Read Option", "Speed Option", "Stick"]
       },
       "Goal Line": {
         "Normal": ["FB Dive", "HB Dive", "PA Boot", "Power O", "QB Sneak"]
@@ -445,30 +445,30 @@ const OFFENSIVE_PLAYBOOKS = [
     style: "Speed / Spread",
     formations: {
       "Singleback": {
-        "Bunch X Nasty": ["HB Stretch", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "Quick Slants"],
-        "Tight Y Off": ["HB Duo", "Inside Zone", "PA Boot", "PA TE Flood", "Quick Slants", "Spacing", "Stick"],
-        "Wing Close": ["HB Duo", "HB Stretch", "Inside Zone", "PA Boot", "Quick Slants", "Spacing", "Stick"],
-        "Wing Pair": ["HB Duo", "Inside Zone", "PA Boot", "PA Cross", "Quick Slants", "Spacing", "Stick"],
-        "Wing Tight Nasty": ["Counter", "HB Toss", "PA Boot", "Power O", "Quick Slants", "Stretch", "Sweep"]
+        "Bunch X Nasty": ["Counter", "HB Stretch", "Inside Zone", "Mesh", "MTN China Cross", "MTN Smash", "PA Cross", "PA Boot", "Quick Slants", "Spot", "Stick"],
+        "Tight Y Off": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA TE Flood", "PA Cross", "Quick Slants", "Spacing", "Stick"],
+        "Wing Close": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA Cross", "Power O", "Quick Slants", "Spacing", "Stick"],
+        "Wing Pair": ["Counter", "HB Duo", "HB Stretch", "Inside Zone", "MTN Spacing", "PA Boot", "PA Cross", "PA TE Flood", "Quick Slants", "Spacing", "Stick"],
+        "Wing Tight Nasty": ["Counter", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "PA Power O", "Power O", "Quick Slants", "Stretch", "Sweep"]
       },
       "I Form": {
-        "Close": ["Counter", "FB Dive", "HB Dive", "PA Boot", "PA Crossers", "Power O", "Quick Slants"],
-        "Slot": ["Counter", "FB Dive", "HB Dive", "ISO", "PA Boot", "Power O", "Quick Slants"],
-        "Slot Close": ["Counter", "FB Dive", "HB Dive", "PA Boot", "PA Scissors", "Power O", "Quick Slants"],
-        "Tight": ["Counter", "FB Dive", "HB Dive", "Outside Zone", "PA Boot", "Power O", "Quick Slants"],
-        "Y Off Close": ["Counter", "FB Dive", "HB Dive", "ISO", "PA Power O", "Power O", "Quick Slants"]
+        "Close": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Crossers", "Power O", "Quick Slants", "Stretch"],
+        "Slot": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Power O", "Power O", "Quick Slants", "Stretch"],
+        "Slot Close": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Scissors", "Power O", "Quick Slants"],
+        "Tight": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "Outside Zone", "PA Boot", "Power O", "Quick Slants"],
+        "Y Off Close": ["Counter", "FB Dive", "HB Blast", "HB Dive", "HB Toss", "ISO", "PA Boot", "PA Crossers", "PA Power O", "Power O", "Quick Slants"]
       },
       "Weak": {
-        "Slot Close": ["Counter", "Duo", "HB Dive", "PA Boot", "PA Power O", "Power O", "Quick Slants"]
+        "Slot Close": ["Counter", "Duo", "HB Dive", "HB Toss", "Inside Zone", "PA Boot", "PA Power O", "Power O", "Quick Slants", "Stretch"]
       },
       "Pistol": {
-        "Bunch TE": ["Inside Zone", "Levels", "Mesh", "PA Read", "Read Option", "RPO Peek", "Stick"],
-        "Deuce Close": ["Inside Zone", "Levels", "Mesh", "PA Boot", "Power O", "Read Option", "Stretch"],
-        "Strong Y Off Close": ["Inside Zone", "Levels", "Mesh", "PA Boot", "Power Read", "Read Option", "RPO Alert"],
-        "Tight Y Off Flex": ["Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Quick Slants", "Read Option"],
-        "Wing Close": ["Inside Zone", "Levels", "Mesh", "PA Boot", "Read Option", "RPO Alert", "Stretch"],
-        "Wing Flex Close": ["Inside Zone", "Levels", "Mesh", "PA Boot", "Quick Slants", "Read Option", "RPO Alert"],
-        "Wing Slot": ["Inside Zone", "Levels", "Mesh", "PA Boot", "Read Option", "RPO Alert", "Stretch"]
+        "Bunch TE": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Read Option", "RPO Alert", "RPO Peek", "Stick"],
+        "Deuce Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "Power O", "Read Option", "RPO Alert", "Stretch"],
+        "Strong Y Off Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "Power Read", "Read Option", "RPO Alert", "RPO Peek"],
+        "Tight Y Off Flex": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Quick Slants", "Read Option", "RPO Alert"],
+        "Wing Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "Read Option", "RPO Alert", "RPO Peek", "Stretch"],
+        "Wing Flex Close": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Quick Slants", "Read Option", "RPO Alert"],
+        "Wing Slot": ["Counter", "HB Stretch", "Inside Zone", "Levels", "Mesh", "PA Boot", "PA Read", "Read Option", "RPO Alert", "Stretch"]
       },
       "Gun": {
         "Bunch": ["Bunch Trail", "Corner Strike", "Four Verticals", "HB Screen", "Inside Zone", "Levels", "Mesh", "PA Crossers", "Spacing", "Stick"],

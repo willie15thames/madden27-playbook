@@ -367,11 +367,11 @@ function openDetail(item) {
   let animItem = {};
   if (item.data.kind === 'offenseType') {
     currentSide = 'offense';
-    animItem = { offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex', playFamily: item.data.name, defFormation: 'Nickel', coverageName: 'Cover 3' };
+    animItem = { offFormation: 'Gun', offSubFormation: 'Spread Y-Flex', playFamily: item.data.name, defFormation: 'Nickel', coverageName: 'Cover 3' };
     openOffenseTypeDetail(item.data.name, item.data.play, item.data.variants);
   } else if (item.data.kind === 'coverage') {
     currentSide = 'defense';
-    animItem = { offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: 'Nickel', coverageName: item.data.cov.name };
+    animItem = { offFormation: 'Gun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: 'Nickel', coverageName: item.data.cov.name };
     openCoverageDetail(item.data.cov, item.data.variants);
   } else if (item.data.kind === 'offenseVariant') {
     currentSide = 'offense';
@@ -381,7 +381,7 @@ function openDetail(item) {
   } else if (item.data.kind === 'defenseVariant') {
     currentSide = 'defense';
     const v = item.data.variant;
-    animItem = { offFormation: 'Shotgun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: v.formation, coverageName: v.coverage };
+    animItem = { offFormation: 'Gun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: v.formation, coverageName: v.coverage };
     openDefenseVariantDetail(v);
   }
   currentModalItem = animItem;
