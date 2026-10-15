@@ -2,6 +2,7 @@ import COVERAGES from '../data/coverages.js';
 import PLAY_TYPES from '../data/plays.js';
 import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
+import { analyzePlaybookTendencies } from '../data/analytics.js';
 
 // Mobile menu
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
@@ -118,6 +119,35 @@ playbookSelector.addEventListener('change', () => {
   document.getElementById('formationCount').textContent = Object.keys(pb.formations).length;
   document.getElementById('setCount').textContent = totalSets;
   document.getElementById('playCount').textContent = totalPlays;
+
+  // Analytics tendency analysis (offense only)
+  const tendencyEl = document.getElementById('playbookTendency');
+  if (tendencyEl && currentSide === 'offense') {
+    const analysis = analyzePlaybookTendencies(pb);
+    if (analysis) {
+      const runPct = analysis.totalPlays > 0 ? (analysis.runPlays / analysis.totalPlays * 100).toFixed(0) : 0;
+      const passPct = analysis.totalPlays > 0 ? (100 - runPct) : 0;
+      tendencyEl.innerHTML = `
+        <div class="flex items-center gap-3 mt-2">
+          <div class="flex-1">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-bold text-neon-cyan">Run ${runPct}%</span>
+              <span class="font-bold text-neon-red">Pass ${passPct}%</span>
+            </div>
+            <div class="w-full bg-dark-900 rounded-full h-2 overflow-hidden flex">
+              <div class="h-2 bg-[#00FFFF]" style="width:${runPct}%"></div>
+              <div class="h-2 bg-[#FF1493]" style="width:${passPct}%"></div>
+            </div>
+          </div>
+          <span class="text-xs font-bold px-2 py-1 rounded bg-dark-700 border border-dark-600">${analysis.style}</span>
+        </div>
+      `;
+    } else {
+      tendencyEl.innerHTML = '';
+    }
+  } else if (tendencyEl) {
+    tendencyEl.innerHTML = '';
+  }
 
   buildFormationTree(pb, '');
 });

@@ -3,6 +3,7 @@ import { HOT_ROUTES, OFFENSIVE_ADJUSTMENTS, DEFENSIVE_ADJUSTMENTS, MACROS } from
 import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import COVERAGES from '../data/coverages.js';
 import { PlayArtRenderer } from '../components/playArt.js';
+import { calculateMatchupGrade, recommendPlays, CONCEPT_LABELS } from '../data/analytics.js';
 
 // ===== STATE =====
 let activeRenderer = null;
@@ -134,6 +135,7 @@ function updateAnimation() {
   }
 
   updatePlayInfo(play, currentCoverage);
+  updateAnalytics();
 }
 
 function updatePlayInfo(play, coverage) {
@@ -152,8 +154,15 @@ function updatePlayInfo(play, coverage) {
   const formation = fmSelect.value || '';
   const sub = sfSelect.value || '';
   typeEl.textContent = [formation, sub].filter(Boolean).join(' > ');
-  vsEl.textContent = coverage ? `vs ${coverage}` : '';
-  vsEl.className = coverage ? 'text-xs text-neon-red font-bold' : 'text-xs text-gray-500';
+
+  if (coverage) {
+    const grade = calculateMatchupGrade(play, coverage);
+    vsEl.innerHTML = `<span class="text-neon-red font-bold">vs ${coverage}</span> <span class="ml-2 font-black" style="color: ${grade.color}">${grade.grade} — ${grade.label}</span>`;
+    vsEl.className = 'text-xs';
+  } else {
+    vsEl.textContent = '';
+    vsEl.className = 'text-xs text-gray-500';
+  }
 }
 
 // ===== PLAY CONTROLS =====
@@ -395,6 +404,64 @@ function showMacroDetail(macroId) {
 
 function formatAdjId(id) {
   return id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+// ===== ANALYTICS PANEL =====
+const situationSelect = document.getElementById('situationSelect');
+const analyticsGradeDisplay = document.getElementById('analyticsGradeDisplay');
+const analyticsRecommendations = document.getElementById('analyticsRecommendations');
+
+function updateAnalytics() {
+  if (!currentPlay || !currentCoverage) {
+    if (analyticsGradeDisplay) analyticsGradeDisplay.innerHTML = '<p class="text-xs text-gray-500">Select a play and coverage to see grades</p>';
+    if (analyticsRecommendations) analyticsRecommendations.innerHTML = '';
+    return;
+  }
+
+  const situation = situationSelect?.value || '';
+  const grade = calculateMatchupGrade(currentPlay, currentCoverage, { situation: situation || undefined });
+
+  if (analyticsGradeDisplay) {
+    analyticsGradeDisplay.innerHTML = `
+      <div class="p-2 rounded-lg bg-dark-700 border border-dark-600">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-bold text-gray-400">MATCHUP GRADE</span>
+          <span class="text-sm font-black" style="color: ${grade.color}">${grade.grade}</span>
+        </div>
+        <div class="w-full bg-dark-900 rounded-full h-2 overflow-hidden">
+          <div class="h-2 rounded-full" style="width: ${grade.grade}%; background: ${grade.color}"></div>
+        </div>
+        <div class="flex justify-between mt-1">
+          <span class="text-xs text-gray-500">${CONCEPT_LABELS[grade.conceptKey] || ''}</span>
+          <span class="text-xs font-bold" style="color: ${grade.color}">${grade.label}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  if (analyticsRecommendations) {
+    const recs = recommendPlays(currentCoverage, { situation: situation || undefined }).slice(0, 5);
+    analyticsRecommendations.innerHTML = `
+      <div class="mt-2">
+        <div class="text-xs font-bold text-gray-500 uppercase mb-1">Best concepts vs ${currentCoverage}</div>
+        <div class="space-y-1">
+          ${recs.map(r => `
+            <div class="flex items-center gap-1">
+              <div class="w-full bg-dark-900 rounded-full h-1.5 flex-1 overflow-hidden">
+                <div class="h-1.5 rounded-full" style="width: ${r.grade}%; background: ${r.color}"></div>
+              </div>
+              <span class="text-xs font-bold w-6 text-right" style="color: ${r.color}">${r.grade}</span>
+              <span class="text-xs text-gray-400 w-24 truncate">${r.conceptLabel}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+}
+
+if (situationSelect) {
+  situationSelect.addEventListener('change', updateAnalytics);
 }
 
 // ===== PLAY CREATOR CONTROLS =====

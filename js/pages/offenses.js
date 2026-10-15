@@ -2,6 +2,7 @@ import PLAY_TYPES from '../data/plays.js';
 import OFFENSIVE_PLAYS from '../data/offensive-plays.js';
 import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
+import { calculateMatchupGrade, getConceptKey, CONCEPT_LABELS } from '../data/analytics.js';
 
 // Build a lookup: playName -> Set of playbook names that contain it
 function buildPlaybookLookup() {
@@ -242,6 +243,23 @@ function openModal(name, play, variants) {
     <div class="p-3 bg-dark-700 rounded-lg border border-dark-600 mb-4">
       <p class="text-xs text-neon-cyan font-bold mb-1"><i class="bi bi-lightbulb-fill mr-1"></i> Pro Tip</p>
       <p class="text-xs text-gray-300">${play.tips}</p>
+    </div>
+
+    <div class="results-section mb-4">
+      <h4 class="text-emerald-400"><i class="bi bi-bar-chart-fill mr-1"></i> Coverage Matchup Grades</h4>
+      <div class="text-xs text-gray-500 mb-2">Concept: ${CONCEPT_LABELS[getConceptKey(name)] || 'Unknown'}</div>
+      <div class="space-y-1">
+        ${['Cover 0', 'Cover 1', 'Cover 2 Zone', 'Cover 2 Man', 'Cover 3', 'Cover 3 Match', 'Cover 4', 'Cover 4 Palms', 'Tampa 2', 'Cover 6', 'Prevent'].map(cov => {
+          const g = calculateMatchupGrade(name, cov);
+          return `<div class="flex items-center gap-2">
+            <span class="text-xs text-gray-400 w-28 truncate">${cov}</span>
+            <div class="flex-1 bg-dark-900 rounded-full h-2 overflow-hidden">
+              <div class="h-2 rounded-full" style="width:${g.grade}%;background:${g.color}"></div>
+            </div>
+            <span class="text-xs font-bold w-8 text-right" style="color:${g.color}">${g.grade}</span>
+          </div>`;
+        }).join('')}
+      </div>
     </div>
 
     ${variants.length > 0 ? `

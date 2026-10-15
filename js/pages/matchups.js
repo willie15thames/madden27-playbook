@@ -4,6 +4,7 @@ import DEFENSIVE_PLAYS from '../data/defensive-plays.js';
 import OFFENSIVE_PLAYS from '../data/offensive-plays.js';
 import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
+import { calculateMatchupGrade, recommendPlays, recommendCoverages, getConceptKey, CONCEPT_LABELS } from '../data/analytics.js';
 
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
   document.getElementById('mobileMenu')?.classList.toggle('hidden');
@@ -159,6 +160,8 @@ function checkMatchup() {
   if (offPlayData && defCoverageData) {
     const offWins = doesOffenseBeat(offPlay, offPlayData, defPlay, defCoverageData);
     const defWins = doesDefenseBeat(defPlay, defCoverageData, offPlay, offPlayData);
+    const matchupGrade = calculateMatchupGrade(offPlay, defCoverageData.name);
+
     if (offWins && !defWins) {
       verdictText.textContent = `${offPlay} BEATS ${defCoverageData.name}`;
       verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
@@ -180,6 +183,21 @@ function checkMatchup() {
       verdictDetail.textContent = 'No strong advantage. Read and react.';
       verdictPanel.style.borderColor = '#6b7280';
     }
+
+    // Analytics Grade Bar
+    const gradeBar = document.createElement('div');
+    gradeBar.className = 'mt-4';
+    gradeBar.innerHTML = `
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-bold text-gray-400 uppercase">Offensive Matchup Grade</span>
+        <span class="text-sm font-black" style="color: ${matchupGrade.color}">${matchupGrade.grade}/100 — ${matchupGrade.label}</span>
+      </div>
+      <div class="w-full bg-dark-700 rounded-full h-3 overflow-hidden">
+        <div class="h-3 rounded-full transition-all duration-500" style="width: ${matchupGrade.grade}%; background: ${matchupGrade.color}"></div>
+      </div>
+      <div class="text-xs text-gray-500 mt-1">Concept: ${CONCEPT_LABELS[matchupGrade.conceptKey] || matchupGrade.conceptKey}</div>
+    `;
+    verdictPanel.appendChild(gradeBar);
   } else {
     verdictText.textContent = offPlayData ? 'Select a defensive coverage' : 'Select an offensive play';
     verdictText.className = 'text-2xl font-black mb-2 text-gray-400';
@@ -291,11 +309,46 @@ function checkMatchup() {
   if (offPlayData && defCoverageData) {
     const offAlts = getOffensiveAlternatives(defCoverageData);
     const defAlts = getDefensiveAlternatives(offPlay, offPlayData);
+
+    // Analytics-based concept recommendations
+    const conceptRecs = recommendPlays(defCoverageData.name).slice(0, 6);
+    const coverageRecs = recommendCoverages(offPlay).slice(0, 6);
+
     recommendations.innerHTML = `
       <h3 class="text-lg font-bold text-neon-cyan mb-4"><i class="bi bi-stars mr-2"></i>Recommendations</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div><h4 class="text-sm font-bold text-[#00FFFF] uppercase mb-2">Best Plays vs ${defCoverageData.name}</h4><div class="flex flex-wrap">${offAlts.map(a => `<span class="tag-green">${a}</span>`).join('')}</div></div>
-        <div><h4 class="text-sm font-bold text-[#FF1493] uppercase mb-2">Best Coverages vs ${offPlay}</h4><div class="flex flex-wrap">${defAlts.map(a => `<span class="tag-green">${a}</span>`).join('')}</div></div>
+        <div>
+          <h4 class="text-sm font-bold text-[#00FFFF] uppercase mb-2">Best Plays vs ${defCoverageData.name}</h4>
+          <div class="flex flex-wrap mb-3">${offAlts.map(a => `<span class="tag-green">${a}</span>`).join('')}</div>
+          <h4 class="text-sm font-bold text-[#00FFFF] uppercase mb-2">Best Concepts (Analytics)</h4>
+          <div class="space-y-1">
+            ${conceptRecs.map(r => `
+              <div class="flex items-center gap-2">
+                <div class="w-full bg-dark-700 rounded-full h-2 flex-1 overflow-hidden">
+                  <div class="h-2 rounded-full" style="width: ${r.grade}%; background: ${r.color}"></div>
+                </div>
+                <span class="text-xs font-bold whitespace-nowrap" style="color: ${r.color}">${r.grade}</span>
+                <span class="text-xs text-gray-400 whitespace-nowrap w-32 truncate">${r.conceptLabel}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-[#FF1493] uppercase mb-2">Best Coverages vs ${offPlay}</h4>
+          <div class="flex flex-wrap mb-3">${defAlts.map(a => `<span class="tag-green">${a}</span>`).join('')}</div>
+          <h4 class="text-sm font-bold text-[#FF1493] uppercase mb-2">Coverage Grades (Analytics)</h4>
+          <div class="space-y-1">
+            ${coverageRecs.map(r => `
+              <div class="flex items-center gap-2">
+                <div class="w-full bg-dark-700 rounded-full h-2 flex-1 overflow-hidden">
+                  <div class="h-2 rounded-full" style="width: ${r.defenseGrade}%; background: ${r.color}"></div>
+                </div>
+                <span class="text-xs font-bold whitespace-nowrap" style="color: ${r.color}">${r.defenseGrade}</span>
+                <span class="text-xs text-gray-400 whitespace-nowrap w-32 truncate">${r.coverage}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
       </div>
     `;
   } else {

@@ -1,5 +1,6 @@
 // Main app JS for index page
 import COVERAGES from './data/coverages.js';
+import PLAY_TYPES from './data/plays.js';
 import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from './data/playbooks.js';
 
 // Dynamic stats from actual data
@@ -34,7 +35,9 @@ const statPlays = document.querySelector('#statPlays div');
 const statForm = document.querySelector('#statFormations div');
 const statBooks = document.querySelector('#statPlaybooks div');
 
+const statPlayTypes = document.querySelector('#statPlayTypes div');
 if (statCov) statCov.textContent = stats.coverages.toLocaleString();
+if (statPlayTypes) statPlayTypes.textContent = Object.keys(PLAY_TYPES).length.toLocaleString();
 if (statPlays) statPlays.textContent = stats.totalPlays.toLocaleString();
 if (statForm) statForm.textContent = stats.totalFormations.toLocaleString();
 if (statBooks) statBooks.textContent = stats.totalPlaybooks.toLocaleString();
