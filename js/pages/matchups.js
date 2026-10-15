@@ -223,14 +223,14 @@ function checkMatchup() {
       vsContainer.appendChild(toggleDiv);
 
       const canvas = document.createElement('canvas');
-      canvas.width = 480; canvas.height = 380;
+      canvas.width = 580; canvas.height = 440;
       canvas.className = 'rounded-xl mx-auto block';
       canvas.style.background = '#1a472a';
       canvas.style.maxWidth = '100%';
       vsContainer.appendChild(canvas);
 
       if (vsRenderer) vsRenderer.destroy();
-      vsRenderer = new PlayArtRenderer(canvas, { width: 480, height: 380 });
+      vsRenderer = new PlayArtRenderer(canvas, { width: 580, height: 440 });
 
       let matchupSide = 'offense';
       const startMatchupAnim = () => {
@@ -261,12 +261,12 @@ function checkMatchup() {
     offArtContainer.innerHTML = '';
     if (offPlay) {
       const c = document.createElement('canvas');
-      c.width = 280; c.height = 220;
+      c.width = 320; c.height = 260;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
       offArtContainer.appendChild(c);
       if (offStaticRenderer) offStaticRenderer.destroy();
-      offStaticRenderer = new PlayArtRenderer(c, { width: 280, height: 220 });
+      offStaticRenderer = new PlayArtRenderer(c, { width: 320, height: 260 });
       offStaticRenderer.renderPlayCard(offFormation, offSubForm, offPlay);
     }
   }
@@ -274,12 +274,12 @@ function checkMatchup() {
     defArtContainer.innerHTML = '';
     if (defPlay) {
       const c = document.createElement('canvas');
-      c.width = 280; c.height = 220;
+      c.width = 320; c.height = 260;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
       defArtContainer.appendChild(c);
       if (defStaticRenderer) defStaticRenderer.destroy();
-      defStaticRenderer = new PlayArtRenderer(c, { width: 280, height: 220 });
+      defStaticRenderer = new PlayArtRenderer(c, { width: 320, height: 260 });
       defStaticRenderer.renderCoverageCard(defFormation, defPlay, defSubForm);
     }
   }

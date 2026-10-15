@@ -511,7 +511,7 @@ function buildDefensePositions(formation, subFormation) {
       // 1-4 Dbl Mug: 1 DL, 4 LB-types mugged up at the LOS
       return {
         NT: [0.50, 0.56],
-        LB1: [0.34, 0.57], LB2: [0.42, 0.57], LB3: [0.58, 0.57], LB4: [0.66, 0.57],
+        LOLB: [0.34, 0.57], LB1: [0.42, 0.57], LB2: [0.58, 0.57], ROLB: [0.66, 0.57],
         CB1: [0.06, 0.42], NCB1: [0.22, 0.42], CB2: [0.94, 0.42], NCB2: [0.78, 0.42],
         SS: [0.65, 0.28], FS: [0.50, 0.18]
       };
@@ -703,46 +703,48 @@ const DEFENSE_POSITIONS = {};
 
 // Route paths (waypoints as delta from start position, normalized)
 const ROUTE_PATHS = {
-  'streak': [[0, -0.35]],
-  'post': [[0, -0.15], [-0.12, -0.30]],
-  'corner': [[0, -0.15], [0.12, -0.30]],
-  'out': [[0, -0.12], [0.12, 0]],
-  'in': [[0, -0.12], [-0.12, 0]],
-  'slant': [[-0.10, -0.18]],
-  'drag': [[0, -0.04], [0.30, -0.04]],
-  'drag_left': [[0, -0.04], [-0.30, -0.04]],
-  'curl': [[0, -0.15], [0, 0.03]],
-  'comeback': [[0, -0.18], [0.04, 0.04]],
-  'flat': [[0.10, -0.02]],
-  'flat_left': [[-0.10, -0.02]],
-  'wheel': [[0.08, -0.02], [0.08, -0.30]],
-  'seam': [[0, -0.30]],
-  'hitch': [[0, -0.08], [0, 0.02]],
-  'fade': [[0.04, -0.35]],
-  'screen': [[0.06, 0.04], [0.10, 0.02]],
-  'angle': [[0.04, 0.04], [0.15, -0.12]],
+  'streak': [[0, -0.30]],
+  'post': [[0, -0.12], [-0.08, -0.22]],
+  'corner': [[0, -0.12], [0.06, -0.22]],
+  'out': [[0, -0.10], [0.06, 0]],
+  'in': [[0, -0.10], [-0.06, 0]],
+  'slant': [[-0.06, -0.14]],
+  'drag': [[0, -0.03], [0.22, 0]],
+  'drag_left': [[0, -0.03], [-0.22, 0]],
+  'curl': [[0, -0.13], [0, 0.03]],
+  'comeback': [[0, -0.14], [0.03, 0.04]],
+  'flat': [[0.10, -0.03]],
+  'flat_left': [[-0.10, -0.03]],
+  'wheel': [[0.06, -0.02], [0.04, -0.26]],
+  'seam': [[0, -0.26]],
+  'hitch': [[0, -0.07], [0, 0.02]],
+  'fade': [[0.03, -0.30]],
+  'screen': [[-0.04, 0.03], [-0.06, 0.01]],
+  'screen_right': [[0.04, 0.03], [0.06, 0.01]],
+  'screen_left': [[-0.04, 0.03], [-0.06, 0.01]],
+  'angle': [[0.03, 0.03], [0.10, -0.10]],
   'block': [],
-  'run_right': [[0.15, -0.05]],
-  'run_left': [[-0.15, -0.05]],
-  'run_inside': [[0, -0.12]],
-  'run_power': [[0.06, -0.12]],
-  'run_counter': [[-0.05, -0.02], [0.10, -0.12]],
-  'run_stretch': [[0.20, -0.04]],
-  'run_dive': [[0, -0.08]],
-  'run_outside': [[0.20, -0.06]],
-  'option_give': [[0.10, -0.06]],
-  'option_keep': [[-0.08, -0.10]],
-  'qb_boot_right': [[0.22, 0.02], [0.06, -0.12]],
-  'qb_boot_left': [[-0.22, 0.02], [-0.06, -0.12]],
-  'qb_drop': [[0, 0.04]],
-  'qb_scramble': [[-0.05, -0.10]],
+  'run_right': [[0.10, -0.06]],
+  'run_left': [[-0.10, -0.06]],
+  'run_inside': [[0.02, -0.10]],
+  'run_power': [[0.06, -0.10]],
+  'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
+  'run_stretch': [[0.16, -0.04]],
+  'run_dive': [[0.01, -0.07]],
+  'run_outside': [[0.14, -0.05]],
+  'option_give': [[0.08, -0.06]],
+  'option_keep': [[-0.06, -0.08]],
+  'qb_boot_right': [[0.16, 0.02], [0.04, -0.10]],
+  'qb_boot_left': [[-0.16, 0.02], [-0.04, -0.10]],
+  'qb_drop': [[0, 0.03]],
+  'qb_scramble': [[-0.04, -0.08]],
   'qb_handoff': [[0, 0.02]],
-  'pull_left': [[-0.10, 0.0], [-0.08, -0.10]],
-  'pull_right': [[0.10, 0.0], [0.08, -0.10]],
-  'ol_release_right': [[0.12, -0.02], [0.06, -0.06]],
-  'ol_release_left': [[-0.12, -0.02], [-0.06, -0.06]],
-  'screen_left': [[-0.06, 0.04], [-0.10, 0.02]],
-  'screen_right': [[0.06, 0.04], [0.10, 0.02]]
+  'pull_left': [[-0.08, 0.0], [-0.06, -0.08]],
+  'pull_right': [[0.08, 0.0], [0.06, -0.08]],
+  'ol_release_right': [[0.10, -0.02], [0.05, -0.05]],
+  'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]],
+  'lead_block': [[0.04, -0.08]],
+  'pass_block': [[0, -0.01]]
 };
 
 // Coverage zone shapes (center + radius, normalized)
@@ -848,7 +850,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'HB Screen': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen_left' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'HB Wheel': {
@@ -872,23 +874,23 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Inside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Outside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Stretch': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Power O': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_power' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'lead_block', LG: 'pass_block', RG: 'pull_left', C: 'pass_block', LT: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Counter': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter', FB: 'run_power' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter', FB: 'run_power', RG: 'pull_left', RT: 'pull_left', LT: 'pass_block', LG: 'pass_block', C: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Dive': {
@@ -944,7 +946,7 @@ const PLAY_ROUTES = {
     qb: 'run_dive', isRun: true
   },
   'Wide Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Split Zone': {
@@ -956,15 +958,15 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true
   },
   'Trap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', RG: 'pull_left', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Wham': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'lead_block' },
     qb: 'qb_handoff', isRun: true
   },
   'ISO': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'lead_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Sweep': {
@@ -1112,7 +1114,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Bubble Screen': {
-    routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'streak', WR2: 'screen_right', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Tunnel Screen': {
@@ -2524,7 +2526,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Bubble Screen': {
-    routes: { WR1: 'streak', WR2: 'flat', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'block' },
+    routes: { WR1: 'streak', WR2: 'screen_right', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Stick Slot Option': {
@@ -2627,18 +2629,29 @@ class PlayArtRenderer {
     this.isAnimating = false;
   }
 
-  // Draw field background
+  // Draw field background with subtle gradient and realistic turf
   drawField() {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
-    // Field
-    ctx.fillStyle = FIELD_GREEN;
+    // Field gradient for depth
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#1e5c30');
+    grad.addColorStop(0.5, FIELD_GREEN);
+    grad.addColorStop(1, '#153d1f');
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
+    // Subtle turf stripes (alternating darker/lighter bands)
+    for (let i = 0; i < 8; i++) {
+      if (i % 2 === 0) {
+        ctx.fillStyle = 'rgba(0,0,0,0.04)';
+        ctx.fillRect(0, h * i / 8, w, h / 8);
+      }
+    }
     // Yard lines
     for (let i = 1; i < 8; i++) {
       ctx.strokeStyle = FIELD_LINE;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 0.8;
       ctx.beginPath();
       ctx.moveTo(0, h * i / 8);
       ctx.lineTo(w, h * i / 8);
@@ -2647,33 +2660,46 @@ class PlayArtRenderer {
     // Hash marks
     for (let i = 1; i < 8; i++) {
       ctx.strokeStyle = FIELD_LINE;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 0.8;
       const y = h * i / 8;
       ctx.beginPath(); ctx.moveTo(w * 0.38, y - 3); ctx.lineTo(w * 0.38, y + 3); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(w * 0.62, y - 3); ctx.lineTo(w * 0.62, y + 3); ctx.stroke();
     }
-    // Line of scrimmage
+    // Line of scrimmage with subtle glow
+    ctx.save();
+    ctx.shadowColor = LOS_COLOR;
+    ctx.shadowBlur = 4;
     ctx.strokeStyle = LOS_COLOR;
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
     ctx.beginPath();
     ctx.moveTo(0, h * 0.60);
     ctx.lineTo(w, h * 0.60);
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.restore();
   }
 
-  // Draw a player dot
+  // Draw a player dot with subtle shadow and cleaner label
   drawPlayer(x, y, color, label, size = 8) {
     const ctx = this.ctx;
     const px = x * this.width;
     const py = y * this.height;
-    ctx.fillStyle = color;
+    // Drop shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath();
+    ctx.arc(px + 1, py + 1, size, 0, Math.PI * 2);
+    ctx.fill();
+    // Player circle with subtle gradient
+    const pGrad = ctx.createRadialGradient(px - size * 0.3, py - size * 0.3, 0, px, py, size);
+    pGrad.addColorStop(0, this._lightenColor(color, 30));
+    pGrad.addColorStop(1, color);
+    ctx.fillStyle = pGrad;
     ctx.beginPath();
     ctx.arc(px, py, size, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.lineWidth = 1;
     ctx.stroke();
     // Label
     if (label) {
@@ -2683,6 +2709,23 @@ class PlayArtRenderer {
       ctx.textBaseline = 'middle';
       ctx.fillText(label, px, py);
     }
+  }
+
+  _lightenColor(hex, amount) {
+    if (!hex.startsWith('#')) return hex;
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    r = Math.min(255, r + amount);
+    g = Math.min(255, g + amount);
+    b = Math.min(255, b + amount);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  // Clamp pixel coords to keep routes visible within canvas margins
+  _clamp(px, py) {
+    const m = 4; // margin pixels
+    return [Math.max(m, Math.min(this.width - m, px)), Math.max(m, Math.min(this.height - m, py))];
   }
 
   // Draw a route line (animated)
@@ -2703,8 +2746,7 @@ class PlayArtRenderer {
 
     for (let i = 0; i < totalSegs; i++) {
       const [dx, dy] = waypoints[i];
-      const tx = cx + dx * this.width;
-      const ty = cy + dy * this.height;
+      let [tx, ty] = this._clamp(cx + dx * this.width, cy + dy * this.height);
 
       if (i < Math.floor(segsToShow)) {
         ctx.lineTo(tx, ty);
@@ -2714,7 +2756,6 @@ class PlayArtRenderer {
         const mx = cx + (tx - cx) * frac;
         const my = cy + (ty - cy) * frac;
         ctx.lineTo(mx, my);
-        // Arrow head at current position
         this.drawArrowHead(cx, cy, mx, my, color);
         cx = mx; cy = my;
         break;
@@ -2732,8 +2773,7 @@ class PlayArtRenderer {
         prevX += waypoints[i][0] * this.width;
         prevY += waypoints[i][1] * this.height;
       }
-      const endX = prevX + lastWP[0] * this.width;
-      const endY = prevY + lastWP[1] * this.height;
+      let [endX, endY] = this._clamp(prevX + lastWP[0] * this.width, prevY + lastWP[1] * this.height);
       this.drawArrowHead(prevX, prevY, endX, endY, color);
     }
   }
@@ -2849,7 +2889,7 @@ class PlayArtRenderer {
     // Players on top
     for (const key of skillPositions) {
       const pos = positions[key];
-      const label = key.replace(/\d/g, '').substring(0, 2);
+      const label = this._getOffLabel(key);
       const isQB = key === 'QB';
       const color = isQB ? BALL_COLOR : OFF_COLOR;
       this.drawPlayer(pos[0], pos[1], color, label, isQB ? 9 : 8);
@@ -2869,7 +2909,7 @@ class PlayArtRenderer {
 
     // Draw defenders
     for (const [key, pos] of Object.entries(positions)) {
-      const label = key.replace(/\d/g, '').substring(0, 2);
+      const label = this._getDefLabel(key);
       this.drawPlayer(pos[0], pos[1], DEF_COLOR, label, 8);
     }
   }
@@ -2911,7 +2951,7 @@ class PlayArtRenderer {
 
       // Defense players
       for (const [key, pos] of Object.entries(defPositions)) {
-        const label = key.replace(/\d/g, '').substring(0, 2);
+        const label = this._getDefLabel(key);
         this.drawPlayer(pos[0], pos[1], DEF_COLOR, label, 8);
       }
 
@@ -2949,7 +2989,7 @@ class PlayArtRenderer {
       // Players on top
       for (const key of skillPositions) {
         const pos = offPositions[key];
-        const label = key.replace(/\d/g, '').substring(0, 2);
+        const label = this._getOffLabel(key);
         const isQB = key === 'QB';
         this.drawPlayer(pos[0], pos[1], isQB ? BALL_COLOR : OFF_COLOR, label, isQB ? 9 : 8);
       }
@@ -3022,9 +3062,11 @@ class PlayArtRenderer {
       const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
       const path = ROUTE_PATHS[routeName] || [];
 
-      // Compute final position by following waypoints
+      // Compute final position by following waypoints, clamped to field bounds
       let endX = startPos[0], endY = startPos[1];
       for (const [dx, dy] of path) { endX += dx; endY += dy; }
+      endX = Math.max(0.02, Math.min(0.98, endX));
+      endY = Math.max(0.02, Math.min(0.98, endY));
 
       // OL: compute block target based on play type
       let isPull = false;
@@ -3038,7 +3080,7 @@ class PlayArtRenderer {
       offPlayers.push({
         key, startPos: [...startPos], endPos: [endX, endY],
         routeName, path, isOL, isQB, isPull,
-        label: key.replace(/\d/g, '').substring(0, 2),
+        label: this._getOffLabel(key),
         color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
         size: isQB ? 9 : (isOL ? 7 : 8)
       });
@@ -3048,7 +3090,7 @@ class PlayArtRenderer {
     const defPlayers = [];
     const defEntries = Object.entries(defPositions);
     const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
-    const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+    const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3', 'LB4'];
     const dbKeys = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
 
     // Pre-compute man coverage 1-to-1 assignments to avoid multiple DBs on same WR
@@ -3107,7 +3149,7 @@ class PlayArtRenderer {
       defPlayers.push({
         key, startPos: [...startPos], endPos: [endX, endY],
         isDL, isLB, isDB,
-        label: key.replace(/\d/g, '').substring(0, 2),
+        label: this._getDefLabel(key),
         color: DEF_COLOR, size: 8
       });
     }
@@ -3158,15 +3200,34 @@ class PlayArtRenderer {
       // === Draw route trails (the path behind moving players) ===
       if (developPhase) {
         for (const p of offPlayers) {
-          if (p.isOL || p.path.length === 0) continue;
+          if (p.isOL && !p.isPull) continue; // Skip non-pulling OL
+          if (p.path.length === 0 && !p.isPull) continue;
           const routeColor = (isRun && !p.isQB) ? BALL_COLOR : ROUTE_COLOR;
           const alpha = isOffSide ? 0.7 : 0.3;
           this.ctx.globalAlpha = alpha;
-          this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+          if (p.isPull) {
+            // Draw pull path as a curved arrow
+            const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+            const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+            this.ctx.strokeStyle = '#FFD700';
+            this.ctx.lineWidth = 2;
+            this.ctx.setLineDash([4, 3]);
+            this.ctx.beginPath();
+            this.ctx.moveTo(sx, sy);
+            this.ctx.quadraticCurveTo(sx, ey, ex, ey);
+            this.ctx.stroke();
+            this.ctx.setLineDash([]);
+          } else {
+            this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+          }
           this.ctx.globalAlpha = 1;
           // Route name labels (offense perspective)
           if (isOffSide && routeT > 0.3 && !p.isQB && p.routeName !== 'block') {
             this._drawRouteLabel(p, routeT);
+          }
+          // Pull labels for OL
+          if (isOffSide && p.isPull && routeT > 0.4) {
+            this._drawRouteLabel({ ...p, routeName: 'pull_left' }, routeT);
           }
         }
       }
@@ -3261,6 +3322,31 @@ class PlayArtRenderer {
     this.animFrame = requestAnimationFrame(animate);
   }
 
+  // === Label Helpers ===
+
+  _getDefLabel(key) {
+    const labels = {
+      'LOLB': 'OLB', 'ROLB': 'OLB', 'ILB1': 'ILB', 'ILB2': 'ILB',
+      'MLB': 'MLB', 'NT': 'NT', 'LE': 'LE', 'RE': 'RE',
+      'DT1': 'DT', 'DT2': 'DT', 'DE1': 'DE', 'DE2': 'DE',
+      'DL1': 'DL', 'DL2': 'DL', 'DL3': 'DL', 'DL4': 'DL', 'DL5': 'DL', 'DL6': 'DL',
+      'CB1': 'CB', 'CB2': 'CB', 'NCB': 'NC', 'NCB1': 'NC', 'NCB2': 'NC', 'NCB3': 'NC',
+      'SS': 'SS', 'FS': 'FS', 'S': 'S',
+      'LB': 'LB', 'LB1': 'LB', 'LB2': 'LB', 'LB3': 'LB', 'LB4': 'LB'
+    };
+    return labels[key] || key.replace(/\d/g, '').substring(0, 2);
+  }
+
+  _getOffLabel(key) {
+    const labels = {
+      'QB': 'QB', 'RB': 'RB', 'FB': 'FB',
+      'WR1': 'WR', 'WR2': 'WR', 'WR3': 'WR', 'WR4': 'WR', 'WR5': 'WR',
+      'TE': 'TE', 'TE1': 'TE', 'TE2': 'TE',
+      'LT': 'LT', 'LG': 'LG', 'C': 'C', 'RG': 'RG', 'RT': 'RT'
+    };
+    return labels[key] || key.replace(/\d/g, '').substring(0, 2);
+  }
+
   // === Live Play Helpers ===
 
   // Position group classification
@@ -3273,7 +3359,7 @@ class PlayArtRenderer {
     if (key === 'RB' || key === 'FB') return 'RB';
     const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
     if (dlKeys.includes(key)) return 'DL';
-    const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+    const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3', 'LB4'];
     if (lbKeys.includes(key)) return 'LB';
     return 'DB';
   }
@@ -3760,21 +3846,33 @@ class PlayArtRenderer {
     if (routeT < 0.4) return;
     const ctx = this.ctx;
     const fade = Math.min((routeT - 0.4) / 0.2, 1);
-    // Position label at midpoint of route
     const midX = (player.startPos[0] + player.endPos[0]) / 2;
     const midY = (player.startPos[1] + player.endPos[1]) / 2;
     const px = midX * this.width;
     const py = midY * this.height - 10;
-    const name = player.routeName.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const ROUTE_DISPLAY = {
+      'streak': 'Streak', 'post': 'Post', 'corner': 'Corner', 'out': 'Out', 'in': 'In',
+      'slant': 'Slant', 'drag': 'Drag', 'drag_left': 'Drag', 'curl': 'Curl',
+      'comeback': 'Comeback', 'flat': 'Flat', 'flat_left': 'Flat', 'wheel': 'Wheel',
+      'seam': 'Seam', 'hitch': 'Hitch', 'fade': 'Fade', 'screen': 'Screen',
+      'screen_left': 'Screen', 'screen_right': 'Screen', 'angle': 'Angle',
+      'run_right': 'Run', 'run_left': 'Run', 'run_inside': 'A Gap', 'run_power': 'B Gap',
+      'run_counter': 'Counter', 'run_stretch': 'Stretch', 'run_dive': 'Dive',
+      'run_outside': 'C Gap', 'option_give': 'Give', 'option_keep': 'Keep',
+      'qb_boot_right': 'Boot', 'qb_boot_left': 'Boot', 'qb_drop': 'Drop',
+      'qb_scramble': 'Scramble', 'qb_handoff': 'Handoff',
+      'pull_left': 'Pull', 'pull_right': 'Pull', 'lead_block': 'Lead',
+      'pass_block': 'Block', 'ol_release_right': 'Release', 'ol_release_left': 'Release'
+    };
+    const name = ROUTE_DISPLAY[player.routeName] || player.routeName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     ctx.globalAlpha = fade * 0.85;
-    // Background pill
-    ctx.font = 'bold 7px system-ui';
+    const fontSize = Math.max(7, this.width * 0.016);
+    ctx.font = `bold ${fontSize}px system-ui`;
     const tw = ctx.measureText(name).width + 6;
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
     ctx.beginPath();
-    ctx.roundRect(px - tw / 2, py - 6, tw, 12, 3);
+    ctx.roundRect(px - tw / 2, py - 6, tw, 13, 3);
     ctx.fill();
-    // Text
     ctx.fillStyle = '#00FFFF';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -3862,14 +3960,14 @@ class PlayArtRenderer {
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],
           routeName, path, isOL, isQB, isPull,
-          label: key.replace(/\d/g, '').substring(0, 2),
+          label: this._getOffLabel(key),
           color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
           size: isQB ? 9 : (isOL ? 7 : 8)
         });
       }
     } else if (!isOff && defPositions) {
       const dlKeys = ['DE', 'DE1', 'DE2', 'DT', 'DT1', 'DT2', 'NT', 'LE', 'RE', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
-      const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3'];
+      const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3', 'LB4'];
       const dbKeysLocal = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
 
       // For man coverage, compute zone-like drop targets so DBs move
@@ -3908,7 +4006,7 @@ class PlayArtRenderer {
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],
           isDL, isLB, isDB,
-          label: key.replace(/\d/g, '').substring(0, 2),
+          label: this._getDefLabel(key),
           color: DEF_COLOR, size: 8
         });
       }
@@ -3938,12 +4036,29 @@ class PlayArtRenderer {
         // Draw route trails
         if (developPhase) {
           for (const p of players) {
-            if (p.isOL || p.path.length === 0) continue;
+            if (p.isOL && !p.isPull) continue;
+            if (p.path.length === 0 && !p.isPull) continue;
             if (!this._isVisible(p.key, visibleGroups)) continue;
             const routeColor = (playData.isRun && !p.isQB) ? BALL_COLOR : ROUTE_COLOR;
-            this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+            if (p.isPull) {
+              const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+              const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+              this.ctx.strokeStyle = '#FFD700';
+              this.ctx.lineWidth = 2;
+              this.ctx.setLineDash([4, 3]);
+              this.ctx.beginPath();
+              this.ctx.moveTo(sx, sy);
+              this.ctx.quadraticCurveTo(sx, ey, ex, ey);
+              this.ctx.stroke();
+              this.ctx.setLineDash([]);
+            } else {
+              this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+            }
             if (routeT > 0.3 && !p.isQB && p.routeName !== 'block') {
               this._drawRouteLabel(p, routeT);
+            }
+            if (p.isPull && routeT > 0.4) {
+              this._drawRouteLabel({ ...p, routeName: 'pull_left' }, routeT);
             }
           }
         }

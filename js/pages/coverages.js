@@ -131,7 +131,7 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
     card.dataset.covIdx = covIdx;
     card.innerHTML = `
       <div class="play-art-wrapper">
-        <canvas class="play-art-canvas" width="400" height="280"></canvas>
+        <canvas class="play-art-canvas" width="500" height="350"></canvas>
         <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
       </div>
       <div class="card-info">
@@ -165,7 +165,7 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
     // Render static play art initially
     const canvas = card.querySelector('.play-art-canvas');
     if (canvas) {
-      const r = new PlayArtRenderer(canvas, { width: 400, height: 280 });
+      const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
       r.renderCoverageCard('Nickel', cov.name);
       card._staticRenderer = r;
     }
@@ -198,7 +198,7 @@ function openModal(cov, variants) {
       </div>
     </div>
     <div class="flex justify-center mb-2">
-      <canvas id="modalCovArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalCovArt" width="560" height="440" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <div class="flex justify-center mb-4">
       <div class="pos-filter-bar" id="modalPosFilter">
@@ -270,7 +270,7 @@ function openModal(cov, variants) {
           <div class="formation-group">
             <div class="formation-header variant-header" data-vi="${vi}">
               <div class="flex items-center gap-2">
-                <canvas id="varArt${vi}" width="60" height="48" class="rounded flex-shrink-0" style="background:#1a472a;"></canvas>
+                <canvas id="varArt${vi}" width="75" height="60" class="rounded flex-shrink-0" style="background:#1a472a;"></canvas>
                 <div>
                   <div class="font-semibold text-sm">${v.name}</div>
                   <div class="text-xs text-gray-500">${v.formation} / ${v.subFormation} &middot; ${v.personnel}</div>
@@ -281,7 +281,7 @@ function openModal(cov, variants) {
             <div class="formation-body variant-body" id="varBody${vi}">
               <div class="p-4">
                 <div class="flex justify-center mb-3">
-                  <canvas id="varArtBig${vi}" width="240" height="190" class="rounded-lg" style="background:#1a472a;"></canvas>
+                  <canvas id="varArtBig${vi}" width="300" height="240" class="rounded-lg" style="background:#1a472a;"></canvas>
                 </div>
                 <p class="text-sm text-gray-300 mb-3">${v.description}</p>
                 <div class="grid grid-cols-2 gap-3 text-xs mb-3">
@@ -343,7 +343,7 @@ function openModal(cov, variants) {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
     if (mainCanvas) {
-      const r = new PlayArtRenderer(mainCanvas, { width: 440, height: 340 });
+      const r = new PlayArtRenderer(mainCanvas, { width: 560, height: 440 });
       r.renderLivePlay({
         side: covModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
         playFamily: 'PA Crossers', defFormation: 'Nickel', coverageName: cov.name,
@@ -385,7 +385,7 @@ function openModal(cov, variants) {
   variants.forEach((v, vi) => {
     const thumbCanvas = document.getElementById(`varArt${vi}`);
     if (thumbCanvas) {
-      const r = new PlayArtRenderer(thumbCanvas, { width: 60, height: 48 });
+      const r = new PlayArtRenderer(thumbCanvas, { width: 75, height: 60 });
       r.renderCoverageCard(v.formation, v.coverage);
       renderers.push(r);
     }
@@ -405,7 +405,7 @@ function openModal(cov, variants) {
         const bigCanvas = document.getElementById(`varArtBig${vi}`);
         if (bigCanvas && !bigCanvas.dataset.rendered) {
           const v = variants[vi];
-          const r = new PlayArtRenderer(bigCanvas, { width: 240, height: 190 });
+          const r = new PlayArtRenderer(bigCanvas, { width: 300, height: 240 });
           r.renderCoverageCard(v.formation, v.coverage);
           renderers.push(r);
           bigCanvas.dataset.rendered = '1';

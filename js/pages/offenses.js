@@ -128,7 +128,7 @@ function renderCards(filter = 'all', search = '') {
     card.dataset.playName = name;
     card.innerHTML = `
       <div class="play-art-wrapper">
-        <canvas class="play-art-canvas" width="400" height="280"></canvas>
+        <canvas class="play-art-canvas" width="500" height="350"></canvas>
         <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
       </div>
       <div class="card-info">
@@ -158,7 +158,7 @@ function renderCards(filter = 'all', search = '') {
     // Static play art
     const canvas = card.querySelector('.play-art-canvas');
     if (canvas) {
-      const r = new PlayArtRenderer(canvas, { width: 400, height: 280 });
+      const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
       r.renderPlayCard('Gun', 'Spread Y-Flex', name);
       card._staticRenderer = r;
     }
@@ -190,7 +190,7 @@ function openModal(name, play, variants) {
       </div>
     </div>
     <div class="flex justify-center mb-2">
-      <canvas id="modalOffArt" width="440" height="340" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
+      <canvas id="modalOffArt" width="560" height="440" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
     <div class="flex justify-center mb-4">
       <div class="pos-filter-bar" id="modalPosFilter">
@@ -270,7 +270,7 @@ function openModal(name, play, variants) {
           <div class="formation-group">
             <div class="formation-header variant-header" data-vi="${vi}">
               <div class="flex items-center gap-2">
-                <canvas id="offVar${vi}" width="60" height="48" class="rounded flex-shrink-0" style="background:#1a472a;"></canvas>
+                <canvas id="offVar${vi}" width="75" height="60" class="rounded flex-shrink-0" style="background:#1a472a;"></canvas>
                 <div>
                   <div class="font-semibold text-sm">${v.name}</div>
                   <div class="text-xs text-gray-500">${v.formation} / ${v.subFormation} &middot; ${v.personnel}</div>
@@ -281,7 +281,7 @@ function openModal(name, play, variants) {
             <div class="formation-body variant-body" id="offVarBody${vi}">
               <div class="p-4">
                 <div class="flex justify-center mb-3">
-                  <canvas id="offVarBig${vi}" width="240" height="190" class="rounded-lg" style="background:#1a472a;"></canvas>
+                  <canvas id="offVarBig${vi}" width="300" height="240" class="rounded-lg" style="background:#1a472a;"></canvas>
                 </div>
                 <p class="text-sm text-gray-300 mb-3">${v.description}</p>
                 <div class="mb-2">
@@ -346,7 +346,7 @@ function openModal(name, play, variants) {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
     if (mainCanvas) {
-      const r = new PlayArtRenderer(mainCanvas, { width: 440, height: 340 });
+      const r = new PlayArtRenderer(mainCanvas, { width: 560, height: 440 });
       r.renderLivePlay({
         side: offModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
         playFamily: name, defFormation: 'Nickel', coverageName: 'Cover 3',
@@ -387,7 +387,7 @@ function openModal(name, play, variants) {
   variants.forEach((v, vi) => {
     const thumb = document.getElementById(`offVar${vi}`);
     if (thumb) {
-      const r = new PlayArtRenderer(thumb, { width: 60, height: 48 });
+      const r = new PlayArtRenderer(thumb, { width: 75, height: 60 });
       r.renderPlayCard(v.formation, v.subFormation, v.family || v.name);
       renderers.push(r);
     }
@@ -406,7 +406,7 @@ function openModal(name, play, variants) {
         const bigCanvas = document.getElementById(`offVarBig${vi}`);
         if (bigCanvas && !bigCanvas.dataset.rendered) {
           const v = variants[vi];
-          const r = new PlayArtRenderer(bigCanvas, { width: 240, height: 190 });
+          const r = new PlayArtRenderer(bigCanvas, { width: 300, height: 240 });
           r.renderPlayCard(v.formation, v.subFormation, v.family || v.name);
           renderers.push(r);
           bigCanvas.dataset.rendered = '1';
