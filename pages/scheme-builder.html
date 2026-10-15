@@ -19,190 +19,393 @@
       }
     }
   </script>
+  <style>
+    /* Floating Panel Styles */
+    .floating-panel {
+      position: fixed;
+      z-index: 60;
+      width: 380px;
+      max-height: 80vh;
+      background: rgba(26, 0, 51, 0.97);
+      border: 1px solid #2F4F4F;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(138,43,226,0.15);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.3s;
+    }
+    .floating-panel:hover {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(0,255,255,0.1);
+    }
+    .floating-panel.dragging {
+      opacity: 0.92;
+      cursor: grabbing;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 50px rgba(0,255,255,0.2);
+    }
+    .panel-drag-handle {
+      cursor: grab;
+      user-select: none;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, rgba(0,255,255,0.08), rgba(138,43,226,0.08));
+      border-bottom: 1px solid #2F4F4F;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .panel-drag-handle:active { cursor: grabbing; }
+    .panel-drag-dots {
+      display: flex;
+      gap: 3px;
+      opacity: 0.4;
+    }
+    .panel-drag-dots span {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: #9ca3af;
+    }
+    .panel-body {
+      overflow-y: auto;
+      flex: 1;
+      padding: 0;
+    }
+    .panel-section {
+      border-bottom: 1px solid rgba(47,79,79,0.5);
+    }
+    .panel-section-header {
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #9ca3af;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .panel-section-header:hover { color: #fff; background: rgba(255,255,255,0.03); }
+    .panel-section-header .chevron {
+      transition: transform 0.25s;
+      font-size: 0.7rem;
+    }
+    .panel-section-header.open .chevron { transform: rotate(180deg); }
+    .panel-section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      padding: 0 14px;
+    }
+    .panel-section-body.open {
+      max-height: 600px;
+      padding: 0 14px 12px;
+    }
+    .panel-mini-select {
+      background: #2a0055;
+      border: 1px solid #2F4F4F;
+      border-radius: 6px;
+      padding: 5px 24px 5px 8px;
+      color: #d1d5db;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 6px center;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+    .panel-mini-select:focus { border-color: #00FFFF; }
+    .panel-mini-select option { background: #2a0055; color: white; }
+    .panel-mini-btn {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: #2F4F4F;
+      color: #9ca3af;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+    .panel-mini-btn:hover { border-color: #8A2BE2; color: #d1d5db; }
+    .panel-mini-btn.active { background: rgba(0,255,255,0.15); color: #00FFFF; border-color: #00FFFF; }
+
+    /* Canvas area */
+    .canvas-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 180px);
+      padding: 2rem;
+    }
+    .canvas-wrapper {
+      position: relative;
+      background: #1a472a;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      border: 2px solid #2F4F4F;
+    }
+    .canvas-wrapper canvas {
+      display: block;
+    }
+    .canvas-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(13,0,26,0.85);
+      padding: 6px 12px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+    }
+    .canvas-ctrl-btn {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      background: #2F4F4F;
+      color: #9ca3af;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+    .canvas-ctrl-btn:hover { border-color: #00FFFF; color: #00FFFF; }
+    .canvas-ctrl-btn.active { background: rgba(0,255,255,0.2); color: #00FFFF; border-color: #00FFFF; }
+
+    /* Toggle panel button */
+    .toggle-panel-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 70;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00FFFF, #8A2BE2);
+      color: #0d001a;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      box-shadow: 0 6px 24px rgba(0,255,255,0.3);
+      transition: all 0.2s;
+    }
+    .toggle-panel-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(0,255,255,0.4);
+    }
+
+    /* Play info bar */
+    .play-info-bar {
+      background: rgba(26,0,51,0.9);
+      border: 1px solid #2F4F4F;
+      border-radius: 10px;
+      padding: 10px 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .floating-panel {
+        width: calc(100vw - 24px);
+        max-height: 60vh;
+        bottom: 12px !important;
+        left: 12px !important;
+        right: 12px !important;
+        top: auto !important;
+      }
+      .canvas-area { padding: 1rem; }
+    }
+  </style>
 </head>
 <body class="bg-dark-900 text-white min-h-screen">
   <nav class="fixed top-0 w-full z-50 bg-dark-800/95 backdrop-blur-md border-b border-dark-600"></nav>
   <script type="module">import { initNav } from '../js/components/nav.js'; initNav();</script>
 
-  <main class="pt-24 pb-16 px-4">
-    <div class="max-w-7xl mx-auto">
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-black mb-2">
-          <i class="bi bi-gear-fill text-neon-cyan mr-2"></i>
-          <span class="bg-gradient-to-r from-neon-cyan to-neon-blue bg-clip-text text-transparent">Scheme Builder</span>
-        </h1>
-        <p class="text-gray-400 max-w-2xl mx-auto">Build custom schemes with adjustments, hot routes, macros, and play creation. Set up your game plan before kickoff.</p>
+  <!-- Top Bar: Play Selection -->
+  <div class="fixed top-16 left-0 right-0 z-40 bg-dark-800/90 backdrop-blur-md border-b border-dark-600">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex items-center gap-3 flex-wrap">
+      <div class="flex items-center gap-2 flex-1 min-w-0">
+        <select id="pbSelect" class="panel-mini-select flex-1" style="max-width:200px">
+          <option value="">Playbook...</option>
+        </select>
+        <select id="fmSelect" class="panel-mini-select flex-1" style="max-width:160px" disabled>
+          <option value="">Formation...</option>
+        </select>
+        <select id="sfSelect" class="panel-mini-select flex-1" style="max-width:160px" disabled>
+          <option value="">Sub-formation...</option>
+        </select>
+        <select id="plSelect" class="panel-mini-select flex-1" style="max-width:180px" disabled>
+          <option value="">Play...</option>
+        </select>
       </div>
-
-      <!-- Tab Navigation -->
-      <div class="flex flex-wrap gap-2 justify-center mb-8">
-        <button class="filter-btn active" data-tab="macros">
-          <i class="bi bi-collection-fill mr-1"></i> Macros
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-500 font-bold">VS</span>
+        <select id="covSelect" class="panel-mini-select" style="max-width:160px">
+          <option value="">Coverage...</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-1">
+        <button class="canvas-ctrl-btn" id="btnPlay" title="Play/Pause">
+          <i class="bi bi-play-fill"></i>
         </button>
-        <button class="filter-btn" data-tab="adjustments">
-          <i class="bi bi-sliders mr-1"></i> Adjustments
+        <button class="canvas-ctrl-btn" id="btnReplay" title="Replay">
+          <i class="bi bi-arrow-clockwise"></i>
         </button>
-        <button class="filter-btn" data-tab="hotroutes">
-          <i class="bi bi-signpost-split-fill mr-1"></i> Hot Routes
-        </button>
-        <button class="filter-btn" data-tab="playcreator">
-          <i class="bi bi-pencil-square mr-1"></i> Play Creator
+        <button class="canvas-ctrl-btn" id="btnLoop" title="Loop">
+          <i class="bi bi-repeat"></i>
         </button>
       </div>
+    </div>
+  </div>
 
-      <!-- ===== MACROS TAB ===== -->
-      <div id="tabMacros" class="tab-content">
-        <div class="flex flex-wrap gap-2 justify-center mb-6">
-          <button class="filter-btn active" data-macro-filter="all">All</button>
-          <button class="filter-btn" data-macro-filter="offense">
-            <i class="bi bi-lightning-fill mr-1"></i> Offense
-          </button>
-          <button class="filter-btn" data-macro-filter="defense">
-            <i class="bi bi-shield-fill mr-1"></i> Defense
-          </button>
+  <!-- Live Play Animation Canvas (Full area) -->
+  <div class="canvas-area" style="padding-top: 120px;">
+    <div class="canvas-wrapper">
+      <canvas id="liveCanvas" width="640" height="480"></canvas>
+      <!-- Play Info Overlay -->
+      <div class="absolute top-3 left-3 play-info-bar" id="playInfoOverlay">
+        <div class="flex items-center gap-3">
+          <div>
+            <div class="text-sm font-black text-neon-cyan" id="infoPlayName">Select a play</div>
+            <div class="text-xs text-gray-400" id="infoPlayType">Choose a playbook, formation, and play above</div>
+          </div>
+          <div class="text-xs text-gray-500" id="infoVsCoverage"></div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="macrosGrid"></div>
       </div>
+    </div>
+  </div>
 
-      <!-- ===== ADJUSTMENTS TAB ===== -->
-      <div id="tabAdjustments" class="tab-content hidden">
-        <div class="flex flex-wrap gap-2 justify-center mb-6">
-          <button class="filter-btn active" data-adj-filter="all">All</button>
-          <button class="filter-btn" data-adj-filter="offense">
-            <i class="bi bi-lightning-fill mr-1"></i> Offense
-          </button>
-          <button class="filter-btn" data-adj-filter="defense">
-            <i class="bi bi-shield-fill mr-1"></i> Defense
-          </button>
+  <!-- Floating Salesforce-Style Adjustment Panel -->
+  <div class="floating-panel" id="floatingPanel" style="top: 140px; right: 24px;">
+    <!-- Drag Handle -->
+    <div class="panel-drag-handle" id="panelDragHandle">
+      <div class="flex items-center gap-2">
+        <div class="panel-drag-dots"><span></span><span></span><span></span></div>
+        <span class="text-xs font-bold text-gray-300 uppercase tracking-wide">Adjustments</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button class="text-gray-500 hover:text-white text-sm" id="panelMinimize" title="Minimize">
+          <i class="bi bi-dash-lg"></i>
+        </button>
+        <button class="text-gray-500 hover:text-white text-sm" id="panelClose" title="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel Body -->
+    <div class="panel-body" id="panelBody">
+
+      <!-- Hot Routes Section -->
+      <div class="panel-section">
+        <div class="panel-section-header open" data-section="hotroutes">
+          <span><i class="bi bi-signpost-split-fill text-neon-cyan mr-1"></i> Hot Routes</span>
+          <i class="bi bi-chevron-down chevron"></i>
         </div>
-        <div id="adjustmentsContainer"></div>
-      </div>
-
-      <!-- ===== HOT ROUTES TAB ===== -->
-      <div id="tabHotroutes" class="tab-content hidden">
-        <div class="flex flex-wrap gap-2 justify-center mb-6">
-          <button class="filter-btn active" data-hr-filter="all">All</button>
-          <button class="filter-btn" data-hr-filter="deep">Deep</button>
-          <button class="filter-btn" data-hr-filter="intermediate">Intermediate</button>
-          <button class="filter-btn" data-hr-filter="short">Short</button>
-          <button class="filter-btn" data-hr-filter="protection">Protection</button>
+        <div class="panel-section-body open" id="hotRoutesSection">
+          <div class="space-y-2" id="panelRouteAssignments"></div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="hotRoutesGrid"></div>
       </div>
 
-      <!-- ===== PLAY CREATOR TAB ===== -->
-      <div id="tabPlaycreator" class="tab-content hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Left: Play Setup -->
-          <div class="results-panel">
-            <h3 class="text-lg font-bold text-neon-cyan mb-4">
-              <i class="bi bi-pencil-square mr-1"></i> Play Setup
-            </h3>
+      <!-- Offensive Adjustments Section -->
+      <div class="panel-section">
+        <div class="panel-section-header" data-section="offadj">
+          <span><i class="bi bi-lightning-fill text-neon-cyan mr-1"></i> Offense Adjustments</span>
+          <i class="bi bi-chevron-down chevron"></i>
+        </div>
+        <div class="panel-section-body" id="offAdjSection">
+          <div id="offAdjContent"></div>
+        </div>
+      </div>
 
-            <!-- Template Selection -->
-            <div class="mb-4">
-              <label class="text-sm text-gray-400 mb-1 block">Start From</label>
-              <div class="flex gap-2 flex-wrap">
-                <button class="filter-btn active" data-create="scratch">From Scratch</button>
-                <button class="filter-btn" data-create="template">Template</button>
-                <button class="filter-btn" data-create="existing">Existing Play</button>
-              </div>
+      <!-- Defensive Adjustments Section -->
+      <div class="panel-section">
+        <div class="panel-section-header" data-section="defadj">
+          <span><i class="bi bi-shield-fill text-neon-red mr-1"></i> Defense Adjustments</span>
+          <i class="bi bi-chevron-down chevron"></i>
+        </div>
+        <div class="panel-section-body" id="defAdjSection">
+          <div id="defAdjContent"></div>
+        </div>
+      </div>
+
+      <!-- Macros Section -->
+      <div class="panel-section">
+        <div class="panel-section-header" data-section="macros">
+          <span><i class="bi bi-collection-fill text-neon-blue mr-1"></i> Macros</span>
+          <i class="bi bi-chevron-down chevron"></i>
+        </div>
+        <div class="panel-section-body" id="macrosSection">
+          <div class="grid grid-cols-2 gap-2" id="panelMacrosGrid"></div>
+        </div>
+      </div>
+
+      <!-- Play Creator Section -->
+      <div class="panel-section">
+        <div class="panel-section-header" data-section="creator">
+          <span><i class="bi bi-pencil-square text-neon-blue mr-1"></i> Play Creator</span>
+          <i class="bi bi-chevron-down chevron"></i>
+        </div>
+        <div class="panel-section-body" id="creatorSection">
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs text-gray-500 font-bold uppercase">Play Name</label>
+              <input type="text" class="panel-mini-select mt-1" id="creatorPlayName" placeholder="Custom Play" style="padding-right:8px;">
             </div>
-
-            <!-- Template / Existing Play Selectors -->
-            <div id="templateSelect" class="mb-4 hidden">
-              <label class="text-sm text-gray-400 mb-1 block">Choose Template</label>
-              <select class="custom-select" id="templateDropdown">
-                <option value="">Select a template...</option>
-                <option value="passing">Passing Play</option>
-                <option value="running">Running Play</option>
-                <option value="screen">Screen Play</option>
-                <option value="rpo">RPO Play</option>
-              </select>
-            </div>
-
-            <div id="existingSelect" class="mb-4 hidden">
-              <label class="text-sm text-gray-400 mb-1 block">Choose Playbook</label>
-              <select class="custom-select mb-2" id="existingPlaybook">
-                <option value="">Choose a playbook...</option>
-              </select>
-              <select class="custom-select mb-2" id="existingFormation">
-                <option value="">Choose a formation...</option>
-              </select>
-              <select class="custom-select mb-2" id="existingSub">
-                <option value="">Choose a sub-formation...</option>
-              </select>
-              <select class="custom-select" id="existingPlay">
-                <option value="">Choose a play...</option>
-              </select>
-            </div>
-
-            <!-- Formation -->
-            <div class="mb-4">
-              <label class="text-sm text-gray-400 mb-1 block">Formation</label>
-              <select class="custom-select" id="creatorFormation">
+            <div>
+              <label class="text-xs text-gray-500 font-bold uppercase">Formation</label>
+              <select class="panel-mini-select mt-1" id="creatorFormation">
                 <option value="Shotgun">Shotgun</option>
                 <option value="Singleback">Singleback</option>
-                <option value="I Form">I Form</option>
+                <option value="I-Form">I Form</option>
                 <option value="Pistol">Pistol</option>
               </select>
             </div>
-
-            <!-- Play Name -->
-            <div class="mb-4">
-              <label class="text-sm text-gray-400 mb-1 block">Play Name</label>
-              <input type="text" class="search-input w-full" id="playNameInput" placeholder="My Custom Play" />
-            </div>
-
-            <!-- Route Assignments -->
-            <h4 class="text-sm font-bold text-gray-300 mb-2">Route Assignments</h4>
-            <div class="space-y-2" id="routeAssignments">
-              <!-- Dynamically filled -->
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex gap-2 mt-4">
-              <button class="filter-btn active" id="flipPlayBtn">
-                <i class="bi bi-arrow-left-right mr-1"></i> Flip Play
+            <div class="flex gap-2">
+              <button class="panel-mini-btn active" id="btnFlip">
+                <i class="bi bi-arrow-left-right mr-1"></i> Flip
               </button>
-              <button class="filter-btn" id="resetPlayBtn">
+              <button class="panel-mini-btn" id="btnReset">
                 <i class="bi bi-arrow-counterclockwise mr-1"></i> Reset
               </button>
             </div>
           </div>
-
-          <!-- Right: Preview -->
-          <div class="results-panel">
-            <h3 class="text-lg font-bold text-neon-cyan mb-4">
-              <i class="bi bi-eye-fill mr-1"></i> Preview
-            </h3>
-            <div class="flex justify-center mb-4">
-              <canvas id="creatorCanvas" width="480" height="380" style="background: #1a472a; border-radius: 12px; max-width: 100%;"></canvas>
-            </div>
-
-            <!-- Play Info -->
-            <div id="creatorPlayInfo" class="text-sm text-gray-400">
-              <p>Set up your routes and see the play art update in real-time.</p>
-            </div>
-
-            <!-- Coverage Test -->
-            <div class="mt-4">
-              <label class="text-sm text-gray-400 mb-1 block">Test Against Coverage</label>
-              <select class="custom-select" id="testCoverage">
-                <option value="">No coverage (offense only)</option>
-              </select>
-            </div>
-          </div>
         </div>
       </div>
+
     </div>
-  </main>
+  </div>
+
+  <!-- Toggle Panel FAB (shown when panel is hidden) -->
+  <button class="toggle-panel-btn hidden" id="togglePanelBtn" title="Open Adjustments Panel">
+    <i class="bi bi-sliders"></i>
+  </button>
 
   <!-- Detail Modal -->
   <div class="modal-overlay" id="detailModal">
     <div class="modal-content" id="detailModalContent"></div>
   </div>
+
+  <footer class="py-8 px-4 border-t border-dark-600 text-center text-gray-500 text-sm">
+    <p>Madden 27 Playbook Lab &mdash; Built for competitive Madden players</p>
+    <p class="mt-1">Not affiliated with EA Sports. All play data is community-sourced.</p>
+  </footer>
 
   <script type="module" src="../js/pages/scheme-builder.js"></script>
 </body>

@@ -1,83 +1,352 @@
-// Scheme Builder - Adjustments, Macros, Hot Routes, and Play Creator
-import { HOT_ROUTES, OFFENSIVE_ADJUSTMENTS, DEFENSIVE_ADJUSTMENTS, MACROS, PLAY_TEMPLATES } from '../data/adjustments.js';
+// Scheme Builder - Live Animation + Floating Salesforce-Style Panel
+import { HOT_ROUTES, OFFENSIVE_ADJUSTMENTS, DEFENSIVE_ADJUSTMENTS, MACROS } from '../data/adjustments.js';
 import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import COVERAGES from '../data/coverages.js';
-import PlayArtRenderer from '../components/playArt.js';
+import { PlayArtRenderer } from '../components/playArt.js';
 
-// ===== DOM Elements =====
-const tabBtns = document.querySelectorAll('[data-tab]');
-const macrosGrid = document.getElementById('macrosGrid');
-const adjustmentsContainer = document.getElementById('adjustmentsContainer');
-const hotRoutesGrid = document.getElementById('hotRoutesGrid');
+// ===== STATE =====
+let activeRenderer = null;
+let isFlipped = false;
+let isLooping = true;
+let isPlaying = true;
+let currentPlay = null;
+let currentCoverage = null;
+let currentRoutes = { WR1: 'streak', WR2: 'curl', WR3: 'slant', TE: 'drag', RB: 'flat' };
+
+// ===== DOM =====
+const liveCanvas = document.getElementById('liveCanvas');
+const pbSelect = document.getElementById('pbSelect');
+const fmSelect = document.getElementById('fmSelect');
+const sfSelect = document.getElementById('sfSelect');
+const plSelect = document.getElementById('plSelect');
+const covSelect = document.getElementById('covSelect');
+const btnPlay = document.getElementById('btnPlay');
+const btnReplay = document.getElementById('btnReplay');
+const btnLoop = document.getElementById('btnLoop');
+const floatingPanel = document.getElementById('floatingPanel');
+const panelDragHandle = document.getElementById('panelDragHandle');
+const panelBody = document.getElementById('panelBody');
+const togglePanelBtn = document.getElementById('togglePanelBtn');
 const detailModal = document.getElementById('detailModal');
 const detailModalContent = document.getElementById('detailModalContent');
 
-// Play Creator elements
-const creatorCanvas = document.getElementById('creatorCanvas');
-const routeAssignments = document.getElementById('routeAssignments');
-const playNameInput = document.getElementById('playNameInput');
-const creatorFormation = document.getElementById('creatorFormation');
-const templateDropdown = document.getElementById('templateDropdown');
-const existingPlaybook = document.getElementById('existingPlaybook');
-const existingFormation = document.getElementById('existingFormation');
-const existingSub = document.getElementById('existingSub');
-const existingPlay = document.getElementById('existingPlay');
-const testCoverage = document.getElementById('testCoverage');
-const flipPlayBtn = document.getElementById('flipPlayBtn');
-const resetPlayBtn = document.getElementById('resetPlayBtn');
+// ===== POPULATE SELECTS =====
+function initSelects() {
+  // Playbooks
+  const sorted = [...OFFENSIVE_PLAYBOOKS].sort((a, b) => a.name.localeCompare(b.name));
+  pbSelect.innerHTML = '<option value="">Playbook...</option>' +
+    sorted.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
 
-let activeRenderer = null;
-let isFlipped = false;
+  // Coverages
+  const covSorted = [...COVERAGES].sort((a, b) => a.name.localeCompare(b.name));
+  covSelect.innerHTML = '<option value="">No coverage</option>' +
+    covSorted.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
 
-// Current route state for play creator
-let currentRoutes = {
-  WR1: 'streak', WR2: 'curl', WR3: 'slant', TE: 'drag', RB: 'flat'
-};
-
-// ===== TAB SWITCHING =====
-tabBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-    const tabId = 'tab' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1);
-    const tab = document.getElementById(tabId);
-    if (tab) tab.classList.remove('hidden');
+  // Cascading selects
+  pbSelect.addEventListener('change', () => {
+    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === pbSelect.value);
+    fmSelect.innerHTML = '<option value="">Formation...</option>';
+    sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
+    plSelect.innerHTML = '<option value="">Play...</option>';
+    fmSelect.disabled = true; sfSelect.disabled = true; plSelect.disabled = true;
+    if (book && book.formations) {
+      Object.keys(book.formations).sort().forEach(f => {
+        fmSelect.innerHTML += `<option value="${f}">${f}</option>`;
+      });
+      fmSelect.disabled = false;
+    }
   });
-});
 
-// ===== MACROS RENDERING =====
-function renderMacros(filter = 'all') {
-  const filtered = filter === 'all' ? MACROS : MACROS.filter(m => m.side === filter);
-  macrosGrid.innerHTML = filtered.map(macro => {
-    const sideColor = macro.side === 'offense' ? 'text-neon-cyan' : 'text-neon-red';
-    const sideIcon = macro.side === 'offense' ? 'bi-lightning-fill' : 'bi-shield-fill';
-    const sideBg = macro.side === 'offense' ? 'bg-cyan-500/10 border-cyan-500/30' : 'bg-pink-500/10 border-pink-500/30';
-    return `
-      <div class="results-panel cursor-pointer hover:border-[#00FFFF]/50 transition-all" data-macro-id="${macro.id}">
-        <div class="flex items-center gap-2 mb-2">
-          <i class="bi ${sideIcon} ${sideColor}"></i>
-          <h3 class="font-bold text-lg">${macro.name}</h3>
-        </div>
-        <p class="text-sm text-gray-400 mb-3">${macro.description}</p>
-        <div class="flex flex-wrap gap-1 mb-2">
-          ${macro.adjustments.map(a => `<span class="tag-blue text-xs">${formatAdjId(a)}</span>`).join('')}
-        </div>
-        <div class="text-xs text-gray-500">
-          <span class="text-green-400">Best vs:</span> ${macro.bestAgainst.slice(0, 3).join(', ')}
-        </div>
-      </div>
-    `;
-  }).join('');
+  fmSelect.addEventListener('change', () => {
+    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === pbSelect.value);
+    sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
+    plSelect.innerHTML = '<option value="">Play...</option>';
+    sfSelect.disabled = true; plSelect.disabled = true;
+    if (book && book.formations && book.formations[fmSelect.value]) {
+      Object.keys(book.formations[fmSelect.value]).sort().forEach(s => {
+        sfSelect.innerHTML += `<option value="${s}">${s}</option>`;
+      });
+      sfSelect.disabled = false;
+    }
+  });
 
-  // Click handlers
-  macrosGrid.querySelectorAll('[data-macro-id]').forEach(el => {
-    el.addEventListener('click', () => showMacroDetail(el.dataset.macroId));
+  sfSelect.addEventListener('change', () => {
+    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === pbSelect.value);
+    plSelect.innerHTML = '<option value="">Play...</option>';
+    plSelect.disabled = true;
+    if (book && book.formations && book.formations[fmSelect.value]) {
+      const plays = book.formations[fmSelect.value][sfSelect.value] || [];
+      [...plays].sort().forEach(p => {
+        plSelect.innerHTML += `<option value="${p}">${p}</option>`;
+      });
+      plSelect.disabled = false;
+    }
+  });
+
+  plSelect.addEventListener('change', () => {
+    currentPlay = plSelect.value;
+    updateAnimation();
+  });
+
+  covSelect.addEventListener('change', () => {
+    currentCoverage = covSelect.value || null;
+    updateAnimation();
   });
 }
 
-function formatAdjId(id) {
-  return id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+// ===== LIVE ANIMATION =====
+function updateAnimation() {
+  if (activeRenderer) activeRenderer.destroy();
+  if (!currentPlay && !fmSelect.value) {
+    // Show empty field
+    const renderer = new PlayArtRenderer(liveCanvas, { width: 640, height: 480 });
+    activeRenderer = renderer;
+    renderer.drawField();
+    updatePlayInfo(null, null);
+    return;
+  }
+
+  const renderer = new PlayArtRenderer(liveCanvas, { width: 640, height: 480 });
+  activeRenderer = renderer;
+
+  const formation = fmSelect.value || 'Shotgun';
+  const subFormation = sfSelect.value || 'Spread Y-Flex';
+  const play = currentPlay || 'Inside Zone';
+
+  if (currentCoverage) {
+    renderer.renderLivePlay({
+      side: 'both',
+      offFormation: formation,
+      offSubFormation: subFormation,
+      playFamily: play,
+      defFormation: 'Nickel',
+      coverageName: currentCoverage,
+      duration: 3500
+    });
+  } else {
+    renderer.renderSinglePlayLive({
+      mode: 'offense',
+      offFormation: formation,
+      offSubFormation: subFormation,
+      playFamily: play,
+      duration: 3500
+    });
+  }
+
+  updatePlayInfo(play, currentCoverage);
+}
+
+function updatePlayInfo(play, coverage) {
+  const nameEl = document.getElementById('infoPlayName');
+  const typeEl = document.getElementById('infoPlayType');
+  const vsEl = document.getElementById('infoVsCoverage');
+
+  if (!play) {
+    nameEl.textContent = 'Select a play';
+    typeEl.textContent = 'Choose a playbook, formation, and play above';
+    vsEl.textContent = '';
+    return;
+  }
+
+  nameEl.textContent = play;
+  const formation = fmSelect.value || '';
+  const sub = sfSelect.value || '';
+  typeEl.textContent = [formation, sub].filter(Boolean).join(' > ');
+  vsEl.textContent = coverage ? `vs ${coverage}` : '';
+  vsEl.className = coverage ? 'text-xs text-neon-red font-bold' : 'text-xs text-gray-500';
+}
+
+// ===== PLAY CONTROLS =====
+btnPlay.addEventListener('click', () => {
+  isPlaying = !isPlaying;
+  btnPlay.innerHTML = isPlaying ? '<i class="bi bi-pause-fill"></i>' : '<i class="bi bi-play-fill"></i>';
+  btnPlay.classList.toggle('active', isPlaying);
+  if (isPlaying) updateAnimation();
+  else if (activeRenderer) activeRenderer.destroy();
+});
+
+btnReplay.addEventListener('click', updateAnimation);
+
+btnLoop.addEventListener('click', () => {
+  isLooping = !isLooping;
+  btnLoop.classList.toggle('active', isLooping);
+  updateAnimation();
+});
+btnLoop.classList.add('active');
+
+// ===== FLOATING PANEL DRAG =====
+function initDrag() {
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+
+  panelDragHandle.addEventListener('mousedown', (e) => {
+    if (e.target.closest('button')) return;
+    isDragging = true;
+    floatingPanel.classList.add('dragging');
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = floatingPanel.getBoundingClientRect();
+    startLeft = rect.left;
+    startTop = rect.top;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const newLeft = Math.max(0, Math.min(window.innerWidth - 100, startLeft + dx));
+    const newTop = Math.max(0, Math.min(window.innerHeight - 60, startTop + dy));
+    floatingPanel.style.left = newLeft + 'px';
+    floatingPanel.style.top = newTop + 'px';
+    floatingPanel.style.right = 'auto';
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    floatingPanel.classList.remove('dragging');
+  });
+
+  // Touch support
+  panelDragHandle.addEventListener('touchstart', (e) => {
+    if (e.target.closest('button')) return;
+    isDragging = true;
+    floatingPanel.classList.add('dragging');
+    const touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+    const rect = floatingPanel.getBoundingClientRect();
+    startLeft = rect.left;
+    startTop = rect.top;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    const newLeft = Math.max(0, Math.min(window.innerWidth - 100, startLeft + dx));
+    const newTop = Math.max(0, Math.min(window.innerHeight - 60, startTop + dy));
+    floatingPanel.style.left = newLeft + 'px';
+    floatingPanel.style.top = newTop + 'px';
+    floatingPanel.style.right = 'auto';
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => {
+    isDragging = false;
+    floatingPanel.classList.remove('dragging');
+  });
+}
+
+// ===== PANEL SHOW/HIDE =====
+document.getElementById('panelClose').addEventListener('click', () => {
+  floatingPanel.classList.add('hidden');
+  togglePanelBtn.classList.remove('hidden');
+});
+
+document.getElementById('panelMinimize').addEventListener('click', () => {
+  panelBody.classList.toggle('hidden');
+});
+
+togglePanelBtn.addEventListener('click', () => {
+  floatingPanel.classList.remove('hidden');
+  togglePanelBtn.classList.add('hidden');
+});
+
+// ===== ACCORDION SECTIONS =====
+document.querySelectorAll('.panel-section-header').forEach(header => {
+  header.addEventListener('click', () => {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  });
+});
+
+// ===== HOT ROUTES IN PANEL =====
+function renderPanelHotRoutes() {
+  const container = document.getElementById('panelRouteAssignments');
+  const positions = Object.keys(currentRoutes);
+  container.innerHTML = positions.map(pos => `
+    <div class="flex items-center gap-2">
+      <span class="text-xs font-bold w-8 text-neon-cyan">${pos}</span>
+      <select class="panel-mini-select flex-1" data-pos="${pos}">
+        ${HOT_ROUTES.map(r =>
+          `<option value="${r.id}" ${currentRoutes[pos] === r.id ? 'selected' : ''}>${r.icon} ${r.name}</option>`
+        ).join('')}
+      </select>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('select').forEach(sel => {
+    sel.addEventListener('change', () => {
+      currentRoutes[sel.dataset.pos] = sel.value;
+    });
+  });
+}
+
+// ===== OFFENSIVE ADJUSTMENTS IN PANEL =====
+function renderOffAdj() {
+  const container = document.getElementById('offAdjContent');
+  container.innerHTML = Object.values(OFFENSIVE_ADJUSTMENTS).map(group => `
+    <div class="mb-3">
+      <div class="text-xs font-bold text-gray-500 uppercase mb-1">${group.name}</div>
+      <div class="flex flex-wrap gap-1">
+        ${group.options.map(opt => `
+          <button class="panel-mini-btn" data-adj="${opt.id}" title="${opt.description}\n${opt.effect}">
+            ${opt.name}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('[data-adj]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+    });
+  });
+}
+
+// ===== DEFENSIVE ADJUSTMENTS IN PANEL =====
+function renderDefAdj() {
+  const container = document.getElementById('defAdjContent');
+  container.innerHTML = Object.values(DEFENSIVE_ADJUSTMENTS).map(group => `
+    <div class="mb-3">
+      <div class="text-xs font-bold text-gray-500 uppercase mb-1">${group.name}</div>
+      <div class="flex flex-wrap gap-1">
+        ${group.options.map(opt => `
+          <button class="panel-mini-btn" data-adj="${opt.id}" title="${opt.description}\n${opt.effect}">
+            ${opt.name}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('[data-adj]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+    });
+  });
+}
+
+// ===== MACROS IN PANEL =====
+function renderPanelMacros() {
+  const container = document.getElementById('panelMacrosGrid');
+  container.innerHTML = MACROS.map(macro => {
+    const sideColor = macro.side === 'offense' ? 'text-neon-cyan' : 'text-neon-red';
+    const sideIcon = macro.side === 'offense' ? 'bi-lightning-fill' : 'bi-shield-fill';
+    return `
+      <button class="panel-mini-btn text-left py-2 px-2" data-macro="${macro.id}" title="${macro.description}">
+        <i class="bi ${sideIcon} ${sideColor} mr-1"></i>
+        <span class="text-xs">${macro.name}</span>
+      </button>
+    `;
+  }).join('');
+
+  container.querySelectorAll('[data-macro]').forEach(btn => {
+    btn.addEventListener('click', () => showMacroDetail(btn.dataset.macro));
+  });
 }
 
 function showMacroDetail(macroId) {
@@ -99,14 +368,8 @@ function showMacroDetail(macroId) {
       <p class="text-gray-300 mb-4">${macro.description}</p>
 
       <h3 class="text-sm font-bold text-gray-400 uppercase mb-2">Adjustments Applied</h3>
-      <div class="space-y-2 mb-4">
-        ${macro.adjustments.map(a => {
-          const adj = findAdjustment(a);
-          return `<div class="flex items-center gap-2 bg-dark-700/50 rounded-lg p-2">
-            <span class="tag-blue text-xs">${formatAdjId(a)}</span>
-            <span class="text-xs text-gray-400">${adj ? adj.description : ''}</span>
-          </div>`;
-        }).join('')}
+      <div class="flex flex-wrap gap-1 mb-4">
+        ${macro.adjustments.map(a => `<span class="tag-blue text-xs">${formatAdjId(a)}</span>`).join('')}
       </div>
 
       <div class="grid grid-cols-2 gap-4">
@@ -130,305 +393,28 @@ function showMacroDetail(macroId) {
   document.getElementById('closeModal').addEventListener('click', () => detailModal.classList.remove('active'));
 }
 
-function findAdjustment(id) {
-  const allAdj = { ...OFFENSIVE_ADJUSTMENTS, ...DEFENSIVE_ADJUSTMENTS };
-  for (const group of Object.values(allAdj)) {
-    const found = group.options.find(o => o.id === id);
-    if (found) return found;
-  }
-  return null;
+function formatAdjId(id) {
+  return id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-// Macro filter buttons
-document.querySelectorAll('[data-macro-filter]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-macro-filter]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderMacros(btn.dataset.macroFilter);
-  });
-});
+// ===== PLAY CREATOR CONTROLS =====
+function initCreatorControls() {
+  const btnFlip = document.getElementById('btnFlip');
+  const btnReset = document.getElementById('btnReset');
 
-// ===== ADJUSTMENTS RENDERING =====
-function renderAdjustments(filter = 'all') {
-  const offGroups = filter === 'defense' ? {} : OFFENSIVE_ADJUSTMENTS;
-  const defGroups = filter === 'offense' ? {} : DEFENSIVE_ADJUSTMENTS;
-
-  let html = '';
-
-  if (Object.keys(offGroups).length > 0) {
-    html += `<h2 class="text-xl font-bold text-neon-cyan mb-4"><i class="bi bi-lightning-fill mr-1"></i> Offensive Adjustments</h2>`;
-    html += renderAdjustmentGroups(offGroups, 'offense');
-  }
-
-  if (Object.keys(defGroups).length > 0) {
-    html += `<h2 class="text-xl font-bold text-neon-red mb-4 mt-6"><i class="bi bi-shield-fill mr-1"></i> Defensive Adjustments</h2>`;
-    html += renderAdjustmentGroups(defGroups, 'defense');
-  }
-
-  adjustmentsContainer.innerHTML = html;
-}
-
-function renderAdjustmentGroups(groups, side) {
-  const borderColor = side === 'offense' ? 'border-cyan-500/30' : 'border-pink-500/30';
-  return Object.values(groups).map(group => `
-    <div class="results-panel mb-4 ${borderColor}">
-      <h3 class="font-bold text-lg mb-3">${group.name}
-        <span class="text-xs text-gray-500 ml-2">${group.category}</span>
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-        ${group.options.map(opt => `
-          <div class="bg-dark-700/50 rounded-lg p-3 hover:bg-dark-700 transition-colors">
-            <div class="font-semibold text-sm">${opt.name}</div>
-            <p class="text-xs text-gray-400 mt-1">${opt.description}</p>
-            <p class="text-xs text-gray-500 mt-1"><span class="text-neon-cyan">Effect:</span> ${opt.effect}</p>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-}
-
-// Adjustment filter buttons
-document.querySelectorAll('[data-adj-filter]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-adj-filter]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderAdjustments(btn.dataset.adjFilter);
-  });
-});
-
-// ===== HOT ROUTES RENDERING =====
-function renderHotRoutes(filter = 'all') {
-  const filtered = filter === 'all' ? HOT_ROUTES : HOT_ROUTES.filter(r => r.type === filter);
-  hotRoutesGrid.innerHTML = filtered.map(route => {
-    const typeColors = {
-      deep: 'text-red-400 bg-red-500/10',
-      intermediate: 'text-yellow-400 bg-yellow-500/10',
-      short: 'text-green-400 bg-green-500/10',
-      protection: 'text-blue-400 bg-blue-500/10',
-      modifier: 'text-purple-400 bg-purple-500/10'
-    };
-    const color = typeColors[route.type] || 'text-gray-400 bg-gray-500/10';
-    return `
-      <div class="results-panel text-center hover:border-[#00FFFF]/50 transition-all">
-        <div class="text-3xl mb-2">${route.icon}</div>
-        <h3 class="font-bold">${route.name}</h3>
-        <span class="inline-block text-xs px-2 py-0.5 rounded-full mt-1 ${color}">${route.type}</span>
-        <p class="text-xs text-gray-400 mt-2">${route.description}</p>
-      </div>
-    `;
-  }).join('');
-}
-
-// Hot route filter buttons
-document.querySelectorAll('[data-hr-filter]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-hr-filter]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderHotRoutes(btn.dataset.hrFilter);
-  });
-});
-
-// ===== PLAY CREATOR =====
-function initPlayCreator() {
-  // Populate coverage test dropdown
-  const sortedCoverages = [...COVERAGES].sort((a, b) => a.name.localeCompare(b.name));
-  testCoverage.innerHTML = '<option value="">No coverage (offense only)</option>' +
-    sortedCoverages.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-
-  // Populate existing playbook dropdown
-  const sortedBooks = [...OFFENSIVE_PLAYBOOKS].sort((a, b) => a.name.localeCompare(b.name));
-  existingPlaybook.innerHTML = '<option value="">Choose a playbook...</option>' +
-    sortedBooks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
-
-  // Create mode buttons
-  document.querySelectorAll('[data-create]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-create]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('templateSelect').classList.toggle('hidden', btn.dataset.create !== 'template');
-      document.getElementById('existingSelect').classList.toggle('hidden', btn.dataset.create !== 'existing');
-      if (btn.dataset.create === 'scratch') resetRoutes();
-    });
-  });
-
-  // Template selection
-  templateDropdown.addEventListener('change', () => {
-    const template = PLAY_TEMPLATES[templateDropdown.value];
-    if (template) {
-      currentRoutes = { ...template.defaultRoutes };
-      renderRouteAssignments();
-      updatePreview();
-    }
-  });
-
-  // Existing play cascading selects
-  existingPlaybook.addEventListener('change', () => {
-    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === existingPlaybook.value);
-    existingFormation.innerHTML = '<option value="">Choose a formation...</option>';
-    existingSub.innerHTML = '<option value="">Choose a sub-formation...</option>';
-    existingPlay.innerHTML = '<option value="">Choose a play...</option>';
-    if (book && book.formations) {
-      Object.keys(book.formations).sort().forEach(f => {
-        existingFormation.innerHTML += `<option value="${f}">${f}</option>`;
-      });
-    }
-  });
-
-  existingFormation.addEventListener('change', () => {
-    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === existingPlaybook.value);
-    existingSub.innerHTML = '<option value="">Choose a sub-formation...</option>';
-    existingPlay.innerHTML = '<option value="">Choose a play...</option>';
-    if (book && book.formations && book.formations[existingFormation.value]) {
-      Object.keys(book.formations[existingFormation.value]).sort().forEach(s => {
-        existingSub.innerHTML += `<option value="${s}">${s}</option>`;
-      });
-    }
-  });
-
-  existingSub.addEventListener('change', () => {
-    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === existingPlaybook.value);
-    existingPlay.innerHTML = '<option value="">Choose a play...</option>';
-    if (book && book.formations && book.formations[existingFormation.value]) {
-      const plays = book.formations[existingFormation.value][existingSub.value] || [];
-      [...plays].sort().forEach(p => {
-        existingPlay.innerHTML += `<option value="${p}">${p}</option>`;
-      });
-    }
-  });
-
-  existingPlay.addEventListener('change', () => {
-    if (existingPlay.value) {
-      playNameInput.value = existingPlay.value + ' (Modified)';
-      updatePreview();
-    }
-  });
-
-  // Formation change
-  creatorFormation.addEventListener('change', () => {
-    renderRouteAssignments();
-    updatePreview();
-  });
-
-  // Test coverage change
-  testCoverage.addEventListener('change', updatePreview);
-
-  // Flip play
-  flipPlayBtn.addEventListener('click', () => {
+  btnFlip.addEventListener('click', () => {
     isFlipped = !isFlipped;
-    flipPlayBtn.classList.toggle('active', isFlipped);
-    updatePreview();
+    btnFlip.classList.toggle('active', isFlipped);
+    updateAnimation();
   });
 
-  // Reset
-  resetPlayBtn.addEventListener('click', resetRoutes);
-
-  // Initial render
-  renderRouteAssignments();
-  updatePreview();
-}
-
-function resetRoutes() {
-  currentRoutes = { WR1: 'streak', WR2: 'curl', WR3: 'slant', TE: 'drag', RB: 'flat' };
-  isFlipped = false;
-  playNameInput.value = '';
-  renderRouteAssignments();
-  updatePreview();
-}
-
-function renderRouteAssignments() {
-  const positions = Object.keys(currentRoutes);
-  const routeOptions = HOT_ROUTES.map(r =>
-    `<option value="${r.id}">${r.icon} ${r.name}</option>`
-  ).join('');
-
-  routeAssignments.innerHTML = positions.map(pos => `
-    <div class="flex items-center gap-2">
-      <span class="text-xs font-bold w-10 text-neon-cyan">${pos}</span>
-      <select class="custom-select flex-1 text-sm" data-position="${pos}">
-        ${HOT_ROUTES.map(r =>
-          `<option value="${r.id}" ${currentRoutes[pos] === r.id ? 'selected' : ''}>${r.icon} ${r.name}</option>`
-        ).join('')}
-      </select>
-    </div>
-  `).join('');
-
-  // Route change listeners
-  routeAssignments.querySelectorAll('select').forEach(sel => {
-    sel.addEventListener('change', () => {
-      currentRoutes[sel.dataset.position] = sel.value;
-      updatePreview();
-    });
+  btnReset.addEventListener('click', () => {
+    currentRoutes = { WR1: 'streak', WR2: 'curl', WR3: 'slant', TE: 'drag', RB: 'flat' };
+    isFlipped = false;
+    document.getElementById('creatorPlayName').value = '';
+    renderPanelHotRoutes();
+    updateAnimation();
   });
-}
-
-function updatePreview() {
-  if (activeRenderer) activeRenderer.destroy();
-
-  const renderer = new PlayArtRenderer(creatorCanvas, { width: 480, height: 380 });
-  activeRenderer = renderer;
-
-  const formation = creatorFormation.value;
-  const playName = playNameInput.value || 'Custom Play';
-  const coverage = testCoverage.value;
-
-  // Use existing play if selected, otherwise show generic formation
-  if (existingPlay.value && existingFormation.value) {
-    if (coverage) {
-      renderer.renderLivePlay({
-        side: 'both',
-        offFormation: existingFormation.value,
-        offSubFormation: existingSub.value || 'Default',
-        playFamily: existingPlay.value,
-        defFormation: 'Nickel',
-        coverageName: coverage,
-        duration: 3000
-      });
-    } else {
-      renderer.renderSinglePlayLive({
-        mode: 'offense',
-        offFormation: existingFormation.value,
-        offSubFormation: existingSub.value || 'Default',
-        playFamily: existingPlay.value,
-        duration: 3000
-      });
-    }
-  } else {
-    // Render generic formation with custom routes indicator
-    const subFormation = formation === 'Shotgun' ? 'Spread Y-Flex' :
-                         formation === 'Singleback' ? 'Ace' :
-                         formation === 'I Form' ? 'Pro' : 'Default';
-
-    if (coverage) {
-      renderer.renderLivePlay({
-        side: 'both',
-        offFormation: formation,
-        offSubFormation: subFormation,
-        playFamily: playName,
-        defFormation: 'Nickel',
-        coverageName: coverage,
-        duration: 3000
-      });
-    } else {
-      renderer.renderSinglePlayLive({
-        mode: 'offense',
-        offFormation: formation,
-        offSubFormation: subFormation,
-        playFamily: playName,
-        duration: 3000
-      });
-    }
-  }
-
-  // Update play info
-  const infoEl = document.getElementById('creatorPlayInfo');
-  const routeList = Object.entries(currentRoutes)
-    .map(([pos, route]) => {
-      const hr = HOT_ROUTES.find(r => r.id === route);
-      return `<span class="text-neon-cyan">${pos}:</span> ${hr ? hr.name : route}`;
-    }).join(' | ');
-  infoEl.innerHTML = `<p class="text-xs">${routeList}</p>
-    ${isFlipped ? '<p class="text-xs text-yellow-400 mt-1">Play Flipped</p>' : ''}`;
 }
 
 // ===== MODAL CLOSE =====
@@ -437,7 +423,15 @@ detailModal.addEventListener('click', (e) => {
 });
 
 // ===== INITIALIZE =====
-renderMacros();
-renderAdjustments();
-renderHotRoutes();
-initPlayCreator();
+initSelects();
+initDrag();
+renderPanelHotRoutes();
+renderOffAdj();
+renderDefAdj();
+renderPanelMacros();
+initCreatorControls();
+
+// Draw initial empty field
+const initRenderer = new PlayArtRenderer(liveCanvas, { width: 640, height: 480 });
+activeRenderer = initRenderer;
+initRenderer.drawField();

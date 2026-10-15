@@ -236,6 +236,10 @@ const COVERAGE_ZONES = {
 
 // Play route assignments per play family
 const PLAY_ROUTES = {
+  'Four Verticals': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
   '4 Verticals': {
     routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
@@ -615,6 +619,666 @@ const PLAY_ROUTES = {
   'Play Action': {
     routes: { WR1: 'streak', WR2: 'post', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Cross': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'post', WR4: 'streak', TE: 'drag', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Seams': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Slide': {
+    routes: { WR1: 'drag', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR2'
+  },
+  'Verticals': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Curl Combo': {
+    routes: { WR1: 'curl', WR2: 'curl', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Double Slants': {
+    routes: { WR1: 'slant', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Levels Switch': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Trick Play': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Flea Flicker': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'streak', WR4: 'corner', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'HB Pass': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'streak', WR4: 'corner', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', ball_target: 'WR2'
+  },
+  'Philly Special': {
+    routes: { WR1: 'flat', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'flat', ball_target: 'QB'
+  },
+  'Mid Zone': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Pin Pull Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Jet Touch Pass': {
+    routes: { WR1: 'streak', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+
+  // ===== PLAY ACTION VARIANTS =====
+  'PA Counter': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'curl', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Draw': {
+    routes: { WR1: 'streak', WR2: 'in', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Rollout Left': {
+    routes: { WR1: 'corner', WR2: 'flat_left', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_left', ball_target: 'WR1'
+  },
+  'PA Rollout Right': {
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'corner', WR4: 'flat', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR3'
+  },
+  'PA Waggle': {
+    routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR2'
+  },
+  'PA Counter Shot': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'seam', WR4: 'streak', TE: 'drag', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Deep Cross': {
+    routes: { WR1: 'in', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Boot Left': {
+    routes: { WR1: 'corner', WR2: 'flat_left', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_left', ball_target: 'WR1'
+  },
+  'PA Y Cross': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'drag', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'PA X Post': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'curl', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Stretch': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'in', WR4: 'streak', TE: 'drag', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Inside Zone': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'PA Outside Zone': {
+    routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR2'
+  },
+
+  // ===== MOTION / JET PLAYS =====
+  'Jet Pass': {
+    routes: { WR1: 'streak', WR2: 'run_stretch', WR3: 'slant', WR4: 'curl', TE: 'drag', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Motion Crossers': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Orbit Jet': {
+    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Motion Drive': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Jet Motion Screen': {
+    routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Motion Levels': {
+    routes: { WR1: 'streak', WR2: 'in', WR3: 'drag', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Shift Flood': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+
+  // ===== WEST COAST / AIR RAID CONCEPTS =====
+  'Shallow Cross': {
+    routes: { WR1: 'post', WR2: 'drag', WR3: 'in', WR4: 'streak', TE: 'drag', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Cross Dig': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Double Cross': {
+    routes: { WR1: 'in', WR2: 'drag_left', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Mesh Spot': {
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'drag_left', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR4'
+  },
+  'Texas': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'streak', WR4: 'streak', TE: 'flat', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Whip': {
+    routes: { WR1: 'out', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'China': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'flat', WR4: 'curl', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Scissors': {
+    routes: { WR1: 'post', WR2: 'corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Y Stick': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'out', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Hoss Y Juke': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'hitch', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Stick Nod': {
+    routes: { WR1: 'streak', WR2: 'out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Y Shallow Cross': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'drag', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Z Spot': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'flat', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Smash Corner': {
+    routes: { WR1: 'hitch', WR2: 'corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Y Cross': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'drag', WR4: 'streak', TE: 'in', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Under Center Cross': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'in', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Deep Comeback': {
+    routes: { WR1: 'comeback', WR2: 'comeback', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Double Out': {
+    routes: { WR1: 'out', WR2: 'out', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Seam Read': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Y Sail': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'out', WR4: 'flat', TE: 'corner', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Corner Post': {
+    routes: { WR1: 'post', WR2: 'corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Post Wheel': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+
+  // ===== SCREEN PLAYS =====
+  'TE Screen': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'screen', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Slip Screen': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Slow Screen': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Swing Screen': {
+    routes: { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'screen_right' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Flare Screen': {
+    routes: { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'screen_left' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'RB Screen': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+
+  // ===== WILDCAT / SPECIAL =====
+  'Wildcat Power': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Wildcat Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Wildcat Counter': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Wildcat Pass': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Wildcat Read': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    qb: 'option_keep', isRun: true
+  },
+  'Direct Snap': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+
+  // ===== DESIGNED QB RUNS =====
+  'QB Counter': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'run_counter', isRun: true
+  },
+  'QB Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'run_stretch', isRun: true
+  },
+  'QB Zone Read': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    qb: 'option_keep', isRun: true
+  },
+  'QB Follow': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    qb: 'run_inside', isRun: true
+  },
+  'QB Blast': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'run_dive', isRun: true
+  },
+  'QB Wrap': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'run_power', isRun: true
+  },
+  'Designed Rollout': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR2'
+  },
+  'QB Option': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    qb: 'option_keep', isRun: true
+  },
+
+  // ===== RUN & SHOOT CONCEPTS =====
+  'Choice': {
+    routes: { WR1: 'curl', WR2: 'in', WR3: 'out', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Switch': {
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'streak', WR4: 'drag_left', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Go': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Streak Right': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR4'
+  },
+  'Streak Left': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+
+  // ===== ADDITIONAL RUN PLAYS =====
+  'Inside Power': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Outside Power': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside', FB: 'run_outside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Lead Draw': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Lead Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', FB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Guard Pull': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Center Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Buck Sweep': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Blast': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Stretch Right': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Stretch Left': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Inside Trap': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Counter Trey': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Weak Dive': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Strong Dive': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'FB Counter': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block', FB: 'run_counter' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'FB Toss': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block', FB: 'run_outside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Toss Strong': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Toss Weak': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Zone Lead': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Zone Weak': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Zone Read': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    qb: 'option_keep', isRun: true
+  },
+
+  // ===== GOAL LINE / SHORT YARDAGE =====
+  'Goal Line Power': {
+    routes: { WR1: 'block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_power', FB: 'run_power' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Goal Line Dive': {
+    routes: { WR1: 'block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_dive', FB: 'run_dive' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Sneak Left': {
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    qb: 'run_inside', isRun: true
+  },
+  'Sneak Right': {
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    qb: 'run_inside', isRun: true
+  },
+  'Wedge': {
+    routes: { WR1: 'block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_dive', FB: 'run_dive' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'QB Wedge': {
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    qb: 'run_dive', isRun: true
+  },
+
+  // ===== ADDITIONAL CONCEPTS =====
+  'Dino': {
+    routes: { WR1: 'in', WR2: 'out', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Dragon': {
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Whip Route': {
+    routes: { WR1: 'out', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'China Route': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'flat', WR4: 'curl', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Sail Concept': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Double Move': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Whip Screen': {
+    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'TE Angle': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'streak', WR4: 'streak', TE: 'angle', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'TE Seam': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'TE Corner': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'corner', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Slot Out': {
+    routes: { WR1: 'streak', WR2: 'out', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Slot Post': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Slot Corner': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Drag Route': {
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Crosser': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'post', WR4: 'streak', TE: 'drag', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Levels Y': {
+    routes: { WR1: 'streak', WR2: 'in', WR3: 'drag', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Verticals Seam': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Curl Route': {
+    routes: { WR1: 'curl', WR2: 'curl', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Hitch Screen': {
+    routes: { WR1: 'hitch', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Out Route': {
+    routes: { WR1: 'out', WR2: 'curl', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'In Route': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Flat Route': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'streak', WR4: 'curl', TE: 'flat', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Angle Route': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'angle', RB: 'angle' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Wheel Route': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'flat', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Seam Route': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Corner Route': {
+    routes: { WR1: 'corner', WR2: 'hitch', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Post Route': {
+    routes: { WR1: 'post', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Slant Route': {
+    routes: { WR1: 'slant', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'PA Flood Right': {
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'corner', WR4: 'flat', TE: 'seam', RB: 'block' },
+    qb: 'qb_boot_right', ball_target: 'WR3'
+  },
+  'PA Flood Left': {
+    routes: { WR1: 'flat_left', WR2: 'corner', WR3: 'drag_left', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_boot_left', ball_target: 'WR2'
+  },
+  'Stick Draw': {
+    routes: { WR1: 'out', WR2: 'hitch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Quick Out Flat': {
+    routes: { WR1: 'out', WR2: 'flat', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Deep Dig': {
+    routes: { WR1: 'in', WR2: 'drag', WR3: 'streak', WR4: 'curl', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Slant Wheel': {
+    routes: { WR1: 'slant', WR2: 'wheel', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Out and Up': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Hitch and Go': {
+    routes: { WR1: 'streak', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Slot Fade': {
+    routes: { WR1: 'streak', WR2: 'fade', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'HB Angle': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'flat', RB: 'angle' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Flat Wheel': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'flat', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Spot Drop': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Curl Seam': {
+    routes: { WR1: 'curl', WR2: 'seam', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2'
+  },
+  'Quick Fade': {
+    routes: { WR1: 'fade', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Iso Power': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_inside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Mid Draw': {
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'run_inside' },
+    qb: 'qb_drop', isRun: true
+  },
+  'Off Tackle': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Reverse': {
+    routes: { WR1: 'block', WR2: 'run_counter', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'HB Counter': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Zone Stretch': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Power Left': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Power Right': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Dive Left': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Dive Right': {
+    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    qb: 'qb_handoff', isRun: true
   }
 };
 
