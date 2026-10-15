@@ -753,6 +753,9 @@ const ROUTE_PATHS = {
   'lead_block': [[0.04, -0.08]],
   'stalk_block': [[0, -0.04]],
   'crack_block': [[-0.06, -0.06]],
+  'zone_step_right': [[0.04, -0.04]],
+  'zone_step_left': [[-0.04, -0.04]],
+  'combo_block': [[0, -0.06]],
   // Run paths
   'run_right': [[0.10, -0.06]],
   'run_left': [[-0.10, -0.06]],
@@ -774,7 +777,34 @@ const ROUTE_PATHS = {
   'pull_left': [[-0.08, 0.0], [-0.06, -0.08]],
   'pull_right': [[0.08, 0.0], [0.06, -0.08]],
   'ol_release_right': [[0.10, -0.02], [0.05, -0.05]],
-  'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]]
+  'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]],
+  // Defensive route paths
+  'rush_a_gap': [[0, -0.08]],
+  'rush_b_gap': [[0.04, -0.08]],
+  'rush_c_gap': [[0.06, -0.06]],
+  'rush_contain': [[0.08, -0.04]],
+  'zone_hook': [[0, -0.06]],
+  'zone_curl_flat': [[0.08, -0.04]],
+  'zone_mid': [[0, -0.08]],
+  'zone_flat': [[0.10, -0.02]],
+  'zone_deep_third': [[0, -0.16]],
+  'zone_deep_half': [[0, -0.18]],
+  'zone_deep_middle': [[0, -0.20]],
+  'press_man': [[0, -0.04]],
+  'man_cover': [[0, -0.06]],
+  'blitz_a': [[0, -0.12]],
+  'blitz_b': [[0.04, -0.12]],
+  'blitz_edge': [[0.08, -0.10]],
+  // Defensive assignment paths
+  'man_trail': [],
+  'spy': [[0, -0.04]],
+  'deep_middle': [[0, -0.18]],
+  'deep_third': [[0, -0.16], [0.06, -0.04]],
+  'deep_half': [[0, -0.16], [0.08, 0]],
+  'hook_zone': [[0, -0.06], [-0.03, 0]],
+  'curl_flat': [[0.06, -0.04]],
+  'flat_zone': [[0.10, -0.02]],
+  'robber': [[0, -0.08]]
 };
 
 // Coverage zone shapes (center + radius, normalized)
@@ -829,6 +859,240 @@ const COVERAGE_ZONES = {
   'Inverted Cover 2': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'flat_left', 'flat_right'], type: 'zone' }
 };
 
+// Defensive assignment mappings per coverage type
+const DEF_ASSIGNMENTS = {
+  'Cover 0': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'man_trail', FS: 'man_trail',
+    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
+  },
+  'Cover 1': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'man_trail', FS: 'deep_middle',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 1 Robber': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'robber', FS: 'deep_middle',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 1 Hole': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'robber', FS: 'deep_middle',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Zone': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Man': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'man_trail', ROLB: 'man_trail',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Invert': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Sink': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Press': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'man_trail', ROLB: 'man_trail',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Hard Flat': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'flat_zone', ROLB: 'flat_zone',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2 Lurk': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'robber', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'robber'
+  },
+  'Cover 3': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'curl_flat', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 3 Sky': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'flat_zone', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 3 Cloud': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'deep_third', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'deep_third',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 3 Buzz': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'hook_zone', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 3 Match': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'curl_flat', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 4': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_third', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 4 Palms': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_third', FS: 'deep_third',
+    LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 4 Drop': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'deep_third', FS: 'deep_third',
+    LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 6': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_third',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LOLB: 'curl_flat', ROLB: 'flat_zone',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 9': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
+    LOLB: 'man_trail', ROLB: 'man_trail',
+    ILB1: 'man_trail', ILB2: 'man_trail', MLB: 'man_trail'
+  },
+  'Tampa 2': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'deep_middle'
+  },
+  'Prevent': {
+    CB1: 'deep_third', CB2: 'deep_third',
+    NCB: 'deep_third', NCB1: 'deep_third', NCB2: 'deep_third',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'deep_middle', ILB2: 'hook_zone', MLB: 'deep_middle'
+  },
+  'Mid Blitz': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'man_trail', FS: 'man_trail',
+    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
+  },
+  'Edge Blitz': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'blitz_edge', FS: 'deep_middle',
+    LB1: 'hook_zone', LB2: 'blitz_edge', LB3: 'hook_zone',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Inverted Cover 2': {
+    CB1: 'deep_half', CB2: 'deep_half',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'flat_zone', FS: 'flat_zone',
+    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  }
+};
+
+// Helper to look up defensive assignment for a coverage
+function getDefAssignment(coverageName, defKey) {
+  if (!coverageName) return null;
+  if (DEF_ASSIGNMENTS[coverageName]) {
+    return DEF_ASSIGNMENTS[coverageName][defKey] || null;
+  }
+  const lower = coverageName.toLowerCase();
+  const keys = Object.keys(DEF_ASSIGNMENTS).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    const kl = key.toLowerCase();
+    if (lower.includes(kl) || kl.includes(lower)) {
+      return DEF_ASSIGNMENTS[key][defKey] || null;
+    }
+  }
+  return null;
+}
+
+// Check if a defensive assignment is a blitz type
+function isBlitzAssignment(assignment) {
+  return assignment === 'blitz_a' || assignment === 'blitz_b' || assignment === 'blitz_edge';
+}
+
 // Play route assignments per play family
 const PLAY_ROUTES = {
   'Four Verticals': {
@@ -845,7 +1109,7 @@ const PLAY_ROUTES = {
   },
   'Mesh': {
     routes: { WR1: 'go', WR2: 'shallow_cross', WR3: 'drag_left', WR4: 'go', TE: 'drag', RB: 'check_down' },
-    qb: 'qb_drop', ball_target: 'WR2'
+    qb: 'qb_drop', ball_target: 'WR2', motion: { player: 'WR3', path: [[-0.15, 0]] }
   },
   'Levels': {
     routes: { WR1: 'go', WR2: 'deep_in', WR3: 'shallow_cross', WR4: 'curl', TE: 'seam', RB: 'swing' },
@@ -904,31 +1168,31 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Inside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', LT: 'zone_step_right', LG: 'zone_step_right', C: 'combo_block', RG: 'zone_step_right', RT: 'zone_step_right' },
     qb: 'qb_handoff', isRun: true
   },
   'Outside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside', LT: 'zone_step_right', LG: 'zone_step_right', C: 'zone_step_right', RG: 'zone_step_right', RT: 'zone_step_right' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Stretch': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch', LT: 'zone_step_right', LG: 'zone_step_right', C: 'zone_step_right', RG: 'zone_step_right', RT: 'zone_step_right' },
     qb: 'qb_handoff', isRun: true
   },
   'Power O': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'lead_block', LG: 'pass_block', RG: 'pull_left', C: 'pass_block', LT: 'pass_block', RT: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power', FB: 'lead_block', LG: 'pass_block', RG: 'pull_left', C: 'pass_block', LT: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Counter': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter', FB: 'run_power', RG: 'pull_left', RT: 'pull_left', LT: 'pass_block', LG: 'pass_block', C: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter', FB: 'run_power', RG: 'pull_left', RT: 'pull_left', LT: 'pass_block', LG: 'pass_block', C: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Dive': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive', FB: 'run_dive' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_dive', FB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Toss': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Draw': {
@@ -936,15 +1200,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'Read Option': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give' },
     qb: 'option_keep', isRun: true
   },
   'Jet Sweep': {
-    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
-    qb: 'qb_handoff', isRun: true
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.20, 0]] }
   },
   'QB Sneak': {
-    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'run_dive', isRun: true
   },
   'RPO Read': {
@@ -965,54 +1229,54 @@ const PLAY_ROUTES = {
   },
   'PA Boot': {
     routes: { WR1: 'shallow_cross', WR2: 'deep_corner', WR3: 'flat', TE: 'dig', RB: 'block', FB: 'block' },
-    qb: 'qb_boot_right', ball_target: 'WR2'
+    qb: 'qb_boot_right', ball_target: 'WR2', motion: { player: 'TE', path: [[0.10, 0]] }
   },
   'FB Dive': {
-    routes: { FB: 'run_dive', RB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { FB: 'run_dive', RB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'qb_drop', isRun: true
   },
   'Tush Push': {
-    routes: { FB: 'run_dive', RB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { FB: 'run_dive', RB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'run_dive', isRun: true
   },
   'Wide Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RG: 'pass_block', RT: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch', LT: 'zone_step_right', LG: 'zone_step_right', C: 'zone_step_right', RG: 'zone_step_right', RT: 'zone_step_right' },
     qb: 'qb_handoff', isRun: true
   },
   'Split Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', FB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'Duo': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Trap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', RG: 'pull_left', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RT: 'pass_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', RG: 'pull_left', LT: 'pass_block', LG: 'pass_block', C: 'pass_block', RT: 'pass_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Wham': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'lead_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', FB: 'lead_block' },
     qb: 'qb_handoff', isRun: true
   },
   'ISO': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'lead_block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', FB: 'lead_block' },
     qb: 'qb_handoff', isRun: true
   },
   'Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'End Around': {
-    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
-    qb: 'qb_handoff', isRun: true
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR3', path: [[-0.25, 0]] }
   },
   'QB Draw': {
     routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'block' },
     qb: 'run_inside', isRun: true
   },
   'QB Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power', FB: 'run_power' },
     qb: 'run_power', isRun: true
   },
   'QB Scramble': {
@@ -1020,19 +1284,19 @@ const PLAY_ROUTES = {
     qb: 'qb_scramble', isRun: true
   },
   'Power Read': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give' },
     qb: 'option_keep', isRun: true
   },
   'Speed Option': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'option_keep', isRun: true
   },
   'Triple Option': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give', FB: 'run_dive' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give', FB: 'run_dive' },
     qb: 'option_keep', isRun: true
   },
   'Inverted Veer': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'run_power', isRun: true
   },
   'Deep Post': {
@@ -1048,11 +1312,11 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Skinny Post': {
-    routes: { WR1: 'post', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'skinny_post', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Double Post': {
-    routes: { WR1: 'post', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'deep_post', WR2: 'skinny_post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Post Corner': {
@@ -1064,7 +1328,7 @@ const PLAY_ROUTES = {
     qb: 'qb_boot_right', ball_target: 'WR2'
   },
   'PA Scissors': {
-    routes: { WR1: 'post', WR2: 'corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
+    routes: { WR1: 'deep_post', WR2: 'deep_corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Shot Seams': {
@@ -1168,7 +1432,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Orbit': {
-    routes: { WR1: 'streak', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true
   },
   'Orbit Screen': {
@@ -1176,15 +1440,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'HB Blast': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Slam': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Pitch': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'Delayed Draw': {
@@ -1204,7 +1468,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'RPO Power Read': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'qb_drop', isRun: true
   },
   'RPO Lookie': {
@@ -1260,11 +1524,11 @@ const PLAY_ROUTES = {
     qb: 'flat', ball_target: 'QB'
   },
   'Mid Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Pin Pull Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Jet Touch Pass': {
@@ -1336,7 +1600,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Orbit Jet': {
-    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true
   },
   'Motion Drive': {
@@ -1434,15 +1698,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Y Sail': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'out', WR4: 'flat', TE: 'corner', RB: 'block' },
+    routes: { WR1: 'go', WR2: 'go', WR3: 'deep_out', WR4: 'flat', TE: 'deep_corner', RB: 'check_down' },
     qb: 'qb_drop', ball_target: 'TE'
   },
   'Corner Post': {
-    routes: { WR1: 'post', WR2: 'corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_post', WR2: 'deep_corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Post Wheel': {
-    routes: { WR1: 'post', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'wheel' },
+    routes: { WR1: 'deep_post', WR2: 'streak', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'wheel' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
 
@@ -1474,15 +1738,15 @@ const PLAY_ROUTES = {
 
   // ===== WILDCAT / SPECIAL =====
   'Wildcat Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Wildcat Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Wildcat Counter': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'Wildcat Pass': {
@@ -1490,37 +1754,37 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Wildcat Read': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give' },
     qb: 'option_keep', isRun: true
   },
   'Direct Snap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
 
   // ===== DESIGNED QB RUNS =====
   'QB Counter': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'run_counter', isRun: true
   },
   'QB Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'run_stretch', isRun: true
   },
   'QB Zone Read': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give' },
     qb: 'option_keep', isRun: true
   },
   'QB Follow': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
     qb: 'run_inside', isRun: true
   },
   'QB Blast': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'run_dive', isRun: true
   },
   'QB Wrap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'run_power', isRun: true
   },
   'Designed Rollout': {
@@ -1528,7 +1792,7 @@ const PLAY_ROUTES = {
     qb: 'qb_boot_right', ball_target: 'WR2'
   },
   'QB Option': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'option_keep', isRun: true
   },
 
@@ -1556,11 +1820,11 @@ const PLAY_ROUTES = {
 
   // ===== ADDITIONAL RUN PLAYS =====
   'Inside Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Outside Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside', FB: 'run_outside' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside', FB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'Lead Draw': {
@@ -1568,101 +1832,101 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'Lead Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch', FB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch', FB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Guard Pull': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Center Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Buck Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Blast': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Right': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Left': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Inside Trap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Counter Trey': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'Weak Dive': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
   'Strong Dive': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
   'FB Counter': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block', FB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block', FB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'FB Toss': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block', FB: 'run_outside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block', FB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'Toss Strong': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Toss Weak': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Zone Lead': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', FB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Zone Weak': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Zone Read': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give' },
     qb: 'option_keep', isRun: true
   },
 
   // ===== GOAL LINE / SHORT YARDAGE =====
   'Goal Line Power': {
-    routes: { WR1: 'block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_power', FB: 'run_power' },
+    routes: { WR1: 'stalk_block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_power', FB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Goal Line Dive': {
-    routes: { WR1: 'block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_dive', FB: 'run_dive' },
+    routes: { WR1: 'stalk_block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_dive', FB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
   'Sneak Left': {
-    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'run_inside', isRun: true
   },
   'Sneak Right': {
-    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'run_inside', isRun: true
   },
   'Wedge': {
-    routes: { WR1: 'block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_dive', FB: 'run_dive' },
+    routes: { WR1: 'stalk_block', TE: 'block', TE1: 'block', TE2: 'block', RB: 'run_dive', FB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
   'QB Wedge': {
-    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { RB: 'block', FB: 'block', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'run_dive', isRun: true
   },
 
@@ -1836,7 +2100,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Iso Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power', FB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Mid Draw': {
@@ -1844,35 +2108,35 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'Off Tackle': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_outside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'Reverse': {
-    routes: { WR1: 'block', WR2: 'run_counter', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Counter': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'Zone Stretch': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Power Left': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Power Right': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'Dive Left': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
   'Dive Right': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_dive' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_dive' },
     qb: 'qb_handoff', isRun: true
   },
 
@@ -1916,7 +2180,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'MTN H Zone Wk': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN HB Choice': {
@@ -1932,7 +2196,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'MTN HB Off Tackle': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN HB Screen': {
@@ -1940,15 +2204,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'RB'
   },
   'MTN HB Toss': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN HB Toss Crack': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN Inside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN Mesh Spot': {
@@ -1960,7 +2224,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'MTN Outside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN PA FK Slide': {
@@ -2004,7 +2268,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'MTN Scissors': {
-    routes: { WR1: 'post', WR2: 'corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_post', WR2: 'deep_corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'MTN Shallow': {
@@ -2044,7 +2308,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'MTN Spinner HB Inside': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN Spot': {
@@ -2056,11 +2320,11 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'RB'
   },
   'MTN WR Outside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'MTN Y Lead Read Option': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'option_give' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'option_give' },
     qb: 'option_keep', isRun: true
   },
   'MTN Y-Corner': {
@@ -2226,7 +2490,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Cheat Outside Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
     qb: 'qb_handoff', isRun: true
   },
   'Cheat RPO Zone Alert Bubble': {
@@ -2384,7 +2648,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Bench': {
-    routes: { WR1: 'streak', WR2: 'out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'streak', WR2: 'speed_out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Slants': {
@@ -2398,11 +2662,11 @@ const PLAY_ROUTES = {
 
   // HB Run Variants
   'HB Base': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Duo': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Mid Draw': {
@@ -2410,15 +2674,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'HB Mid Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Off Tackle': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power', FB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power', FB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Pump Draw': {
@@ -2426,11 +2690,11 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'HB Quick Base': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Scissors': {
-    routes: { WR1: 'post', WR2: 'corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    routes: { WR1: 'deep_post', WR2: 'deep_corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'swing' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'HB Slip Screen': {
@@ -2442,15 +2706,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'RB'
   },
   'HB Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Counter Str': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter', FB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter', FB: 'run_power' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Stretch Alert Smoke': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Alert Bubble': {
@@ -2458,11 +2722,11 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Alert Smoke': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Alert X Smoke': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Delayed Draw': {
@@ -2470,15 +2734,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', isRun: true
   },
   'Pin Pull Sweep': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
   'Counter Y': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'Zone Split': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside', FB: 'run_counter' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside', FB: 'run_counter' },
     qb: 'qb_handoff', isRun: true
   },
   'Zone Split Alert Lookie': {
@@ -2486,19 +2750,19 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true
   },
   'Zone Fake Jet': {
-    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Same Side Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'QB Strong Power': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
     qb: 'run_power', isRun: true
   },
   'QB Zone': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'run_inside', isRun: true
   },
 
@@ -2512,15 +2776,15 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Jet Touch Pass': {
-    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true
   },
   'Jet New Orleans': {
-    routes: { WR1: 'block', WR2: 'run_stretch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true
   },
   'Boomerang 01 Trap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'Boomerang Slot Swing': {
@@ -2598,23 +2862,23 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Close Zone Strg': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   '94 Will': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   '01 Trap': {
-    routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_handoff', isRun: true
   },
   'FB Dive Fake HB': {
-    routes: { FB: 'run_dive', RB: 'flat', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { FB: 'run_dive', RB: 'flat', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'qb_drop', isRun: true
   },
   'FB Fake HB Flip': {
-    routes: { FB: 'run_dive', RB: 'run_counter', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'block' },
+    routes: { FB: 'run_dive', RB: 'run_counter', TE: 'block', TE1: 'block', TE2: 'block', WR1: 'stalk_block' },
     qb: 'qb_handoff', isRun: true
   },
 
@@ -2630,6 +2894,224 @@ const PLAY_ROUTES = {
   'H MTN X Shallow Cross': {
     routes: { WR1: 'drag', WR2: 'in', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
+  },
+
+  // ===== DEFENSIVE COVERAGE PLAYS =====
+  'Cover 0': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_a_gap', DE1: 'rush_c_gap', DE2: 'rush_c_gap', LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'man_cover', FS: 'man_cover' },
+    isCoverage: true
+  },
+  'Cover 1': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'man_cover', LB2: 'man_cover', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'man_cover', FS: 'zone_deep_middle' },
+    isCoverage: true
+  },
+  'Cover 1 Robber': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'man_cover', LB2: 'zone_mid', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'man_cover', FS: 'zone_deep_middle' },
+    isCoverage: true
+  },
+  'Cover 1 Hole': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'man_cover', LB2: 'zone_mid', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'man_cover', FS: 'zone_deep_middle' },
+    isCoverage: true
+  },
+  'Cover 2 Zone': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 2 Man': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'man_cover', LB2: 'man_cover', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 2 Invert': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 2 Sink': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_hook', LB2: 'zone_mid', LB3: 'zone_hook', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 2 Lurk': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_hook', LB2: 'zone_mid', LB3: 'zone_hook', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 2 Press': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'man_cover', LB2: 'man_cover', LB3: 'man_cover', CB1: 'press_man', CB2: 'press_man', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 2 Hard Flat': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 3': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_hook', FS: 'zone_deep_third' },
+    isCoverage: true
+  },
+  'Cover 3 Sky': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_flat', FS: 'zone_deep_third' },
+    isCoverage: true
+  },
+  'Cover 3 Cloud': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_third', FS: 'zone_deep_third' },
+    isCoverage: true
+  },
+  'Cover 3 Buzz': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_hook', LB2: 'zone_mid', LB3: 'zone_hook', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_hook', FS: 'zone_deep_third' },
+    isCoverage: true
+  },
+  'Cover 3 Match': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_hook', FS: 'zone_deep_third' },
+    isCoverage: true
+  },
+  'Cover 4': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_hook', LB2: 'zone_mid', LB3: 'zone_hook', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 4 Palms': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_hook', LB2: 'zone_mid', LB3: 'zone_hook', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 4 Drop': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_mid', LB3: 'zone_curl_flat', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 6': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_hook', LB2: 'zone_mid', LB3: 'zone_hook', CB1: 'zone_deep_third', CB2: 'zone_deep_half', SS: 'zone_deep_third', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Cover 9': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'man_cover', LB2: 'man_cover', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Tampa 2': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_deep_middle', LB3: 'zone_curl_flat', CB1: 'zone_flat', CB2: 'zone_flat', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Prevent': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_contain', DE2: 'rush_contain', LB1: 'zone_mid', LB2: 'zone_mid', LB3: 'zone_mid', CB1: 'zone_deep_third', CB2: 'zone_deep_third', SS: 'zone_deep_half', FS: 'zone_deep_half' },
+    isCoverage: true
+  },
+  'Mid Blitz': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'man_cover', CB1: 'man_cover', CB2: 'man_cover', SS: 'blitz_edge', FS: 'man_cover' },
+    isCoverage: true
+  },
+  'Edge Blitz': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'blitz_edge', LB2: 'man_cover', LB3: 'blitz_edge', CB1: 'man_cover', CB2: 'man_cover', SS: 'man_cover', FS: 'zone_deep_middle' },
+    isCoverage: true
+  },
+  'Inverted Cover 2': {
+    routes: {},
+    defRoutes: { DT1: 'rush_a_gap', DT2: 'rush_b_gap', DE1: 'rush_c_gap', DE2: 'rush_contain', LB1: 'zone_curl_flat', LB2: 'zone_hook', LB3: 'zone_curl_flat', CB1: 'zone_deep_half', CB2: 'zone_deep_half', SS: 'zone_flat', FS: 'zone_flat' },
+    isCoverage: true
+  }
+};
+
+// Auto-tag plays based on routes and names
+(function autoTagPlays() {
+  const shortRoutes = new Set(['flat', 'flat_left', 'screen', 'screen_left', 'screen_right', 'hitch', 'drag', 'drag_left', 'shallow_cross', 'check_down', 'swing', 'swing_left', 'quick_out']);
+  const mediumRoutes = new Set(['curl', 'comeback', 'in', 'out', 'dig', 'deep_in', 'deep_out', 'speed_out', 'slant', 'whip', 'angle', 'texas']);
+  const deepRoutes = new Set(['streak', 'go', 'post', 'deep_post', 'skinny_post', 'post_corner', 'corner', 'deep_corner', 'seam', 'fade', 'wheel']);
+  const runRoutes = new Set(['run_inside', 'run_power', 'run_counter', 'run_stretch', 'run_dive', 'run_outside', 'run_right', 'run_left']);
+
+  for (const [name, play] of Object.entries(PLAY_ROUTES)) {
+    const tags = [];
+    const routes = play.routes || {};
+    const target = routes[play.ball_target] || '';
+    const allRoutes = Object.values(routes);
+
+    // Type tags
+    if (name.includes('Screen') || target.includes('screen')) tags.push('screen');
+    if (name.startsWith('PA ') || name.includes('Play Action')) tags.push('play_action');
+    if (name.startsWith('RPO')) tags.push('rpo');
+    if (allRoutes.some(r => runRoutes.has(r)) && !name.includes('Screen')) {
+      if (name.includes('Option') || name.includes('Read')) tags.push('option');
+      else if (!tags.includes('rpo')) tags.push('run');
+    }
+
+    // Depth tags
+    if (shortRoutes.has(target)) tags.push('short', 'quick_game');
+    else if (mediumRoutes.has(target)) tags.push('medium');
+    else if (deepRoutes.has(target)) tags.push('deep');
+
+    // Concept tags
+    if (name.includes('Flood')) tags.push('flood');
+    if (name.includes('Mesh')) tags.push('mesh');
+    if (name.includes('Levels')) tags.push('levels');
+    if (name.includes('Smash')) tags.push('smash');
+    if (name.includes('Verticals') || name.includes('Four Verts') || name.includes('Verts')) tags.push('verticals');
+
+    play.tags = tags.length ? tags : ['medium'];
+  }
+})();
+
+const COVERAGE_BEATERS = {
+  'Cover 0': {
+    beatenBy: ['quick_game', 'screen', 'slant'],
+    beats: ['deep'],
+    tip: 'No safety help \u2014 throw hot routes and screens before pressure arrives'
+  },
+  'Cover 1': {
+    beatenBy: ['levels', 'flood', 'mesh'],
+    beats: ['deep', 'verticals'],
+    tip: 'Single high safety \u2014 flood one side to create 2-on-1 matchups'
+  },
+  'Cover 2 Zone': {
+    beatenBy: ['deep', 'verticals', 'smash'],
+    beats: ['short', 'quick_game'],
+    tip: 'Deep middle is open \u2014 attack seams and post routes between the safeties'
+  },
+  'Cover 2 Man': {
+    beatenBy: ['mesh', 'levels', 'flood'],
+    beats: ['short', 'screen'],
+    tip: 'Pick plays and crossers create free releases against tight man coverage'
+  },
+  'Cover 3': {
+    beatenBy: ['flood', 'smash', 'medium'],
+    beats: ['deep', 'verticals'],
+    tip: 'Curl-flat window is the weakness \u2014 smash and flood concepts exploit the seam'
+  },
+  'Cover 4': {
+    beatenBy: ['short', 'quick_game', 'run'],
+    beats: ['deep', 'verticals'],
+    tip: 'Four deep defenders leave underneath wide open \u2014 attack with curls and drags'
+  },
+  'Cover 6': {
+    beatenBy: ['flood', 'levels'],
+    beats: ['deep'],
+    tip: 'Identify the Cover 2 side and attack the deep middle or seam on that side'
+  },
+  'Man Blitz': {
+    beatenBy: ['quick_game', 'screen', 'mesh'],
+    beats: ['run', 'deep'],
+    tip: 'Hot routes and screens punish the blitz \u2014 get the ball out fast'
+  },
+  'Zone Blitz': {
+    beatenBy: ['short', 'quick_game'],
+    beats: ['deep', 'play_action'],
+    tip: 'Zone blitz drops a rusher into coverage \u2014 find the vacated zone'
   }
 };
 
@@ -2639,7 +3121,7 @@ const DEFAULT_PASS_ROUTES = {
   qb: 'qb_drop', ball_target: 'WR2'
 };
 const DEFAULT_RUN_ROUTES = {
-  routes: { WR1: 'block', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
+  routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
   qb: 'qb_handoff', isRun: true
 };
 
@@ -2650,6 +3132,17 @@ class PlayArtRenderer {
   constructor(canvas, options = {}) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
+    if (typeof ResizeObserver !== 'undefined') {
+      this._resizeObserver = new ResizeObserver(() => {
+        const rect = canvas.parentElement?.getBoundingClientRect();
+        if (rect && rect.width > 0) {
+          const scale = Math.min(rect.width / this.width, 1);
+          canvas.style.transform = `scale(${scale})`;
+          canvas.style.transformOrigin = 'top left';
+        }
+      });
+      if (canvas.parentElement) this._resizeObserver.observe(canvas.parentElement);
+    }
     this.width = options.width || 320;
     this.height = options.height || 260;
     this.canvas.width = this.width;
@@ -2657,6 +3150,7 @@ class PlayArtRenderer {
     this.animProgress = 0;
     this.animFrame = null;
     this.isAnimating = false;
+    this._initTouchHandlers();
   }
 
   // Draw field background with subtle gradient and realistic turf
@@ -2924,6 +3418,7 @@ class PlayArtRenderer {
       const color = isQB ? BALL_COLOR : OFF_COLOR;
       this.drawPlayer(pos[0], pos[1], color, label, isQB ? 9 : 8);
     }
+    this._drawLegend();
   }
 
   renderDefense(formation, coverageName, subFormation) {
@@ -2946,11 +3441,13 @@ class PlayArtRenderer {
 
   // Full static play card
   renderPlayCard(offFormation, offSubFormation, playFamily) {
+    this._currentCoverage = null;
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.renderOffense(offFormation, offSubFormation, playFamily);
   }
 
   renderCoverageCard(defFormation, coverageName, defSubFormation) {
+    this._currentCoverage = coverageName || null;
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.drawField();
     this.renderDefense(defFormation, coverageName, defSubFormation);
@@ -3072,6 +3569,7 @@ class PlayArtRenderer {
   renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
+    this._currentCoverage = coverageName || null;
 
     const offPositions = this.getOffensePositions(offFormation, offSubFormation);
     const defPositions = this.getDefensePositions(defFormation, defSubFormation);
@@ -3176,11 +3674,19 @@ class PlayArtRenderer {
         if (manTarget) { endX = manTarget[0]; endY = manTarget[1]; }
       }
 
+      // Look up defensive assignment from DEF_ASSIGNMENTS
+      const defAssignment = getDefAssignment(coverageName, key);
+      const assignmentPath = (defAssignment && defAssignment !== 'man_trail') ? (ROUTE_PATHS[defAssignment] || []) : [];
+      const isBlitz = isBlitzAssignment(defAssignment);
+
       defPlayers.push({
         key, startPos: [...startPos], endPos: [endX, endY],
         isDL, isLB, isDB,
         label: this._getDefLabel(key),
-        color: DEF_COLOR, size: 8
+        color: DEF_COLOR, size: 8,
+        assignment: defAssignment,
+        assignmentPath: assignmentPath,
+        isBlitz: isBlitz
       });
     }
 
@@ -3206,6 +3712,57 @@ class PlayArtRenderer {
       // Easing
       const ease = v => v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
       const moveT = ease(Math.min(routeT, 1));
+
+      // === Pre-snap motion indicator ===
+      if (preSnap && playData.motion) {
+        const motionData = playData.motion;
+        const motionPlayer = offPlayers.find(p => p.key === motionData.player);
+        if (motionPlayer) {
+          const motionT = t / 0.08; // 0 to 1 during preSnap
+          const ctx = this.ctx;
+          const sx = motionPlayer.startPos[0] * this.width;
+          const sy = motionPlayer.startPos[1] * this.height;
+          let ex = motionPlayer.startPos[0], ey = motionPlayer.startPos[1];
+          for (const [dx, dy] of motionData.path) { ex += dx; ey += dy; }
+          const endPx = ex * this.width;
+          const endPy = ey * this.height;
+          // Dashed yellow motion path
+          ctx.save();
+          ctx.globalAlpha = 0.8;
+          ctx.strokeStyle = '#FFD700';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 4]);
+          ctx.beginPath();
+          ctx.moveTo(sx, sy);
+          ctx.lineTo(endPx, endPy);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          // Arrowhead at the end of motion path
+          const angle = Math.atan2(endPy - sy, endPx - sx);
+          ctx.fillStyle = '#FFD700';
+          ctx.beginPath();
+          ctx.moveTo(endPx, endPy);
+          ctx.lineTo(endPx - 8 * Math.cos(angle - 0.4), endPy - 8 * Math.sin(angle - 0.4));
+          ctx.lineTo(endPx - 8 * Math.cos(angle + 0.4), endPy - 8 * Math.sin(angle + 0.4));
+          ctx.closePath();
+          ctx.fill();
+          // Animate the motion player dot along the path
+          const curX = sx + (endPx - sx) * motionT;
+          const curY = sy + (endPy - sy) * motionT;
+          ctx.fillStyle = '#FFD700';
+          ctx.globalAlpha = 0.9;
+          ctx.beginPath();
+          ctx.arc(curX, curY, 4, 0, Math.PI * 2);
+          ctx.fill();
+          // "MOTION" label
+          ctx.font = 'bold 7px system-ui';
+          ctx.fillStyle = '#FFD700';
+          ctx.globalAlpha = 0.7;
+          ctx.textAlign = 'center';
+          ctx.fillText('MOTION', (sx + endPx) / 2, Math.min(sy, endPy) - 6);
+          ctx.restore();
+        }
+      }
 
       // === Draw coverage zones (fade in during development) ===
       if (coverageData.type === 'zone' && developPhase) {
@@ -3259,6 +3816,43 @@ class PlayArtRenderer {
           if (isOffSide && p.isPull && routeT > 0.4) {
             this._drawRouteLabel({ ...p, routeName: 'pull_left' }, routeT);
           }
+        }
+      }
+
+      // === Draw defensive assignment trails ===
+      if (developPhase && coverageName) {
+        for (const p of defPlayers) {
+          if (p.isDL) continue; // DL handled by block engagements
+          if (!p.assignment) continue;
+          const vis = this._isVisible(p.key, visibleGroups);
+          if (!vis) continue;
+          const alpha = isOffSide ? 0.3 : 0.65;
+          this.ctx.globalAlpha = alpha;
+          if (p.isBlitz) {
+            // Blitz routes: red dashed lines rushing toward QB
+            if (p.assignmentPath.length > 0) {
+              this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, '#ff4444', routeT, 2, true);
+            }
+          } else if (p.assignment === 'man_trail') {
+            // Man trail: draw dashed line toward matched receiver end position
+            const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+            const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+            const trailT = Math.min(routeT, 1);
+            const cx = sx + (ex - sx) * trailT;
+            const cy = sy + (ey - sy) * trailT;
+            this.ctx.strokeStyle = DEF_COLOR;
+            this.ctx.lineWidth = 1.5;
+            this.ctx.setLineDash([3, 3]);
+            this.ctx.beginPath();
+            this.ctx.moveTo(sx, sy);
+            this.ctx.lineTo(cx, cy);
+            this.ctx.stroke();
+            this.ctx.setLineDash([]);
+          } else if (p.assignmentPath.length > 0) {
+            // Zone drops: draw route path in defensive color
+            this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, DEF_COLOR, routeT, 1.5, false);
+          }
+          this.ctx.globalAlpha = 1;
         }
       }
 
@@ -3897,13 +4491,19 @@ class PlayArtRenderer {
       'screen': 'Screen', 'screen_left': 'Screen', 'screen_right': 'Screen',
       'block': 'Block', 'pass_block': 'Pass Block', 'lead_block': 'Lead',
       'stalk_block': 'Stalk', 'crack_block': 'Crack',
+      'zone_step_right': 'Zone', 'zone_step_left': 'Zone', 'combo_block': 'Combo',
       'run_right': 'Run', 'run_left': 'Run', 'run_inside': 'A Gap', 'run_power': 'B Gap',
       'run_counter': 'Counter', 'run_stretch': 'Stretch', 'run_dive': 'Dive',
       'run_outside': 'C Gap', 'option_give': 'Give', 'option_keep': 'Keep',
       'qb_boot_right': 'Boot', 'qb_boot_left': 'Boot', 'qb_drop': 'Drop',
       'qb_scramble': 'Scramble', 'qb_handoff': 'Handoff',
       'pull_left': 'Pull', 'pull_right': 'Pull',
-      'ol_release_right': 'Release', 'ol_release_left': 'Release'
+      'ol_release_right': 'Release', 'ol_release_left': 'Release',
+      'rush_a_gap': 'A Gap Rush', 'rush_b_gap': 'B Gap Rush', 'rush_c_gap': 'C Gap Rush', 'rush_contain': 'Contain',
+      'zone_hook': 'Hook Zone', 'zone_curl_flat': 'Curl/Flat', 'zone_mid': 'Mid Zone',
+      'zone_flat': 'Flat Zone', 'zone_deep_third': 'Deep Third', 'zone_deep_half': 'Deep Half',
+      'zone_deep_middle': 'Deep Mid', 'press_man': 'Press Man', 'man_cover': 'Man Cover',
+      'blitz_a': 'A Gap Blitz', 'blitz_b': 'B Gap Blitz', 'blitz_edge': 'Edge Blitz'
     };
     const name = ROUTE_DISPLAY[player.routeName] || player.routeName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     ctx.globalAlpha = fade * 0.85;
@@ -3971,6 +4571,7 @@ class PlayArtRenderer {
   renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
+    this._currentCoverage = coverageName || null;
 
     const isOff = mode === 'offense';
     const offPositions = isOff ? this.getOffensePositions(offFormation, offSubFormation) : null;
@@ -4044,11 +4645,19 @@ class PlayArtRenderer {
           endX = manDropTargets[key][0];
           endY = manDropTargets[key][1];
         }
+        // Look up defensive assignment from DEF_ASSIGNMENTS
+        const defAssignment = getDefAssignment(coverageName, key);
+        const assignmentPath = (defAssignment && defAssignment !== 'man_trail') ? (ROUTE_PATHS[defAssignment] || []) : [];
+        const isBlitz = isBlitzAssignment(defAssignment);
+
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],
           isDL, isLB, isDB,
           label: this._getDefLabel(key),
-          color: DEF_COLOR, size: 8
+          color: DEF_COLOR, size: 8,
+          assignment: defAssignment,
+          assignmentPath: assignmentPath,
+          isBlitz: isBlitz
         });
       }
     }
@@ -4147,6 +4756,38 @@ class PlayArtRenderer {
           }
           if (zoneFade > 0.5) this._drawZoneLabels(coverageData.zones, zoneFade);
         }
+        // Draw defensive assignment trails
+        if (developPhase && coverageName) {
+          for (const p of players) {
+            if (p.isDL) continue;
+            if (!p.assignment) continue;
+            const vis = this._isVisible(p.key, visibleGroups);
+            if (!vis) continue;
+            this.ctx.globalAlpha = 0.65;
+            if (p.isBlitz) {
+              if (p.assignmentPath.length > 0) {
+                this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, '#ff4444', routeT, 2, true);
+              }
+            } else if (p.assignment === 'man_trail') {
+              const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+              const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+              const trailT = Math.min(routeT, 1);
+              const cx = sx + (ex - sx) * trailT;
+              const cy = sy + (ey - sy) * trailT;
+              this.ctx.strokeStyle = DEF_COLOR;
+              this.ctx.lineWidth = 1.5;
+              this.ctx.setLineDash([3, 3]);
+              this.ctx.beginPath();
+              this.ctx.moveTo(sx, sy);
+              this.ctx.lineTo(cx, cy);
+              this.ctx.stroke();
+              this.ctx.setLineDash([]);
+            } else if (p.assignmentPath.length > 0) {
+              this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, DEF_COLOR, routeT, 1.5, false);
+            }
+            this.ctx.globalAlpha = 1;
+          }
+        }
         // Draw defenders moving
         for (const p of players) {
           const vis = this._isVisible(p.key, visibleGroups);
@@ -4188,15 +4829,122 @@ class PlayArtRenderer {
     this.animFrame = requestAnimationFrame(animate);
   }
 
+  _drawLegend() {
+    const ctx = this.ctx;
+    const x = 8;
+    const y = this.height - 60;
+    const lineH = 14;
+    const items = [
+      { color: '#00FFFF', dash: [], label: 'Route' },
+      { color: '#FFD700', dash: [], label: 'Pull' },
+      { color: '#FF4444', dash: [3, 3], label: 'Blitz' },
+      { color: '#44FF44', dash: [], label: 'Block' },
+    ];
+
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.beginPath();
+    ctx.roundRect(x - 4, y - 4, 70, items.length * lineH + 8, 4);
+    ctx.fill();
+
+    ctx.globalAlpha = 0.85;
+    ctx.font = 'bold 8px system-ui';
+    ctx.textBaseline = 'middle';
+    items.forEach((item, i) => {
+      const ly = y + i * lineH + lineH / 2;
+      ctx.strokeStyle = item.color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash(item.dash);
+      ctx.beginPath();
+      ctx.moveTo(x, ly);
+      ctx.lineTo(x + 18, ly);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.fillText(item.label, x + 22, ly);
+    });
+    ctx.restore();
+  }
+
   stop() {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     if (this._loopTimeout) clearTimeout(this._loopTimeout);
     this.isAnimating = false;
   }
 
+  // Pinch-to-zoom and double-tap-to-reset touch handlers
+  _initTouchHandlers() {
+    const canvas = this.canvas;
+    if (!canvas) return;
+
+    let lastDist = 0;
+    let scale = 1;
+    let originX = 0, originY = 0;
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastDist = Math.hypot(dx, dy);
+        originX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        originY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (lastDist > 0) {
+          scale = Math.min(3, Math.max(1, scale * (dist / lastDist)));
+          const rect = canvas.getBoundingClientRect();
+          const ox = ((originX - rect.left) / rect.width * 100);
+          const oy = ((originY - rect.top) / rect.height * 100);
+          canvas.style.transformOrigin = `${ox}% ${oy}%`;
+          canvas.style.transform = `scale(${scale})`;
+        }
+        lastDist = dist;
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        lastDist = 0;
+        if (scale <= 1.05) {
+          scale = 1;
+          canvas.style.transform = '';
+          canvas.style.transformOrigin = '';
+        }
+      }
+    });
+
+    // Double-tap to reset zoom
+    let lastTap = 0;
+    canvas.addEventListener('touchend', (e) => {
+      if (e.touches.length === 0) {
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          scale = 1;
+          canvas.style.transform = '';
+          canvas.style.transformOrigin = '';
+        }
+        lastTap = now;
+      }
+    });
+  }
+
   destroy() {
     this.stop();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
+    }
   }
 }
 
-export { PlayArtRenderer, PLAY_ROUTES, COVERAGE_ZONES, OFFENSE_POSITIONS, DEFENSE_POSITIONS };
+export { PlayArtRenderer, PLAY_ROUTES, COVERAGE_BEATERS, COVERAGE_ZONES, DEF_ASSIGNMENTS, OFFENSE_POSITIONS, DEFENSE_POSITIONS };

@@ -3,7 +3,7 @@ import PLAY_TYPES from '../data/plays.js';
 import DEFENSIVE_PLAYS from '../data/defensive-plays.js';
 import OFFENSIVE_PLAYS from '../data/offensive-plays.js';
 import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
-import { PlayArtRenderer } from '../components/playArt.js';
+import { PlayArtRenderer, PLAY_ROUTES, COVERAGE_BEATERS } from '../components/playArt.js';
 import { calculateMatchupGrade, recommendPlays, recommendCoverages, getConceptKey, CONCEPT_LABELS } from '../data/analytics.js';
 
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
@@ -227,6 +227,7 @@ function checkMatchup() {
       canvas.className = 'rounded-xl mx-auto block';
       canvas.style.background = '#1a472a';
       canvas.style.maxWidth = '100%';
+      canvas.style.height = 'auto';
       vsContainer.appendChild(canvas);
 
       if (vsRenderer) vsRenderer.destroy();
@@ -264,6 +265,8 @@ function checkMatchup() {
       c.width = 320; c.height = 260;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
+      c.style.maxWidth = '100%';
+      c.style.height = 'auto';
       offArtContainer.appendChild(c);
       if (offStaticRenderer) offStaticRenderer.destroy();
       offStaticRenderer = new PlayArtRenderer(c, { width: 320, height: 260 });
@@ -277,6 +280,8 @@ function checkMatchup() {
       c.width = 320; c.height = 260;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
+      c.style.maxWidth = '100%';
+      c.style.height = 'auto';
       defArtContainer.appendChild(c);
       if (defStaticRenderer) defStaticRenderer.destroy();
       defStaticRenderer = new PlayArtRenderer(c, { width: 320, height: 260 });
@@ -293,6 +298,34 @@ function checkMatchup() {
       <div class="mb-2"><span class="text-xs text-gray-500 font-semibold">STOPPED BY:</span><div class="mt-1 flex flex-wrap">${offPlayData.beatenBy.map(b => `<span class="tag-red">${b}</span>`).join('')}</div></div>
       <div class="p-2 bg-dark-700 rounded border border-dark-600"><p class="text-xs text-neon-cyan font-bold mb-1">Tip</p><p class="text-xs text-gray-300">${offPlayData.tips}</p></div>
     `;
+
+    // Add coverage intelligence
+    const defPlayName = defCoverageData ? defCoverageData.name : '';
+    const cbMatch = Object.keys(COVERAGE_BEATERS).find(k => defPlayName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(defPlayName.toLowerCase().split('(')[0].trim()));
+    if (cbMatch) {
+      const cb = COVERAGE_BEATERS[cbMatch];
+      // Find the play's tags from PLAY_ROUTES by matching the offensive play name
+      let offPlayRouteData = PLAY_ROUTES[offPlay];
+      if (!offPlayRouteData) {
+        const offLower = offPlay.toLowerCase();
+        for (const key of Object.keys(PLAY_ROUTES)) {
+          if (key.toLowerCase() === offLower || offLower.includes(key.toLowerCase()) || key.toLowerCase().includes(offLower)) {
+            offPlayRouteData = PLAY_ROUTES[key];
+            break;
+          }
+        }
+      }
+      const offTags = offPlayRouteData?.tags || [];
+      const advantage = offTags.some(t => cb.beatenBy.includes(t));
+      const disadvantage = offTags.some(t => cb.beats.includes(t));
+
+      let tipHTML = `<div class="mt-3 p-3 rounded-lg" style="background: rgba(${advantage ? '0,255,255' : disadvantage ? '255,20,147' : '255,255,255'},0.05); border: 1px solid rgba(${advantage ? '0,255,255' : disadvantage ? '255,20,147' : '255,255,255'},0.15)">`;
+      tipHTML += `<p class="text-xs font-bold mb-1" style="color: ${advantage ? '#00FFFF' : disadvantage ? '#FF1493' : '#9ca3af'}">${advantage ? 'OFFENSIVE ADVANTAGE' : disadvantage ? 'DEFENSIVE ADVANTAGE' : 'NEUTRAL MATCHUP'}</p>`;
+      tipHTML += `<p class="text-xs text-gray-400">${cb.tip}</p>`;
+      tipHTML += `</div>`;
+
+      offenseAnalysis.innerHTML += tipHTML;
+    }
   } else { offenseAnalysis.innerHTML = '<p class="text-gray-500 text-sm">Select an offensive play.</p>'; }
 
   const defenseAnalysis = document.getElementById('defenseAnalysis');

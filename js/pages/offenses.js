@@ -158,6 +158,8 @@ function renderCards(filter = 'all', search = '') {
     // Static play art
     const canvas = card.querySelector('.play-art-canvas');
     if (canvas) {
+      canvas.style.maxWidth = '100%';
+      canvas.style.height = 'auto';
       const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
       r.renderPlayCard('Gun', 'Spread Y-Flex', name);
       card._staticRenderer = r;

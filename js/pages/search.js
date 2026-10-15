@@ -233,6 +233,8 @@ function render() {
     // Render play art thumbnail
     const canvas = document.getElementById(`searchArt${i}`);
     if (canvas) {
+      canvas.style.maxWidth = '100%';
+      canvas.style.height = 'auto';
       const r = new PlayArtRenderer(canvas, { width: 175, height: 140 });
       if (item.category === 'offense') {
         const fm = item.formation || 'Shotgun';

@@ -3,7 +3,7 @@ import { HOT_ROUTES, OFFENSIVE_ADJUSTMENTS, DEFENSIVE_ADJUSTMENTS, MACROS } from
 import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import COVERAGES from '../data/coverages.js';
 import { PlayArtRenderer, PLAY_ROUTES } from '../components/playArt.js';
-import { calculateMatchupGrade, recommendPlays, CONCEPT_LABELS } from '../data/analytics.js';
+import { calculateMatchupGrade, recommendPlays, CONCEPT_LABELS, ADJUSTMENT_MODIFIERS } from '../data/analytics.js';
 
 // ===== STATE =====
 let activeRenderer = null;
@@ -22,33 +22,72 @@ let dragStartX = 0, dragStartY = 0;
 let currentFormation = 'Gun';
 let currentSubFormation = 'Spread Y-Flex';
 
+// ===== ACTIVE ADJUSTMENTS HELPER =====
+function getActiveAdjustments() {
+  const active = [];
+  document.querySelectorAll('#offAdjContent [data-adj].active, #defAdjContent [data-adj].active').forEach(btn => {
+    active.push(btn.dataset.adj);
+  });
+  return active;
+}
+
 // Available routes for the route picker
 const ROUTE_OPTIONS = [
+  // Vertical
   { id: 'streak', name: 'Streak', icon: '↑' },
+  { id: 'go', name: 'Go', icon: '↑' },
+  { id: 'fade', name: 'Fade', icon: '↗↗' },
+  { id: 'seam', name: 'Seam', icon: '⬆' },
+  // Post family
   { id: 'post', name: 'Post', icon: '↗' },
+  { id: 'deep_post', name: 'Deep Post', icon: '↗' },
+  { id: 'skinny_post', name: 'Skinny Post', icon: '↗' },
+  { id: 'post_corner', name: 'Post Corner', icon: '↗↘' },
+  // Corner / Out family
   { id: 'corner', name: 'Corner', icon: '↘' },
+  { id: 'deep_corner', name: 'Deep Corner', icon: '↘' },
   { id: 'out', name: 'Out', icon: '→' },
+  { id: 'deep_out', name: 'Deep Out', icon: '→' },
+  { id: 'speed_out', name: 'Speed Out', icon: '→' },
+  // In / Cross family
   { id: 'in', name: 'In', icon: '←' },
-  { id: 'slant', name: 'Slant', icon: '↙' },
+  { id: 'deep_in', name: 'Deep In', icon: '←' },
+  { id: 'dig', name: 'Dig', icon: '←' },
+  { id: 'shallow_cross', name: 'Shallow Cross', icon: '→→' },
   { id: 'drag', name: 'Drag', icon: '→→' },
   { id: 'drag_left', name: 'Drag Left', icon: '←←' },
+  // Quick
+  { id: 'slant', name: 'Slant', icon: '↙' },
   { id: 'curl', name: 'Curl', icon: '↑↓' },
   { id: 'comeback', name: 'Comeback', icon: '↑↘' },
+  { id: 'hitch', name: 'Hitch', icon: '⤒' },
+  // Flat / Swing
   { id: 'flat', name: 'Flat', icon: '⤵' },
   { id: 'flat_left', name: 'Flat Left', icon: '⤶' },
+  { id: 'swing', name: 'Swing', icon: '⤵' },
+  { id: 'check_down', name: 'Check Down', icon: '⤵' },
+  { id: 'texas', name: 'Texas', icon: '⤴' },
+  // Wheel / Whip
   { id: 'wheel', name: 'Wheel', icon: '⤴' },
-  { id: 'seam', name: 'Seam', icon: '⬆' },
-  { id: 'hitch', name: 'Hitch', icon: '⤒' },
-  { id: 'fade', name: 'Fade', icon: '↗↗' },
+  { id: 'whip', name: 'Whip', icon: '↑→↓' },
+  { id: 'angle', name: 'Angle', icon: '∠' },
+  // Screen
   { id: 'screen', name: 'Screen', icon: '⤷' },
   { id: 'screen_left', name: 'Screen Left', icon: '⤶' },
-  { id: 'angle', name: 'Angle', icon: '∠' },
+  { id: 'screen_right', name: 'Screen Right', icon: '⤷' },
+  // Blocking
   { id: 'block', name: 'Block', icon: '■' },
-  { id: 'run_inside', name: 'Inside Run', icon: '▲' },
-  { id: 'run_stretch', name: 'Stretch', icon: '►' },
-  { id: 'run_power', name: 'Power', icon: '▶' },
-  { id: 'run_counter', name: 'Counter', icon: '◄▶' },
+  { id: 'pass_block', name: 'Pass Block', icon: '■' },
+  { id: 'lead_block', name: 'Lead', icon: '■►' },
+  { id: 'stalk_block', name: 'Stalk Block', icon: '■' },
+  { id: 'crack_block', name: 'Crack Block', icon: '■←' },
+  // Run
+  { id: 'run_inside', name: 'A Gap', icon: '▲' },
+  { id: 'run_power', name: 'B Gap', icon: '▶' },
+  { id: 'run_outside', name: 'C Gap', icon: '►' },
   { id: 'run_dive', name: 'Dive', icon: '▼' },
+  { id: 'run_stretch', name: 'Stretch', icon: '►' },
+  { id: 'run_counter', name: 'Counter', icon: '◄▶' },
 ];
 
 // ===== DOM =====
@@ -568,8 +607,11 @@ function updatePlayInfo(play, coverage) {
   typeEl.textContent = [formation, sub].filter(Boolean).join(' > ');
 
   if (coverage) {
-    const grade = calculateMatchupGrade(play, coverage);
-    vsEl.innerHTML = `<span class="text-neon-red font-bold">vs ${coverage}</span> <span class="ml-2 font-black" style="color: ${grade.color}">${grade.grade} — ${grade.label}</span>`;
+    const adjustments = getActiveAdjustments();
+    const grade = calculateMatchupGrade(play, coverage, { adjustments });
+    const adjCount = adjustments.length;
+    const adjNote = adjCount > 0 ? ` <span class="text-gray-400">(${adjCount} adj)</span>` : '';
+    vsEl.innerHTML = `<span class="text-neon-red font-bold">vs ${coverage}</span> <span class="ml-2 font-black" style="color: ${grade.color}">${grade.grade} — ${grade.label}</span>${adjNote}`;
     vsEl.className = 'text-xs';
   } else {
     vsEl.textContent = '';
@@ -759,6 +801,7 @@ function renderOffAdj() {
   container.querySelectorAll('[data-adj]').forEach(btn => {
     btn.addEventListener('click', () => {
       btn.classList.toggle('active');
+      updateDisplay();
     });
   });
 }
@@ -782,6 +825,7 @@ function renderDefAdj() {
   container.querySelectorAll('[data-adj]').forEach(btn => {
     btn.addEventListener('click', () => {
       btn.classList.toggle('active');
+      updateDisplay();
     });
   });
 }
@@ -801,8 +845,32 @@ function renderPanelMacros() {
   }).join('');
 
   container.querySelectorAll('[data-macro]').forEach(btn => {
-    btn.addEventListener('click', () => showMacroDetail(btn.dataset.macro));
+    btn.addEventListener('click', () => {
+      applyMacroAdjustments(btn.dataset.macro);
+      showMacroDetail(btn.dataset.macro);
+    });
   });
+}
+
+function applyMacroAdjustments(macroId) {
+  const macro = MACROS.find(m => m.id === macroId);
+  if (!macro) return;
+
+  // Determine which panel to target based on macro side
+  const containerId = macro.side === 'offense' ? 'offAdjContent' : 'defAdjContent';
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // Clear all active adjustments in that panel
+  container.querySelectorAll('[data-adj].active').forEach(btn => btn.classList.remove('active'));
+
+  // Activate the macro's adjustments
+  for (const adjId of macro.adjustments) {
+    const btn = container.querySelector(`[data-adj="${adjId}"]`);
+    if (btn) btn.classList.add('active');
+  }
+
+  updateDisplay();
 }
 
 function showMacroDetail(macroId) {
@@ -866,7 +934,8 @@ function updateAnalytics() {
   }
 
   const situation = situationSelect?.value || '';
-  const grade = calculateMatchupGrade(currentPlay, currentCoverage, { situation: situation || undefined });
+  const adjustments = getActiveAdjustments();
+  const grade = calculateMatchupGrade(currentPlay, currentCoverage, { situation: situation || undefined, adjustments });
 
   if (analyticsGradeDisplay) {
     analyticsGradeDisplay.innerHTML = `
@@ -887,7 +956,7 @@ function updateAnalytics() {
   }
 
   if (analyticsRecommendations) {
-    const recs = recommendPlays(currentCoverage, { situation: situation || undefined }).slice(0, 5);
+    const recs = recommendPlays(currentCoverage, { situation: situation || undefined, adjustments }).slice(0, 5);
     analyticsRecommendations.innerHTML = `
       <div class="mt-2">
         <div class="text-xs font-bold text-gray-500 uppercase mb-1">Best concepts vs ${currentCoverage}</div>

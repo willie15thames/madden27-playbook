@@ -200,6 +200,32 @@ const SITUATION_MODIFIERS = {
   'two_minute': { inside_run: 0.5, outside_run: 0.6, pa_concept: 0.8, verticals: 1.15, quick_game: 1.2, screen: 1.1, mesh_cross: 1.1, levels: 1.1, flood: 1.1, smash: 1.05, post_seam: 1.1, corner_out: 1.15, option_run: 0.5, draw: 0.7 }
 };
 
+// ===== ADJUSTMENT MODIFIERS =====
+// How pre-snap adjustments shift matchup grades per concept
+const ADJUSTMENT_MODIFIERS = {
+  'press': { quick_game: -8, verticals: 5, screen: -5, mesh_cross: -3 },
+  'dl_pinch': { inside_run: -10, outside_run: 8, draw: -5 },
+  'dl_spread': { inside_run: 5, outside_run: -8, option_run: -5 },
+  'lb_blitz': { quick_game: -10, inside_run: -8, screen: 15, pa_concept: -12 },
+  'shade_outside': { corner_out: -8, quick_game: 3, post_seam: 5, flood: -5 },
+  'shade_inside': { post_seam: -5, corner_out: 5, mesh_cross: -5, levels: -3 },
+  'dl_contain': { outside_run: -10, option_run: -8, qb_scramble: -10 },
+  'lb_spy': { option_run: -8, draw: -8, screen: -5 },
+  'guess_run': { inside_run: -12, outside_run: -12, pa_concept: 15, screen: 10 },
+  'guess_pass': { inside_run: 10, outside_run: 10, pa_concept: -10, verticals: -8 },
+  'off': { quick_game: 5, screen: 5, verticals: -3 },
+  'max_protect': { verticals: 8, pa_concept: 5, quick_game: -5, screen: -8 },
+  'id_mike': { inside_run: -3, pa_concept: -5, draw: -5 },
+  'aggressive': { inside_run: -5, outside_run: -5, quick_game: -5, verticals: 10, screen: 8 },
+  'conservative': { inside_run: 3, outside_run: 3, quick_game: 3, verticals: -5, screen: -3 },
+  'hurry_up': { pa_concept: -8, inside_run: 5, quick_game: -5 },
+  'no_huddle': { pa_concept: -5, quick_game: -3 },
+  'slide_right': { outside_run: -5, inside_run: 3 },
+  'slide_left': { outside_run: -5, inside_run: 3 },
+  'motion_snap': { inside_run: -3, outside_run: -5, mesh_cross: -3 },
+  'motion_right': { outside_run: -3, flood: -3 }
+};
+
 // ===== PERSONNEL EFFECTIVENESS =====
 // How personnel groupings affect play concept grades
 const PERSONNEL_BONUS = {
@@ -237,6 +263,36 @@ function getExpectedPoints(yardLine) {
   return -1.5;
 }
 
+// ===== COVERAGE NAME NORMALIZER =====
+// Maps display names like "Cover 4 (Quarters)" or "Cover 4 Quarters - Nickel"
+// to MATCHUP_GRADES keys like "Cover 4"
+function normalizeCoverageName(coverageName) {
+  if (!coverageName) return '';
+  // Strip formation suffix (e.g., "Cover 3 - Nickel" → "Cover 3")
+  let name = coverageName.split(' - ')[0].trim();
+  // Strip parenthetical (e.g., "Cover 4 (Quarters)" → "Cover 4")
+  name = name.replace(/\s*\([^)]*\)/, '').trim();
+  // Try exact match first
+  const sampleGrades = MATCHUP_GRADES['verticals'];
+  if (sampleGrades && sampleGrades[name] !== undefined) return name;
+  // Try fuzzy: find the longest matching key
+  if (sampleGrades) {
+    const keys = Object.keys(sampleGrades);
+    // Exact after normalization
+    const exact = keys.find(k => k.toLowerCase() === name.toLowerCase());
+    if (exact) return exact;
+    // Coverage name starts with key (e.g. "Cover 2 Man Under" starts with "Cover 2 Man")
+    const startsWith = keys.filter(k => name.toLowerCase().startsWith(k.toLowerCase()))
+      .sort((a, b) => b.length - a.length);
+    if (startsWith.length) return startsWith[0];
+    // Key starts with coverage name (e.g. "Cover 4" matches "Cover 4 Palms")
+    const keyStarts = keys.filter(k => k.toLowerCase().startsWith(name.toLowerCase()))
+      .sort((a, b) => a.length - b.length);
+    if (keyStarts.length) return keyStarts[0];
+  }
+  return name;
+}
+
 // ===== MATCHUP GRADE CALCULATOR =====
 function calculateMatchupGrade(playName, coverageName, options = {}) {
   const conceptKey = getConceptKey(playName);
@@ -245,7 +301,8 @@ function calculateMatchupGrade(playName, coverageName, options = {}) {
   const conceptGrades = MATCHUP_GRADES[conceptKey];
   if (!conceptGrades) return { grade: 50, label: 'Unknown', color: '#9ca3af' };
 
-  let grade = conceptGrades[coverageName] || 50;
+  const normalizedCoverage = normalizeCoverageName(coverageName);
+  let grade = conceptGrades[normalizedCoverage] || 50;
 
   // Apply situation modifier
   if (options.situation && SITUATION_MODIFIERS[options.situation]) {
@@ -259,6 +316,18 @@ function calculateMatchupGrade(playName, coverageName, options = {}) {
     grade = Math.round(grade + bonus);
   }
 
+  // Apply adjustment modifiers
+  let adjustmentTotal = 0;
+  if (options.adjustments && Array.isArray(options.adjustments)) {
+    for (const adj of options.adjustments) {
+      const mod = ADJUSTMENT_MODIFIERS[adj];
+      if (mod && mod[conceptKey]) {
+        adjustmentTotal += mod[conceptKey];
+      }
+    }
+    grade += adjustmentTotal;
+  }
+
   // Clamp
   grade = Math.max(0, Math.min(100, grade));
 
@@ -268,9 +337,10 @@ function calculateMatchupGrade(playName, coverageName, options = {}) {
     color: getGradeColor(grade),
     conceptKey,
     breakdown: {
-      base: conceptGrades[coverageName] || 50,
+      base: conceptGrades[normalizedCoverage] || 50,
       situationMod: options.situation ? (SITUATION_MODIFIERS[options.situation]?.[conceptKey] || 1.0) : 1.0,
-      personnelBonus: options.personnel ? (PERSONNEL_BONUS[options.personnel]?.[conceptKey] || 0) : 0
+      personnelBonus: options.personnel ? (PERSONNEL_BONUS[options.personnel]?.[conceptKey] || 0) : 0,
+      adjustmentMod: adjustmentTotal
     }
   };
 }
@@ -297,15 +367,24 @@ function getGradeColor(grade) {
 // ===== PLAY RECOMMENDATION ENGINE =====
 // Given a coverage, recommend best play concepts
 function recommendPlays(coverageName, options = {}) {
+  const normalizedCoverage = normalizeCoverageName(coverageName);
   const results = [];
   for (const [conceptKey, grades] of Object.entries(MATCHUP_GRADES)) {
-    let grade = grades[coverageName] || 50;
+    let grade = grades[normalizedCoverage] || 50;
 
     if (options.situation && SITUATION_MODIFIERS[options.situation]) {
       grade = Math.round(grade * (SITUATION_MODIFIERS[options.situation][conceptKey] || 1.0));
     }
     if (options.personnel && PERSONNEL_BONUS[options.personnel]) {
       grade = Math.round(grade + (PERSONNEL_BONUS[options.personnel][conceptKey] || 0));
+    }
+    if (options.adjustments && Array.isArray(options.adjustments)) {
+      for (const adj of options.adjustments) {
+        const mod = ADJUSTMENT_MODIFIERS[adj];
+        if (mod && mod[conceptKey]) {
+          grade += mod[conceptKey];
+        }
+      }
     }
     grade = Math.max(0, Math.min(100, grade));
 
@@ -463,5 +542,6 @@ export {
   MATCHUP_GRADES,
   SITUATION_MODIFIERS,
   CONCEPT_LABELS,
-  PERSONNEL_BONUS
+  PERSONNEL_BONUS,
+  ADJUSTMENT_MODIFIERS
 };

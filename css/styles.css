@@ -10,6 +10,12 @@
 /* Smooth scrolling */
 html { scroll-behavior: smooth; }
 
+/* Touch-friendly: prevent double-tap zoom on buttons/selects */
+button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 /* Nav Links */
 .nav-link {
   padding: 0.5rem 1rem;
@@ -677,6 +683,21 @@ html { scroll-behavior: smooth; }
   /* Selects - breathe on tablets */
   .custom-select { font-size: 0.9rem; min-height: 46px; }
   .filter-btn { min-height: 42px; }
+
+  /* Matchup panels - single column on tablets */
+  #matchupPanels { grid-template-columns: 1fr !important; }
+  #matchupPanels select { width: 100%; }
+
+  /* Button groups flex-wrap so they don't crush */
+  #sideChooser, .flex.gap-3 { flex-wrap: wrap; gap: 0.5rem; }
+
+  /* Playbook browser formation groups */
+  .formation-group { margin-bottom: 0.5rem; }
+  .sub-formation { padding: 0.6rem 0.85rem 0.6rem 1.1rem; }
+
+  /* Play chips flow cleanly */
+  .play-chip { min-width: 0; max-width: 100%; }
+  .play-chip-art { min-width: 110px; }
 }
 
 /* Mobile */

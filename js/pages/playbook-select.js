@@ -284,6 +284,8 @@ function renderChipCanvas(canvas) {
   } else {
     r.renderCoverageCard(fm, pn, sf);
   }
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = 'auto';
   renderers.push(r);
 }
 
@@ -638,6 +640,31 @@ function getSimilarPlaysHTML(playName) {
 function closeModal() { cleanupRenderers(); modal.classList.remove('active'); }
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// Add swipe navigation to play modal
+let touchStartX = 0;
+let touchStartY = 0;
+document.addEventListener('touchstart', (e) => {
+  const modal = document.getElementById('playDetailModal');
+  if (modal && modal.classList.contains('active')) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }
+});
+document.addEventListener('touchend', (e) => {
+  const modal = document.getElementById('playDetailModal');
+  if (modal && modal.classList.contains('active') && e.changedTouches.length) {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2) {
+      // Find prev/next buttons and click them
+      const prevBtn = modal.querySelector('[data-nav="prev"]');
+      const nextBtn = modal.querySelector('[data-nav="next"]');
+      if (dx > 0 && prevBtn) prevBtn.click();
+      else if (dx < 0 && nextBtn) nextBtn.click();
+    }
+  }
+});
 
 // Initial
 populatePlaybookSelector();
