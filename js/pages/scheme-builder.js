@@ -1,6 +1,6 @@
 // Scheme Builder - Interactive Play Designer with Drag/Drop & Route Editing
 import { HOT_ROUTES, OFFENSIVE_ADJUSTMENTS, DEFENSIVE_ADJUSTMENTS, MACROS } from '../data/adjustments.js';
-import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
+import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import COVERAGES from '../data/coverages.js';
 import { PlayArtRenderer, PLAY_ROUTES } from '../components/playArt.js';
 import { calculateMatchupGrade, recommendPlays, CONCEPT_LABELS, ADJUSTMENT_MODIFIERS } from '../data/analytics.js';
@@ -24,6 +24,8 @@ let isDragging = false;
 let dragStartX = 0, dragStartY = 0;
 let currentFormation = 'Gun';
 let currentSubFormation = 'Spread Y-Flex';
+let currentDefFormation = 'Nickel';
+let currentDefSubFormation = '';
 
 // ===== ACTIVE ADJUSTMENTS HELPER =====
 function getActiveAdjustments() {
@@ -101,6 +103,8 @@ const fmSelect = document.getElementById('fmSelect');
 const sfSelect = document.getElementById('sfSelect');
 const plSelect = document.getElementById('plSelect');
 const covSelect = document.getElementById('covSelect');
+const defFmSelect = document.getElementById('defFmSelect');
+const defSfSelect = document.getElementById('defSfSelect');
 const btnPlay = document.getElementById('btnPlay');
 const btnReplay = document.getElementById('btnReplay');
 const btnLoop = document.getElementById('btnLoop');
@@ -218,6 +222,50 @@ function initSelects() {
     currentCoverage = covSelect.value || null;
     updateDisplay();
   });
+
+  // Populate defensive formation dropdown from all DEFENSIVE_PLAYBOOKS
+  const defFormationSet = new Set();
+  DEFENSIVE_PLAYBOOKS.forEach(pb => {
+    if (pb.formations) {
+      Object.keys(pb.formations).forEach(fm => defFormationSet.add(fm));
+    }
+  });
+  const defFormations = [...defFormationSet].sort();
+  defFmSelect.innerHTML = '<option value="">Def Formation...</option>' +
+    defFormations.map(f => `<option value="${f}"${f === 'Nickel' ? ' selected' : ''}>${f}</option>`).join('');
+  currentDefFormation = 'Nickel';
+  // Populate initial subformations for Nickel
+  populateDefSubFormations('Nickel');
+
+  defFmSelect.addEventListener('change', () => {
+    currentDefFormation = defFmSelect.value || 'Nickel';
+    currentDefSubFormation = '';
+    populateDefSubFormations(currentDefFormation);
+    updateDisplay();
+  });
+
+  defSfSelect.addEventListener('change', () => {
+    currentDefSubFormation = defSfSelect.value || '';
+    updateDisplay();
+  });
+}
+
+function populateDefSubFormations(defFormation) {
+  const subSet = new Set();
+  DEFENSIVE_PLAYBOOKS.forEach(pb => {
+    if (pb.formations && pb.formations[defFormation]) {
+      Object.keys(pb.formations[defFormation]).forEach(sf => subSet.add(sf));
+    }
+  });
+  const subs = [...subSet].sort();
+  if (subs.length > 0) {
+    defSfSelect.innerHTML = '<option value="">Def Look...</option>' +
+      subs.map(s => `<option value="${s}">${s}</option>`).join('');
+    defSfSelect.disabled = false;
+  } else {
+    defSfSelect.innerHTML = '<option value="">Def Look...</option>';
+    defSfSelect.disabled = true;
+  }
 }
 
 // ===== INTERACTIVE POSITIONS & ROUTES =====
@@ -277,9 +325,10 @@ function updateAnimation() {
   const play = currentPlay || 'Inside Zone';
 
   // Pass custom positions/routes if the user has edited them
-  const hasCustomEdits = Object.keys(playerPositions).length > 0 || Object.keys(playerRoutes).length > 0;
-  const posOverrides = hasCustomEdits ? playerPositions : null;
-  const routeOvr = hasCustomEdits ? playerRoutes : null;
+  const hasPositionEdits = Object.keys(playerPositions).length > 0;
+  const hasRouteEdits = Object.keys(playerRoutes).filter(k => !k.startsWith('_')).length > 0;
+  const posOverrides = hasPositionEdits ? playerPositions : null;
+  const routeOvr = hasRouteEdits ? playerRoutes : null;
 
   if (currentCoverage) {
     renderer.renderLivePlay({
@@ -287,7 +336,8 @@ function updateAnimation() {
       offFormation: formation,
       offSubFormation: subFormation,
       playFamily: play,
-      defFormation: 'Nickel',
+      defFormation: currentDefFormation || 'Nickel',
+      defSubFormation: currentDefSubFormation || undefined,
       coverageName: currentCoverage,
       duration: 3500,
       positionOverrides: posOverrides,
@@ -369,8 +419,10 @@ const ROUTE_PATHS_LOCAL = {
   'run_power': [[0.06, -0.10]],
   'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
   'run_stretch': [[0.16, -0.04]],
+  'run_stretch_left': [[-0.16, -0.04]],
   'run_dive': [[0.01, -0.07]],
   'run_outside': [[0.14, -0.05]],
+  'run_outside_left': [[-0.14, -0.05]],
   // Option / QB
   'option_give': [[0.08, -0.06]],
   'option_keep': [[-0.06, -0.08]],
@@ -704,7 +756,8 @@ function updatePlayInfo(play, coverage) {
 
   if (coverage) {
     const adjustments = getActiveAdjustments();
-    const grade = calculateMatchupGrade(play, coverage, { adjustments });
+    const situation = situationSelect?.value || '';
+    const grade = calculateMatchupGrade(play, coverage, { situation: situation || undefined, adjustments });
     const adjCount = adjustments.length;
     const adjNote = adjCount > 0 ? ` <span class="text-gray-400">(${adjCount} adj)</span>` : '';
     vsEl.innerHTML = `<span class="text-neon-red font-bold">vs ${coverage}</span> <span class="ml-2 font-black" style="color: ${grade.color}">${grade.grade} — ${grade.label}</span>${adjNote}`;
@@ -1178,10 +1231,14 @@ function initCreatorControls() {
     const FLIP_ROUTE_MAP = {
       'drag': 'drag_left', 'drag_left': 'drag',
       'flat': 'flat_left', 'flat_left': 'flat',
+      'swing': 'swing_left', 'swing_left': 'swing',
       'screen_left': 'screen_right', 'screen_right': 'screen_left',
       'pull_left': 'pull_right', 'pull_right': 'pull_left',
       'zone_step_left': 'zone_step_right', 'zone_step_right': 'zone_step_left',
       'run_left': 'run_right', 'run_right': 'run_left',
+      'run_stretch': 'run_stretch_left', 'run_stretch_left': 'run_stretch',
+      'run_outside': 'run_outside_left', 'run_outside_left': 'run_outside',
+      'ol_release_left': 'ol_release_right', 'ol_release_right': 'ol_release_left',
       'qb_boot_left': 'qb_boot_right', 'qb_boot_right': 'qb_boot_left',
     };
 
@@ -1235,8 +1292,11 @@ function initCreatorControls() {
         playerRoutes._qb = FLIP_ROUTE_MAP[playerRoutes._qb];
       }
 
-      // Negate x-component of all route waypoints in the local route paths
+      // Negate x-component of route waypoints ONLY for routes without a swap partner.
+      // Routes with FLIP_ROUTE_MAP entries already change direction via the name swap.
+      const swappedRoutes = new Set([...Object.keys(FLIP_ROUTE_MAP), ...Object.values(FLIP_ROUTE_MAP)]);
       for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+        if (swappedRoutes.has(routeName)) continue; // direction handled by route swap
         const waypoints = ROUTE_PATHS_LOCAL[routeName];
         for (let i = 0; i < waypoints.length; i++) {
           waypoints[i] = [-waypoints[i][0], waypoints[i][1]];
@@ -1320,6 +1380,8 @@ function saveScheme() {
     sfValue: sfSelect.value,
     plValue: plSelect.value,
     covValue: covSelect.value,
+    defFmValue: defFmSelect.value,
+    defSfValue: defSfSelect.value,
     savedAt: new Date().toISOString()
   };
 
@@ -1387,6 +1449,17 @@ function loadScheme(name) {
 
   if (scheme.covValue) {
     covSelect.value = scheme.covValue;
+  }
+
+  // Restore defensive formation/subformation
+  if (scheme.defFmValue) {
+    defFmSelect.value = scheme.defFmValue;
+    currentDefFormation = scheme.defFmValue;
+    populateDefSubFormations(scheme.defFmValue);
+    if (scheme.defSfValue) {
+      defSfSelect.value = scheme.defSfValue;
+      currentDefSubFormation = scheme.defSfValue;
+    }
   }
 
   // Restore creator panel fields

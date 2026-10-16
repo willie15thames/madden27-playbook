@@ -26,7 +26,14 @@ let currentPlayList = [];   // plays in the currently displayed sub-formation
 let currentPlayIndex = -1;  // index of the currently open play in currentPlayList
 let currentPlayFormation = null;
 let currentPlaySubFormation = null;
-function cleanupRenderers() { renderers.forEach(r => r.destroy()); renderers = []; }
+function cleanupRenderers() {
+  renderers.forEach(r => r.destroy()); renderers = [];
+  // Disconnect any chip IntersectionObservers
+  chipObservers.forEach(obs => obs.disconnect());
+  chipObservers = [];
+}
+let chipObservers = [];
+const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
 
 // Build playbook lookup for "found in X playbooks"
 function buildLookup(books) {
@@ -239,39 +246,74 @@ function buildFormationTree(pb, search) {
     });
   });
 
-  // Play chip clicks and hover
+  // Play chip clicks and hover/touch autoplay
   formationTree.querySelectorAll('.play-chip-art').forEach(chip => {
     chip.addEventListener('click', (e) => {
       e.stopPropagation();
       openPlayDetail(chip.dataset.play, chip.dataset.formation, chip.dataset.subformation);
     });
-    // Hover animation on chip
-    chip.addEventListener('mouseenter', () => {
-      const canvas = chip.querySelector('canvas');
-      if (!canvas || canvas._hoverAnim) return;
-      const pn = chip.dataset.play;
-      const fm = chip.dataset.formation;
-      const sf = chip.dataset.subformation;
-      const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
-      if (currentSide === 'offense') {
-        r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
-      } else {
-        r.renderSinglePlayLive({ mode: 'defense', defFormation: fm, defSubFormation: sf, coverageName: pn, duration: 3000 });
-      }
-      canvas._hoverAnim = r;
-      renderers.push(r);
-    });
-    chip.addEventListener('mouseleave', () => {
-      const canvas = chip.querySelector('canvas');
-      if (canvas && canvas._hoverAnim) {
-        canvas._hoverAnim.destroy();
-        renderers = renderers.filter(r => r !== canvas._hoverAnim);
-        canvas._hoverAnim = null;
-        // Clear rendered flag so static art re-renders
-        delete canvas.dataset.rendered;
-        renderChipCanvas(canvas);
-      }
-    });
+
+    if (isTouchDevice) {
+      // On touch devices, use IntersectionObserver to auto-play when chip scrolls into view
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const canvas = chip.querySelector('canvas');
+          if (!canvas) return;
+          if (entry.isIntersecting) {
+            if (canvas._hoverAnim) return;
+            const pn = chip.dataset.play;
+            const fm = chip.dataset.formation;
+            const sf = chip.dataset.subformation;
+            const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+            if (currentSide === 'offense') {
+              r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
+            } else {
+              r.renderSinglePlayLive({ mode: 'defense', defFormation: fm, defSubFormation: sf, coverageName: pn, duration: 3000 });
+            }
+            canvas._hoverAnim = r;
+            renderers.push(r);
+          } else {
+            if (canvas._hoverAnim) {
+              canvas._hoverAnim.destroy();
+              renderers = renderers.filter(r => r !== canvas._hoverAnim);
+              canvas._hoverAnim = null;
+              delete canvas.dataset.rendered;
+              renderChipCanvas(canvas);
+            }
+          }
+        });
+      }, { threshold: 0.5 });
+      observer.observe(chip);
+      chipObservers.push(observer);
+    } else {
+      // Desktop: hover animation on chip
+      chip.addEventListener('mouseenter', () => {
+        const canvas = chip.querySelector('canvas');
+        if (!canvas || canvas._hoverAnim) return;
+        const pn = chip.dataset.play;
+        const fm = chip.dataset.formation;
+        const sf = chip.dataset.subformation;
+        const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+        if (currentSide === 'offense') {
+          r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
+        } else {
+          r.renderSinglePlayLive({ mode: 'defense', defFormation: fm, defSubFormation: sf, coverageName: pn, duration: 3000 });
+        }
+        canvas._hoverAnim = r;
+        renderers.push(r);
+      });
+      chip.addEventListener('mouseleave', () => {
+        const canvas = chip.querySelector('canvas');
+        if (canvas && canvas._hoverAnim) {
+          canvas._hoverAnim.destroy();
+          renderers = renderers.filter(r => r !== canvas._hoverAnim);
+          canvas._hoverAnim = null;
+          // Clear rendered flag so static art re-renders
+          delete canvas.dataset.rendered;
+          renderChipCanvas(canvas);
+        }
+      });
+    }
   });
 }
 

@@ -763,8 +763,10 @@ const ROUTE_PATHS = {
   'run_power': [[0.06, -0.10]],
   'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
   'run_stretch': [[0.16, -0.04]],
+  'run_stretch_left': [[-0.16, -0.04]],
   'run_dive': [[0.01, -0.07]],
   'run_outside': [[0.14, -0.05]],
+  'run_outside_left': [[-0.14, -0.05]],
   // Option / QB
   'option_give': [[0.08, -0.06]],
   'option_keep': [[-0.06, -0.08]],
@@ -1098,7 +1100,10 @@ function getDefAssignment(coverageName, defKey) {
     }
   }
   // Special names
-  if (lower.includes('blitz') || lower.includes('fire zone')) {
+  if (lower.includes('fire zone')) {
+    return (DEF_ASSIGNMENTS['Cover 2 Zone'] || {})[defKey] || null;
+  }
+  if (lower.includes('blitz')) {
     return (DEF_ASSIGNMENTS['Mid Blitz'] || {})[defKey] || null;
   }
   if (lower.includes('tampa')) return (DEF_ASSIGNMENTS['Tampa 2'] || {})[defKey] || null;
@@ -3172,20 +3177,34 @@ function inferRoutes(name) {
   // Strip formation suffix (e.g. "- Gun Trey Y")
   const base = l.replace(/\s*-\s*(gun|singleback|pistol|i form|strong|weak|shotgun|empty|trips|dbl|dbls|bunch|nickel|dime|quarter|3-3|4-2)\b.*$/i, '').trim();
 
-  // ---- RUN plays ----
+  // ---- Detect PA / Play Action FIRST so we can exclude from run detection ----
+  const isPA = base.includes('pa ') || base.startsWith('pa ') || base.includes('play action') ||
+    base.includes('fake') || base.includes('paf') || base.startsWith('fk ');
+
+  // ---- RUN plays (PA plays are NOT runs even if they contain run keywords) ----
   const runWords = ['zone', 'power', 'dive', 'stretch', 'counter', 'toss', 'sweep', 'sneak',
-    'draw', 'iso', 'trap', 'wham', 'blast', 'slam', 'duo', 'pitch', 'veer', 'orbit',
+    'draw', 'iso', 'trap', 'wham', 'blast', 'slam', 'duo', 'pitch', 'veer',
     'option', 'lead', 'buck', 'off tackle', 'plunge', 'ram', 'gut', 'belly', 'base'];
-  const isRun = runWords.some(w => base.includes(w)) ||
+  const isRun = !isPA && (runWords.some(w => base.includes(w)) ||
     /^\d+\s+(iso|lead|duo|power|counter|zone|trap|dive|toss|sweep|blast|slam|base|gut|belly)/.test(base) ||
-    /^(hb|fb|qb)\s+(dive|stretch|toss|power|counter|slam|blast|iso|draw|wham|duo|gut|trap|zone|base|off tackle|plunge|sweep)/i.test(base);
+    /^(hb|fb|qb)\s+(dive|stretch|toss|power|counter|slam|blast|iso|draw|wham|duo|gut|trap|zone|base|off tackle|plunge|sweep)/i.test(base));
 
   if (isRun) {
     const r = { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' };
     if (base.includes('power')) { r.RB = 'run_power'; r.FB = 'lead_block'; r.RG = 'pull_left'; }
     else if (base.includes('counter')) { r.RB = 'run_counter'; r.RG = 'pull_left'; r.RT = 'pull_left'; }
-    else if (base.includes('stretch') || base.includes('toss') || base.includes('sweep') || base.includes('pitch')) { r.RB = 'run_stretch'; r.LT = 'zone_step_right'; r.LG = 'zone_step_right'; r.C = 'zone_step_right'; r.RG = 'zone_step_right'; r.RT = 'zone_step_right'; }
-    else if (base.includes('outside zone') || base.includes('oz')) { r.RB = 'run_outside'; r.LT = 'zone_step_right'; r.LG = 'zone_step_right'; r.C = 'zone_step_right'; r.RG = 'zone_step_right'; r.RT = 'zone_step_right'; }
+    else if (base.includes('stretch') || base.includes('toss') || base.includes('sweep') || base.includes('pitch')) {
+      const goLeft = base.includes('left') || base.includes('lt') || base.includes('wk');
+      r.RB = goLeft ? 'run_stretch_left' : 'run_stretch';
+      const stepDir = goLeft ? 'zone_step_left' : 'zone_step_right';
+      r.LT = stepDir; r.LG = stepDir; r.C = stepDir; r.RG = stepDir; r.RT = stepDir;
+    }
+    else if (base.includes('outside zone') || base.includes('oz')) {
+      const goLeft = base.includes('left') || base.includes('lt') || base.includes('wk');
+      r.RB = goLeft ? 'run_outside_left' : 'run_outside';
+      const stepDir = goLeft ? 'zone_step_left' : 'zone_step_right';
+      r.LT = stepDir; r.LG = stepDir; r.C = stepDir; r.RG = stepDir; r.RT = stepDir;
+    }
     else if (base.includes('inside zone') || base.includes('iz')) { r.RB = 'run_inside'; r.C = 'combo_block'; r.LG = 'zone_step_right'; r.RG = 'zone_step_right'; }
     else if (base.includes('dive')) r.RB = 'run_dive';
     else if (base.includes('draw')) r.RB = 'run_inside';
@@ -3200,16 +3219,20 @@ function inferRoutes(name) {
 
   // ---- SCREEN plays ----
   if (base.includes('screen')) {
-    const r = { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'screen_left' };
-    if (base.includes('wr') || base.includes('bubble') || base.includes('tunnel') || base.includes('jailbreak')) { r.WR2 = 'screen_right'; r.RB = 'flat'; }
-    else if (base.includes('middle') || base.includes('mid')) { r.RB = 'screen'; r.WR2 = 'block'; }
-    else if (base.includes('slip')) { r.RB = 'screen_left'; r.TE = 'flat'; }
+    const goLeft = base.includes('left') || base.includes('lt');
+    const goRight = base.includes('right') || base.includes('rt');
+    const screenRoute = goLeft ? 'screen_left' : (goRight ? 'screen_right' : 'screen_left');
+    const olStep = goLeft ? 'zone_step_left' : 'zone_step_right';
+    const r = { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: screenRoute };
+    r.LG = olStep; r.C = olStep; r.RG = olStep; // OL release toward screen side
+    if (base.includes('wr') || base.includes('bubble') || base.includes('tunnel') || base.includes('jailbreak')) {
+      r.WR2 = goLeft ? 'screen_left' : 'screen_right'; r.RB = goLeft ? 'flat_left' : 'flat';
+    } else if (base.includes('middle') || base.includes('mid')) { r.RB = 'screen'; r.WR2 = 'block'; }
+    else if (base.includes('slip')) { r.RB = screenRoute; r.TE = goLeft ? 'flat_left' : 'flat'; }
     return { routes: r, qb: 'qb_drop', ball_target: base.includes('wr') ? 'WR2' : 'RB' };
   }
 
-  // ---- PA / Play Action ----
-  const isPA = base.includes('pa ') || base.startsWith('pa ') || base.includes('play action') ||
-    base.includes('fake') || base.includes('paf') || base.startsWith('fk ');
+  // (isPA was already detected above, before run classification)
 
   // ---- RPO ----
   const isRPO = base.includes('rpo') || base.includes('alert');
@@ -3292,19 +3315,10 @@ class PlayArtRenderer {
   constructor(canvas, options = {}) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    if (typeof ResizeObserver !== 'undefined') {
-      this._resizeObserver = new ResizeObserver(() => {
-        const rect = canvas.parentElement?.getBoundingClientRect();
-        if (rect && rect.width > 0) {
-          const scale = Math.min(rect.width / this.width, 1);
-          canvas.style.transform = `scale(${scale})`;
-          canvas.style.transformOrigin = 'top left';
-        }
-      });
-      if (canvas.parentElement) this._resizeObserver.observe(canvas.parentElement);
-    }
-    this.width = options.width || 320;
-    this.height = options.height || 260;
+    // Canvas sizing: CSS width:100%/height:100% handles display scaling.
+    // We only set the internal resolution here; no ResizeObserver transform needed.
+    this.width = options.width || 500;
+    this.height = options.height || 350;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     this.animProgress = 0;
@@ -3550,7 +3564,8 @@ class PlayArtRenderer {
     }
     // Special names
     if (lower.includes('tampa')) return COVERAGE_ZONES['Tampa 2'] || COVERAGE_ZONES['Cover 2 Zone'];
-    if (lower.includes('blitz') || lower.includes('fire zone')) return COVERAGE_ZONES['Cover 0'] || COVERAGE_ZONES['Cover 1'];
+    if (lower.includes('fire zone')) return COVERAGE_ZONES['Cover 2 Zone'] || COVERAGE_ZONES['Cover 2 Man'];
+    if (lower.includes('blitz')) return COVERAGE_ZONES['Cover 0'] || COVERAGE_ZONES['Cover 1'];
     if (lower.includes('prevent')) return COVERAGE_ZONES['Prevent'] || COVERAGE_ZONES['Cover 4'];
     if (lower.includes('46')) return COVERAGE_ZONES['Cover 2 Man'] || COVERAGE_ZONES['Cover 2 Zone'];
     // Try longest key match
@@ -3783,7 +3798,8 @@ class PlayArtRenderer {
     const offPlayers = [];
     const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
     // Gap labels (left to right): D(outside LT), C(LT-LG), B(LG-C), A(C-RG), B(RG-RT), C(outside RT)
-    const gapLabels = ['D', 'C', 'B', 'A', 'B', 'C'];
+    // NFL gap labels (used for gap weighting, not display — display uses _computeGaps)
+    const gapLabels = ['C', 'B', 'A', 'A', 'B', 'C'];
 
     for (const [key, startPos] of Object.entries(offPositions)) {
       const isOL = olKeys.includes(key);
@@ -4165,9 +4181,11 @@ class PlayArtRenderer {
           }
         } else if (p.manReceiver && p.manReceiver.path && p.manReceiver.path.length > 0 && developPhase) {
           // Man coverage: follow matched receiver's path with offset
+          // Ease in during first 20% of development to avoid a jump at snap
           const recPos = this._posAlongPath(p.manReceiver.startPos[0], p.manReceiver.startPos[1], p.manReceiver.path, mt * p.manFollowFactor);
-          x = Math.max(0.02, Math.min(0.98, recPos.x + p.manOffset[0]));
-          y = Math.max(0.02, Math.min(0.98, recPos.y + p.manOffset[1]));
+          const easeIn = Math.min(mt / 0.2, 1); // 0→1 over first 20% of movement
+          x = Math.max(0.02, Math.min(0.98, p.startPos[0] + (recPos.x + p.manOffset[0] - p.startPos[0]) * easeIn));
+          y = Math.max(0.02, Math.min(0.98, p.startPos[1] + (recPos.y + p.manOffset[1] - p.startPos[1]) * easeIn));
         } else {
           x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? mt : 0);
           y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? mt : 0);
@@ -4497,18 +4515,41 @@ class PlayArtRenderer {
     const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
     const olPositions = olKeys.filter(k => offPositions[k]).map(k => offPositions[k]);
     const gaps = [];
-    // Between-OL gap labels: LT-LG=C, LG-C=B, C-RG=A, RG-RT=B
-    const labels = ['C', 'B', 'A', 'B'];
-    // Gaps between OL
+    // NFL standard: gaps labeled inside-out from center
+    // LT-LG = B gap (left), LG-C = A gap (left), C-RG = A gap (right), RG-RT = B gap (right)
+    const labels = ['B', 'A', 'A', 'B'];
     for (let i = 0; i < olPositions.length - 1; i++) {
       const x = (olPositions[i][0] + olPositions[i + 1][0]) / 2;
       const y = olPositions[i][1] - 0.02;
       gaps.push({ x, y, label: labels[i] || 'G' });
     }
-    // Outside gaps: left of LT = D gap, right of RT = C gap
+    // Outside OL = C gap; if TE is present on that side, C gap shifts and D gap is outside TE
     if (olPositions.length >= 2) {
-      gaps.unshift({ x: olPositions[0][0] - 0.06, y: olPositions[0][1] - 0.02, label: 'D' });
-      gaps.push({ x: olPositions[olPositions.length - 1][0] + 0.06, y: olPositions[olPositions.length - 1][1] - 0.02, label: 'C' });
+      const ltX = olPositions[0][0];
+      const rtX = olPositions[olPositions.length - 1][0];
+      const losY = olPositions[0][1] - 0.02;
+
+      // Check for TE on each side
+      const tePos = offPositions['TE'] || offPositions['TE1'];
+      const te2Pos = offPositions['TE2'];
+      const hasLeftTE = tePos && tePos[0] < ltX;
+      const hasRightTE = tePos && tePos[0] > rtX;
+      const hasRightTE2 = te2Pos && te2Pos[0] > rtX;
+
+      if (hasLeftTE) {
+        gaps.unshift({ x: (tePos[0] + ltX) / 2, y: losY, label: 'C' });
+        gaps.unshift({ x: tePos[0] - 0.06, y: losY, label: 'D' });
+      } else {
+        gaps.unshift({ x: ltX - 0.06, y: losY, label: 'C' });
+      }
+
+      if (hasRightTE || hasRightTE2) {
+        const rtePos = hasRightTE ? tePos : te2Pos;
+        gaps.push({ x: (rtX + rtePos[0]) / 2, y: losY, label: 'C' });
+        gaps.push({ x: rtePos[0] + 0.06, y: losY, label: 'D' });
+      } else {
+        gaps.push({ x: rtX + 0.06, y: losY, label: 'C' });
+      }
     }
     return gaps;
   }
@@ -4679,28 +4720,27 @@ class PlayArtRenderer {
     const rbRoute = routes['RB'] || routes['FB'] || 'run_inside';
     const midIdx = Math.floor(gapOpenings.length / 2);
 
-    // Weight gaps by run direction to match gap labels:
-    // Gaps array: [D(outside left), C(LT-LG), B(LG-C), A(C-RG), B(RG-RT), C(outside right)]
-    // run_inside/run_dive -> A gap (center), run_power -> B gap, run_outside -> C gap, run_stretch -> D gap
-    const totalGaps = gapOpenings.length; // typically 6
+    // Weight gaps by run direction (NFL gap labels: A=center, B=guards, C=tackles, D=outside TE)
+    // Gaps array from _computeGaps: [C/D(outside LT), B(LT-LG), A(LG-C), A(C-RG), B(RG-RT), C/D(outside RT)]
+    const totalGaps = gapOpenings.length;
     for (let i = 0; i < totalGaps; i++) {
       const distFromCenter = Math.abs(i - midIdx);
       if (rbRoute === 'run_inside' || rbRoute === 'run_dive') {
-        // A gap = center (index midIdx area)
-        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromCenter));
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromCenter)); // A gap: center
       } else if (rbRoute === 'run_power') {
-        // B gap = one step from center (indices midIdx-1 and midIdx+1)
         const distFromB = Math.min(Math.abs(i - (midIdx - 1)), Math.abs(i - (midIdx + 1)));
-        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromB));
-      } else if (rbRoute === 'run_outside') {
-        // C gap = two steps from center (indices midIdx-2 and midIdx+2)
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromB)); // B gap: one off center
+      } else if (rbRoute === 'run_outside' || rbRoute === 'run_outside_left') {
         const distFromC = Math.min(Math.abs(i - (midIdx - 2)), Math.abs(i - (midIdx + 2)));
-        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromC));
-      } else if (rbRoute === 'run_stretch') {
-        // D gap = outermost (prefer edges/outside)
-        gapOpenings[i].score *= (1 + distFromCenter * 0.2);
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromC)); // C gap: two off center
+        if (rbRoute === 'run_outside_left') gapOpenings[i].score *= i < midIdx ? 1.3 : 0.7;
+        else gapOpenings[i].score *= i > midIdx ? 1.3 : 0.7;
+      } else if (rbRoute === 'run_stretch' || rbRoute === 'run_stretch_left') {
+        gapOpenings[i].score *= (1 + distFromCenter * 0.2); // D gap: edges
+        if (rbRoute === 'run_stretch_left') gapOpenings[i].score *= i < midIdx ? 1.3 : 0.7;
+        else gapOpenings[i].score *= i > midIdx ? 1.3 : 0.7;
       } else if (rbRoute === 'run_counter') {
-        gapOpenings[i].score *= i < midIdx ? 1.3 : 0.8; // prefer weak side
+        gapOpenings[i].score *= i < midIdx ? 1.3 : 0.8; // weak side
       }
     }
 

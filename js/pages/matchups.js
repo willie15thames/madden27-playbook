@@ -314,14 +314,14 @@ function checkMatchup() {
     offArtContainer.innerHTML = '';
     if (offPlay) {
       const c = document.createElement('canvas');
-      c.width = 320; c.height = 260;
+      c.width = 500; c.height = 350;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
       c.style.maxWidth = '100%';
       c.style.height = 'auto';
       offArtContainer.appendChild(c);
       if (offStaticRenderer) offStaticRenderer.destroy();
-      offStaticRenderer = new PlayArtRenderer(c, { width: 320, height: 260 });
+      offStaticRenderer = new PlayArtRenderer(c, { width: 500, height: 350 });
       offStaticRenderer.renderPlayCard(offFormation, offSubForm, offPlay);
     }
   }
@@ -329,14 +329,14 @@ function checkMatchup() {
     defArtContainer.innerHTML = '';
     if (defPlay) {
       const c = document.createElement('canvas');
-      c.width = 320; c.height = 260;
+      c.width = 500; c.height = 350;
       c.className = 'rounded-lg mx-auto block';
       c.style.background = '#1a472a';
       c.style.maxWidth = '100%';
       c.style.height = 'auto';
       defArtContainer.appendChild(c);
       if (defStaticRenderer) defStaticRenderer.destroy();
-      defStaticRenderer = new PlayArtRenderer(c, { width: 320, height: 260 });
+      defStaticRenderer = new PlayArtRenderer(c, { width: 500, height: 350 });
       defStaticRenderer.renderCoverageCard(defFormation, defPlay, defSubForm);
     }
   }
@@ -520,7 +520,8 @@ function findCoverage(name) {
   // 6. Special defense names
   if (baseDefName.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
   if (baseDefName.includes('prevent')) return COVERAGES.find(c => c.name.toLowerCase().includes('prevent'));
-  if (baseDefName.includes('mid blitz') || baseDefName.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('blitz') || c.name.toLowerCase().includes('cover 0')) || COVERAGES[0];
+  if (baseDefName.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase() === 'cover 2 zone') || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover 2'));
+  if (baseDefName.includes('mid blitz')) return COVERAGES.find(c => c.name.toLowerCase().includes('blitz') || c.name.toLowerCase().includes('cover 0')) || COVERAGES[0];
   if (baseDefName.includes('46')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2') && c.name.toLowerCase().includes('man')) || COVERAGES.find(c => c.name.toLowerCase().includes('cover 2'));
 
   // 7. Word-scoring fallback

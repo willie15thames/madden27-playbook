@@ -2805,26 +2805,11 @@ const OFFENSIVE_PLAYBOOKS = [
   }
 ];
 
-// ========== DEFENSIVE PLAYBOOKS ==========
 const DEFENSIVE_PLAYBOOKS = [
   {
     id: "49ers_def",
     name: "San Francisco 49ers",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Skywk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammer Oblast - 3","Saw Oblast - 3","Tampa 2 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammer Oblast - 4","Sam I Sting - 4","Saw Oblast - 4","Ss Blitz 1 - 4"],
-        "4  3 Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz 1 - 4","Ss Blitz 3 - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 1 Spy - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammer 0 Blast - 4","Sam Crash 1 - 4","Sam Crash 3 - 4","Will Go Fire 3 - 4"],
-        "5  2 Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"],
-        "4  2  5 Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover Sting - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mike Sam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
-        "4  2  5 Under": ["1 Fs Fire - 4-2","1 Slant Crash - 4-2","Cover 1 Hole - 4-2","Cover 2 Invert - 4-2","Cover 2 Man - 4-2","Cover 3 Match - 4-2","Cover 3 Skywk - 4-2","Cover 4 Quarters - 4-2","Free Fire - 4-2","Hammer 0 Blast - 4-2","Mike Sam Crash Press - 4-2","Safety Blitz - 4-2","Sam Blitz 2 - 4-2","Tampa 2 - 4-2","Will Go Fire 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4 Load Dbl Mug": ["Blitz Loop 0 - Nickel 2","Blitz Loop 3 - Nickel 2","Blitz Loop Sim 3 - Nickel 2","Cb Bench Sim 2 - Nickel 2","Cover 1 Lb Blitz - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","I Dt Lb Loop - Nickel 2","Lb Blitz 6 - Nickel 2","Nickel Sim 2 - Nickel 2","Redzone Dt Drop - Nickel 2","Side Blitz - Nickel 2","Tampa 2 - Nickel 2"],
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Blitz Lb Lurk 1 - Nickel 3","Boca Blitz 2 - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Olb Blitz 1 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -2843,24 +2828,36 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Pinch - Goal Line 6","Re - Goal Line 6"],
         "Pinch": ["Pinch"]
+      },
+      "3-4": {
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Skywk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammer Oblast - 3","Saw Oblast - 3","Tampa 2 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammer Oblast - 4","Sam I Sting - 4","Saw Oblast - 4","Ss Blitz 1 - 4"],
+        "Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz 1 - 4","Ss Blitz 3 - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 1 Spy - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammer 0 Blast - 4","Sam Crash 1 - 4","Sam Crash 3 - 4","Will Go Fire 3 - 4"]
+      },
+      "5-2": {
+        "Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"]
+      },
+      "4-2-5": {
+        "Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover Sting - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mike Sam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
+        "Under": ["1 Fs Fire - 4-2","1 Slant Crash - 4-2","Cover 1 Hole - 4-2","Cover 2 Invert - 4-2","Cover 2 Man - 4-2","Cover 3 Match - 4-2","Cover 3 Skywk - 4-2","Cover 4 Quarters - 4-2","Free Fire - 4-2","Hammer 0 Blast - 4-2","Mike Sam Crash Press - 4-2","Safety Blitz - 4-2","Sam Blitz 2 - 4-2","Tampa 2 - 4-2","Will Go Fire 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "bears_def",
     name: "Chicago Bears",
-    style: "",
     formations: {
       "46": {
         "Bear Under": ["Cover 1","Cover 3","Engage Eight","Gap Press","Lb Dogs","Lb Dogs 3"]
-      },
-      "Other": {
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Pinch Buck 0 - 4","Pinch Dog 2 Press - 4","Re - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Tampa 2 - 4"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover Contain - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammer 0 Blast - 4","Sam I Sting - 4","Saw Oblast - 4","Ss Blitz 1 - 4"],
-        "4  3 Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammer 0 Blast - 4","Sam Crash 1 - 4","Sam Crash 3 - 4","Will Go Fire 3 - 4"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Re - 3-3","Sam Mikes Press - 3-3","Saw Blitz 1 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       },
       "Nickel": {
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -2881,22 +2878,25 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dt Mike Loop 0 - Dollar 3","Dt Mike Loop 1 - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "4-3": {
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Pinch Buck 0 - 4","Pinch Dog 2 Press - 4","Re - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Tampa 2 - 4"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover Contain - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammer 0 Blast - 4","Sam I Sting - 4","Saw Oblast - 4","Ss Blitz 1 - 4"],
+        "Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammer 0 Blast - 4","Sam Crash 1 - 4","Sam Crash 3 - 4","Will Go Fire 3 - 4"]
+      },
+      "3-3-5": {
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Re - 3-3","Sam Mikes Press - 3-3","Saw Blitz 1 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "bengals_def",
     name: "Cincinnati Bengals",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck 0 - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammer 0 Blast - 4","Sam I Sting - 4","Saw Oblast - 4","Ss Blitz 1 - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4 Swap Dbl Mug": ["Blitz Loop 0 - Nickel 2","Blitz Loop 3 - Nickel 2","Blitz Loop Sim 3 - Nickel 2","Cb Bench Sim 2 - Nickel 2","Cover 1 Games - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Hot Blitz 3 - Nickel 2","I Dt Lb Loop - Nickel 2","Lb Pop O - Nickel 2","Mid Blitz - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Redzone Dt Drop - Nickel 2","Ss 2 Trap - Nickel 2","Ss Dog 3 - Nickel 2","Ss Sim 2 - Nickel 2","Tampa 2 - Nickel 2"],
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Cover 1 Robber - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Lb Blitz 1 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Olb Blitz 1 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -2917,25 +2917,25 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dbl Safety Go - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Ss Zone Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck 0 - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammer 0 Blast - 4","Sam I Sting - 4","Saw Oblast - 4","Ss Blitz 1 - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "bills_def",
     name: "Buffalo Bills",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Grizzly": ["1tedge Pinch - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3","Z Invert Strong - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Skywk - 3","Cover 4 Quarters - 3","Cover Sting - 3","Fs Blitz - 3","Hammer Oblast - 3","Saw Oblast - 3","Tampa 2 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","Al - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck 0 - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck 0 - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammer Oblast - 4","Sam Crash 1 - 4","Sam Crash 3 - 4","Will Go Fire 3 - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Sammie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cover Contain - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -2956,25 +2956,30 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Grizzly": ["1tedge Pinch - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3","Z Invert Strong - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Skywk - 3","Cover 4 Quarters - 3","Cover Sting - 3","Fs Blitz - 3","Hammer Oblast - 3","Saw Oblast - 3","Tampa 2 - 3"],
+        "Under": ["1 Robber Press - 3","Al - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck 0 - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck 0 - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammer Oblast - 4","Sam Crash 1 - 4","Sam Crash 3 - 4","Will Go Fire 3 - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "broncos_def",
     name: "Denver Broncos",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crashi - 4","Will Go Fire 3 - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -2995,24 +3000,32 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crashi - 4","Will Go Fire 3 - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "browns_def",
     name: "Cleveland Browns",
-    style: "",
     formations: {
       "46": {
         "Bear": ["Ag Mid Blitz","Cover 1","Cover 3","Gap Press O","Lb Blitz 3","Slant Weak O"]
-      },
-      "Other": {
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Sawo Blast - 4","Ss Blitz - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "5  2 Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       },
       "Nickel": {
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Cover 1 Robber - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Lb Blitz 1 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Olb Blitz 1 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3035,26 +3048,25 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dbl Safety Go - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Ss Zone Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Sawo Blast - 4","Ss Blitz - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"]
+      },
+      "5-2": {
+        "Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "buccaneers_def",
     name: "Tampa Bay Buccaneers",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam I - 3"],
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Cover I Sting - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"],
-        "2  5 Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3074,27 +3086,33 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam I - 3"],
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Cover I Sting - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
+      },
+      "2-5": {
+        "Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       }
     }
   },
   {
     id: "cardinals_def",
     name: "Arizona Cardinals",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "3  3  5 3 High Over": ["3 Double Cloud - 3-3","3 Double Sky - 3-3","Blitz Dt Pop - 3-3","Cover 2 Lurk - 3-3","Cover 2 Match - 3-3","Cover 3 Match - 3-3","Cover 4 Quarters - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Lb Blitz 0 - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3114,26 +3132,36 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "3-3-5": {
+        "3 High Over": ["3 Double Cloud - 3-3","3 Double Sky - 3-3","Blitz Dt Pop - 3-3","Cover 2 Lurk - 3-3","Cover 2 Match - 3-3","Cover 3 Match - 3-3","Cover 4 Quarters - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Lb Blitz 0 - 3-3","Tampa 2 - 3-3"],
+        "3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"],
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "chargers_def",
     name: "Los Angeles Chargers",
-    style: "",
     formations: {
       "46": {
         "Normal": ["Cover 1 Contain","Cover 1 Hole","Cover 2 Invert","Cover 3","Cover 3 Match","Engage Eight","Fire Zone 3","Inside Blitz","Rush Outside"]
-      },
-      "Other": {
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3156,29 +3184,31 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "chiefs_def",
     name: "Kansas City Chiefs",
-    style: "",
     formations: {
       "46": {
         "Normal": ["Cover 1 Contain","Cover 1 Hole","Cover 2 Invert","Cover 3","Cover 3 Match","Engage Eight","Fire Zone 3","Inside Blitz","Rush Outside"]
-      },
-      "Other": {
-        "4  3 Odd": ["Cover 1 Robber Press - 4","Cover 2 Man - 4","Cover 3 Cloud - 4","Cover 3 Sky - 4","Cover 6 - 4","Lb Dogs - 4","Pinch Zone 4 - 4","Strong Slant 3 - 4","Tampa 2 - 4"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloudstr - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"],
-        "4  3 Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 1 Spy - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "3  3  5 Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Lb Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "4  2  5 Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
-        "4  2  5 Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 1 Sting - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mike Sam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       },
       "Nickel": {
         "Double Mug": ["2 Invert Hard Flat","Blitz Loop 3","Coffee House 3 Seam","Cover 1 Hole","Cover 2 Invert","Cover 3 Match","Cover 3 Sky","Field Sim 3","Lb Blitz 3","Mid Blitz 0","Nickel 2 Trap","Nickel Overload 3","Nickel Sim 2","Ss Blitz 3","Tampa 2"],
@@ -3201,24 +3231,32 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dt Mike Loop 1 - Dollar 3","Dt Mike Loop O - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "4-3": {
+        "Odd": ["Cover 1 Robber Press - 4","Cover 2 Man - 4","Cover 3 Cloud - 4","Cover 3 Sky - 4","Cover 6 - 4","Lb Dogs - 4","Pinch Zone 4 - 4","Strong Slant 3 - 4","Tampa 2 - 4"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloudstr - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"],
+        "Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 1 Spy - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "3-3-5": {
+        "Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Lb Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "4-2-5": {
+        "Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
+        "Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 1 Sting - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mike Sam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "colts_def",
     name: "Indianapolis Colts",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 Qqb Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Sawo Blast - 4","Ss Blitz - 4"],
-        "4  2  5 Over G": ["Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Cover I Sting - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Cover 1 Robber - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Lb Blitz 1 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Olb Blitz 1 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
         "3  3 Dbl Mug": ["Blitz Loop 3 - Nickel 3","Buck Zone Blitz - Nickel 3","Cover 1 Hole - Nickel 3","Cover 2 Invert - Nickel 3","Cover 3 Match - Nickel 3","Cover 3 Sky - Nickel 3","Field Sim 3 - Nickel 3","Mid Blitz - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Dog 3 Buzz - Nickel 3","Nickel Dog Meg - Nickel 3","Nickel Overload 3 - Nickel 3","Nickel Sim 2 - Nickel 3","Ss Dog 3 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3240,28 +3278,31 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dbl Safety Go - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Ss Zone Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 Qqb Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Sawo Blast - 4","Ss Blitz - 4"]
+      },
+      "4-2-5": {
+        "Over G": ["Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Cover I Sting - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "commanders_def",
     name: "Washington Commanders",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite 5 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Fs Fire - 3","Cover 1 Hole Wk - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Tampa 2 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
-        "3  3  5 3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"],
-        "4  2  5 3 High": ["3 Double Cloud - 4-2","3 Double Sky - 4-2","Blitz Dt Pop - 4-2","Cover 2 Lurk - 4-2","Cover 2 Match - 4-2","Cover 3 Match - 4-2","Cover 4 Quarters - 4-2","Edge Blitz 2 - 4-2","Edge Blitz 3 - 4-2","Hot Blitz 3 - 4-2","Lb Blitz 0 - 4-2","Tampa 2 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Load Mug": ["Cover 1 Lb Blitz - Nickel 2","Cover 2 Man - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Hot Blitz 3 - Nickel 2","Lb Blitz 0 - Nickel 2","Lb De Twist 3 - Nickel 2","Nickel Blitz 0 - Nickel 2","Nickel Blitz 1 - Nickel 2","Nickel Blitz 2 - Nickel 2","Nickel Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3283,25 +3324,37 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite 5 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Fs Fire - 3","Cover 1 Hole Wk - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Tampa 2 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"]
+      },
+      "3-3-5": {
+        "3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"]
+      },
+      "4-2-5": {
+        "3 High": ["3 Double Cloud - 4-2","3 Double Sky - 4-2","Blitz Dt Pop - 4-2","Cover 2 Lurk - 4-2","Cover 2 Match - 4-2","Cover 3 Match - 4-2","Cover 4 Quarters - 4-2","Edge Blitz 2 - 4-2","Edge Blitz 3 - 4-2","Hot Blitz 3 - 4-2","Lb Blitz 0 - 4-2","Tampa 2 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "cowboys_def",
     name: "Dallas Cowboys",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  5 Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mike Sam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3325,25 +3378,32 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dbl Safety Go - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Ss Zone Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "3-3-5": {
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-5": {
+        "Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mike Sam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       }
     }
   },
   {
     id: "dolphins_def",
     name: "Miami Dolphins",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloudstr - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"],
-        "3  3  5 Over Flex": ["Cb Bench Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover I Lb Blitz - 3-3","Cover I Ss Blitz - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 Over Wide": ["Cover 1 Hole - 3-3","Cover 1 Robber - 3-3","Cover 2 Man - 3-3","Cover 3 Cloud Show 2 - 3-3","Cover 3 Sim Pressure - 3-3","Cover 3 Sky - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover Isting - 3-3","Double Cb Blitz - 3-3","Fire Man - 3-3","Free Fire 3 - 3-3","Invert 2 Sim - 3-3","Mikesam Cross 3 - 3-3","Sam Blitz 3 - 3-3","Tampa 2 - 3-3","Thunder Smoke - 3-3","Will Blitz 3 - 3-3"],
-        "4  2  5 Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  5 Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
-      },
       "Nickel": {
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","A - Nickel 3","Blitz Lb Lurk 1 - Nickel 3","Boca Blitz 2 - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
         "3  3 Dbl Mug": ["Blitz Loop 3 - Nickel 3","Buck Zone Blitz - Nickel 3","Cover 1 Hole - Nickel 3","Cover 2 Invert - Nickel 3","Cover 3 Match - Nickel 3","Cover 3 Sky - Nickel 3","Field Sim 3 - Nickel 3","Mid Blitz - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Dog 3 Buzz - Nickel 3","Nickel Dog Meg - Nickel 3","Nickel Overload 3 - Nickel 3","Nickel Sim 2 - Nickel 3","Ss Dog 3 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3360,25 +3420,34 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloudstr - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"]
+      },
+      "3-3-5": {
+        "Over Flex": ["Cb Bench Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover I Lb Blitz - 3-3","Cover I Ss Blitz - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
+        "Over Wide": ["Cover 1 Hole - 3-3","Cover 1 Robber - 3-3","Cover 2 Man - 3-3","Cover 3 Cloud Show 2 - 3-3","Cover 3 Sim Pressure - 3-3","Cover 3 Sky - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover Isting - 3-3","Double Cb Blitz - 3-3","Fire Man - 3-3","Free Fire 3 - 3-3","Invert 2 Sim - 3-3","Mikesam Cross 3 - 3-3","Sam Blitz 3 - 3-3","Tampa 2 - 3-3","Thunder Smoke - 3-3","Will Blitz 3 - 3-3"]
+      },
+      "4-2-5": {
+        "Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-5": {
+        "Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       }
     }
   },
   {
     id: "eagles_def",
     name: "Philadelphia Eagles",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  5 Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3402,24 +3471,32 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dbl Safety Go - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Ss Zone Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "3-3-5": {
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-5": {
+        "Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       }
     }
   },
   {
     id: "falcons_def",
     name: "Atlanta Falcons",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Covers Sammie - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3439,26 +3516,33 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "Normal": ["3 Dbl Mable Cloud","3 Double Buzz","3 Double Mable","Cover 1 Thief","Cover 2 Man Spy","Cover 2 Spy","Cover 3 Mable","Cover 3 Spy","Cover 4 Drop","Db Strike","Fz 2 Deep","Fz 3 Sky","Man Up 3 Deep","Overload 3","Under Smoke"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "3-3-5": {
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "giants_def",
     name: "New York Giants",
-    style: "",
     formations: {
       "46": {
         "Normal": ["Cover 1 Contain","Cover 1 Hole","Cover 2 Invert","Cover 3","Cover 3 Match","Engage Eight","Fire Zone 3","Inside Blitz","Rush Outside"]
-      },
-      "Other": {
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  5 Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3483,26 +3567,29 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dt Mike Loop 1 - Dollar 3","Dt Mike Loop O - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-5": {
+        "Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       }
     }
   },
   {
     id: "jaguars_def",
     name: "Jacksonville Jaguars",
-    style: "",
     formations: {
       "46": {
         "Bear Under": ["Cover 1","Cover 3","Engage Eight","Gap Press","Lb Dogs","Lb Dogs 3"]
-      },
-      "Other": {
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"],
-        "3  3  5 Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Lb Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
-        "4  2  5 Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
-        "4  2  5 Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover Isting - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mikesam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       },
       "Nickel": {
         "3  3 Dbl Mug": ["Blitz Loop 3 - Nickel 3","Buck Zone Blitz - Nickel 3","Cover 1 Hole - Nickel 3","Cover 2 Invert - Nickel 3","Cover 3 Match - Nickel 3","Cover 3 Sky - Nickel 3","Field Sim 3 - Nickel 3","Mid Blitz - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Dog 3 Buzz - Nickel 3","Nickel Dog Meg - Nickel 3","Nickel Overload 3 - Nickel 3","Nickel Sim 2 - Nickel 3","Ss Dog 3 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3520,24 +3607,31 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps A B - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"]
+      },
+      "3-3-5": {
+        "Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Lb Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"]
+      },
+      "4-2-5": {
+        "Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
+        "Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover Isting - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mikesam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "jets_def",
     name: "New York Jets",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4 Load Dbl Mug": ["1 Dt Lb Loop - Nickel 2","Blitz Loop 0 - Nickel 2","Blitz Loop 3 - Nickel 2","Blitz Loop Sim 3 - Nickel 2","Cb Bench Sim 2 - Nickel 2","Cover 1 Lb Blitz - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Nickel Sim 2 - Nickel 2","Redzone Dt Drop - Nickel 2","Side Blitz - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Single Mug": ["1 Lb Dog - Nickel 2","Blitz Tex 3 Sim 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 4 Quarters - Nickel 2","Db Blitz Tex 3 - Nickel 2","Dt Mike Loop 3 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3559,24 +3653,29 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dt Mike Loop 1 - Dollar 3","Dt Mike Loop O - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting 1 - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "lions_def",
     name: "Detroit Lions",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Bear": ["Cover 1 Hole - 3","Cover 2 Invert - 3","Covers - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Will Sam I - 3"],
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Cover Mlb Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
-        "4  3 Tite Leo": ["Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Drop - 4","Cover 6 - 4","Field Blitz 3 - 4","Hot Blitz 3 - 4","Saw Blitz 0 - 4","Saw Blitz 1 - 4","Saw Blitz 2 - 4","Saw Blitz 3 - 4","Ss 2 Trap - 4","Tampa 2 - 4"],
-        "4  3 Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crashi - 4","Will Go Fire 3 - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4 Single Mug": ["1 Lb Dog - Nickel 2","Blitz Tex 3 Sim 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 4 Quarters - Nickel 2","Db Blitz Tex 3 - Nickel 2","Dt Mike Loop 3 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Blitz Lb Lurk 1 - Nickel 3","Boca Blitz 2 - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3597,27 +3696,27 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dt Mike Loop 1 - Dollar 3","Dt Mike Loop O - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Bear": ["Cover 1 Hole - 3","Cover 2 Invert - 3","Covers - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Will Sam I - 3"],
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Cover Mlb Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
+        "Tite Leo": ["Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Drop - 4","Cover 6 - 4","Field Blitz 3 - 4","Hot Blitz 3 - 4","Saw Blitz 0 - 4","Saw Blitz 1 - 4","Saw Blitz 2 - 4","Saw Blitz 3 - 4","Ss 2 Trap - 4","Tampa 2 - 4"],
+        "Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crashi - 4","Will Go Fire 3 - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "packers_def",
     name: "Green Bay Packers",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Sawo Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "3  3  5 3 High Over": ["3 Double Cloud - 3-3","3 Double Sky - 3-3","Blitz Dt Pop - 3-3","Cover 2 Lurk - 3-3","Cover 2 Match - 3-3","Cover 3 Match - 3-3","Cover 4 Quarters - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Lb Blitz 0 - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3637,27 +3736,34 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Sawo Blast - 3","Tampa 2 - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "3-3-5": {
+        "3 High Over": ["3 Double Cloud - 3-3","3 Double Sky - 3-3","Blitz Dt Pop - 3-3","Cover 2 Lurk - 3-3","Cover 2 Match - 3-3","Cover 3 Match - 3-3","Cover 4 Quarters - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Lb Blitz 0 - 3-3","Tampa 2 - 3-3"],
+        "3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"],
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "panthers_def",
     name: "Carolina Panthers",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam I - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Drop - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  3 Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "3  3  5 Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover I Lb Blitz - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
-        "3  3  5 Over Wide": ["Cover 1 Hole - 3-3","Cover 1 Robber - 3-3","Cover 1 Sting - 3-3","Cover 2 Man - 3-3","Cover 3 Cloud Show 2 - 3-3","Cover 3 Sim Pressure - 3-3","Cover 3 Sky - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Double Cb Blitz - 3-3","Fire Man - 3-3","Free Fire 3 - 3-3","Invert 2 Sim - 3-3","Mikesam Cross 3 - 3-3","Sam Blitz 3 - 3-3","Tampa 2 - 3-3","Thunder Smoke - 3-3","Will Blitz 3 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3677,26 +3783,32 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps A B - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam I - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Drop - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
+        "Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "3-3-5": {
+        "Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover I Lb Blitz - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
+        "Over Wide": ["Cover 1 Hole - 3-3","Cover 1 Robber - 3-3","Cover 1 Sting - 3-3","Cover 2 Man - 3-3","Cover 3 Cloud Show 2 - 3-3","Cover 3 Sim Pressure - 3-3","Cover 3 Sky - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Double Cb Blitz - 3-3","Fire Man - 3-3","Free Fire 3 - 3-3","Invert 2 Sim - 3-3","Mikesam Cross 3 - 3-3","Sam Blitz 3 - 3-3","Tampa 2 - 3-3","Thunder Smoke - 3-3","Will Blitz 3 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "patriots_def",
     name: "New England Patriots",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "5  2 Normal": ["Cover - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4 Load Dbl Mug": ["1 Dt Lb Loop - Nickel 2","Blitz Loop 0 - Nickel 2","Blitz Loop 3 - Nickel 2","Blitz Loop Sim 3 - Nickel 2","Cover 1 Lb Blitz - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Lb Blitz 6 - Nickel 2","Nickel Sim 2 - Nickel 2","Redzone Dt Drop - Nickel 2","Side Blitz - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Odd Dbl Mug": ["3 Seam Show 2 - Nickel 2","Bench Blitz 3 - Nickel 2","Cover 1 Robber Press - Nickel 2","Cover 2 Man - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop - Nickel 2","Cover 6 - Nickel 2","Hot Blitz 3 - Nickel 2","Lb Cross 3 Show 2 - Nickel 2","Pinch 0 - Nickel 2","Pinch 2 - Nickel 2","Sam Mike Loop 1 - Nickel 2","Sam Mike Loop 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3715,24 +3827,31 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Grizzly": ["1 Edge Pinch - 3","2 Invert Strong - 3","3 Edge Pinch - 3","Cover 2 Invert - 3","Cover 3 - 3","Mike Blitz 0 - 3","Mike Hot Blitz 3 - 3","Mike Sim 2 - 3","Tampa 2 Show 3 - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "5-2": {
+        "Normal": ["Cover - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "raiders_def",
     name: "Las Vegas Raiders",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
-        "4  3 Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Blitz Lb Lurk 1 - Nickel 3","Boca Blitz 2 - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Olb Blitz 1 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
         "3  3 Dbl Mug": ["Blitz Loop 3 - Nickel 3","Buck Zone Blitz - Nickel 3","Cover 1 Hole - Nickel 3","Cover 2 Invert - Nickel 3","Cover 3 Match - Nickel 3","Cover 3 Sky - Nickel 3","Field Sim 3 - Nickel 3","Mid Blitz - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Dog 3 Buzz - Nickel 3","Nickel Dog Meg - Nickel 3","Nickel Overload 3 - Nickel 3","Nickel Sim 2 - Nickel 3","Ss Dog 3 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3752,25 +3871,31 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
+        "Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "rams_def",
     name: "Los Angeles Rams",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Cover I Sting - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3791,25 +3916,32 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "Normal": ["3 Dbl Mable Cloud","3 Double Buzz","3 Double Mable","Cover 1 Thief","Cover 2 Man Spy","Cover 2 Spy","Cover 3 Mable","Cover 3 Spy","Cover 4 Drop","Db Strike","Fz 2 Deep","Fz 3 Sky","Man Up 3 Deep","Overload 3","Under Smoke"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Under 4 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire I - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "3-3-5": {
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Cover I Sting - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "ravens_def",
     name: "Baltimore Ravens",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Sawo Blast - 3","Tampa 2 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
-        "4  3 Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crashi - 4","Will Go Fire 3 - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3834,24 +3966,30 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "Over Load": ["Cover O Blitz","Edge Blitz 2","Heavy 2 Trap","Heavy 3 Zone","Heavy1 Rat","Hot Zone 3"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Sawo Blast - 3","Tampa 2 - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
+        "Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 1 - 4","Fs Fire 3 - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crashi - 4","Will Go Fire 3 - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "saints_def",
     name: "New Orleans Saints",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "3  3  5 Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket 9 Switch - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Covers Sammie - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Pounder - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Roll King - Nickel 2","Roll Ring - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3873,28 +4011,31 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Dollar": {
         "3  2 Mug": ["Cover 1 Robber Press - Dollar 3","Cover 2 Drop - Dollar 3","Cover 2 Man - Dollar 3","Cover 3 Sky - Dollar 3","Cover 4 Drop - Dollar 3","Db Fire 2 - Dollar 3","Dbl Safety Go - Dollar 3","Overload 3 Seam - Dollar 3","Overload Blitz - Dollar 3","Ss Zone Blitz - Dollar 3","Tampa 2 - Dollar 3","Zero Blitz - Dollar 3"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "3-3-5": {
+        "Penny": ["Corner Blitz 2 - 3-3","Corner Blitz 3 - 3-3","Cover 1 Robber - 3-3","Cover 3 - 3-3","Cover 3 Buzz - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Cover Hole 1 - 3-3","Double Bracket - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 1 - 3-3","Pinch Blitz 0 - 3-3","Sam Mike 3 Press - 3-3","Saw Blitz 1 - 3-3","Saw Blitz 3 - 3-3","Slot Blitz 3 - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "seahawks_def",
     name: "Seattle Seahawks",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
-        "3  4 Tite 5 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Fs Fire - 3","Cover 1 Hole Wk - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Tampa 2 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "3  4 Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Sawo Blast - 4","Ss Blitz - 4"],
-        "4  3 Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "3  3  5 Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Lb Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"],
-        "2  5 Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -3917,23 +4058,39 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "Over Load": ["Cover Oblitz","Edge Blitz 2","Heavy 1rat","Heavy 2 Trap","Heavy 3 Zone","Hot Zone 3"]
+      },
+      "3-4": {
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
+        "Tite 5 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Fs Fire - 3","Cover 1 Hole Wk - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Tampa 2 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
+        "Under": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 1 QB Spy - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Sawo Blast - 4","Ss Blitz - 4"],
+        "Under": ["1 Contain Press - 4","1 Hole Press - 4","1 Robber Press - 4","2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Dbl Safety Blitz - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "3-3-5": {
+        "Over Flex": ["Cb Bench Blitz - 3-3","Cover 1 Lb Blitz - 3-3","Cover 1 Ss Blitz - 3-3","Cover 3 - 3-3","Cover 3 Buzz Match - 3-3","Cover 3 Match - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop Field - 3-3","Cover 4 Palms - 3-3","Cover 4 Quarters - 3-3","Cover 6 - 3-3","Cover 6 Willie - 3-3","Double Bracket - 3-3","Edge Blitz 0 - 3-3","Hot Blitz 3 - 3-3","Nickel Sim 3 - 3-3","Over 3 Sting - 3-3","Tampa 2 - 3-3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
+      },
+      "2-5": {
+        "Over Wide": ["Cover 1 Hole - 2","Cover 1 Robber - 2","Cover 2 Invert - 2","Cover 2 Man - 2","Cover 3 Sky - 2","Cover 4 Quarters - 2","Cover 6 - 2","Double Cb Blitz - 2","Fire Man - 2","Free Fire 3 - 2","Lb Sting I - 2","Mikesam Cross 3 - 2","Sim Pressure 3 - 2","Tampa 2 - 2","Thunder Smoke - 2"]
       }
     }
   },
   {
     id: "steelers_def",
     name: "Pittsburgh Steelers",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4 Dbl Mug": ["2 Invert Hard Flat - Nickel 2","Blitz Loop 3 - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Wide": ["Cov 3 Buzz Match Wk - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber Press - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 4 Zone - Nickel 2","Cover 6 - Nickel 2","Cover 6 Zone - Nickel 2","Cover 9 Show 2 - Nickel 2","Cover 9 Zone - Nickel 2","Dbl Safety Blitz - Nickel 2","I Lb Blitz - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Blitz 3 - Nickel 2","Over Storm Brave - Nickel 2","Silver Shoot Pinch - Nickel 2","Tampa 2 Contain - Nickel 2"],
@@ -3953,25 +4110,26 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Tite": ["Cover 1 Hole - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Field Blitz 3 - 3","Hot Blitz 3 - 3","Saw Blitz 0 - 3","Saw Blitz 1 - 3","Saw Blitz 2 - 3","Saw Blitz 3 - 3","Ss 2 Trap - 3","Tampa 2 - 3","Trio Sky Zone - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Brave 1 - 4","Tampa 2 - 4","Will Buck 3 Press - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "texans_def",
     name: "Houston Texans",
-    style: "",
     formations: {
-      "Other": {
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "4  3 Tite Leo": ["Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Drop - 4","Cover 6 - 4","Field Blitz 3 - 4","Hot Blitz 3 - 4","Saw Blitz 0 - 4","Saw Blitz 1 - 4","Saw Blitz 2 - 4","Saw Blitz 3 - 4","Ss 2 Trap - 4","Tampa 2 - 4"],
-        "5  2 Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"],
-        "4  2  5 Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
-        "4  2  5 Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 1 Sting - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mikesam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
-        "4  2  5 Under": ["1 Fs Fire - 4-2","1 Slant Crash - 4-2","2 Invert Hard Flat - 4-2","Cover 1 Hole - 4-2","Cover 2 Invert - 4-2","Cover 2 Man - 4-2","Cover 3 Match - 4-2","Cover 3 Skywk - 4-2","Cover 4 Quarters - 4-2","Free Fire - 4-2","Hammero Blast - 4-2","Mike Sam Crash Press - 4-2","Safety Blitz - 4-2","Sam Blitz 2 - 4-2","Ss Sam Crash Press - 4-2","Tampa 2 - 4-2","Will Go Fire 3 - 4-2","Wk Corner Blitz - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "3  3 Dbl Mug": ["Blitz Loop 3 - Nickel 3","Buck Zone Blitz - Nickel 3","Cover 1 Hole - Nickel 3","Cover 2 Invert - Nickel 3","Cover 3 Match - Nickel 3","Cover 3 Sky - Nickel 3","Field Sim 3 - Nickel 3","Mid Blitz - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Dog 3 Buzz - Nickel 3","Nickel Dog Meg - Nickel 3","Nickel Overload 3 - Nickel 3","Nickel Sim 2 - Nickel 3","Ss Dog 3 - Nickel 3","Tampa 2 - Nickel 3"],
         "3  3 Load Mug": ["Cover 2 Man - Nickel 3","Cover 3 Cloud - Nickel 3","Cover 3 Match - Nickel 3","Cover 3 Sky - Nickel 3","Cover 6 - Nickel 3","Cover 6 Willie - Nickel 3","Cover I Lb Blitz - Nickel 3","Hot Blitz 3 - Nickel 3","Lb Blitz 0 - Nickel 3","Lb De Twist 3 - Nickel 3","Nickel Blitz 0 - Nickel 3","Nickel Blitz 1 - Nickel 3","Nickel Blitz 2 - Nickel 3","Nickel Blitz 3 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -3989,28 +4147,32 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "4-3": {
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
+        "Tite Leo": ["Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Drop - 4","Cover 6 - 4","Field Blitz 3 - 4","Hot Blitz 3 - 4","Saw Blitz 0 - 4","Saw Blitz 1 - 4","Saw Blitz 2 - 4","Saw Blitz 3 - 4","Ss 2 Trap - 4","Tampa 2 - 4"]
+      },
+      "5-2": {
+        "Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"]
+      },
+      "4-2-5": {
+        "Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
+        "Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 1 Sting - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mikesam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
+        "Under": ["1 Fs Fire - 4-2","1 Slant Crash - 4-2","2 Invert Hard Flat - 4-2","Cover 1 Hole - 4-2","Cover 2 Invert - 4-2","Cover 2 Man - 4-2","Cover 3 Match - 4-2","Cover 3 Skywk - 4-2","Cover 4 Quarters - 4-2","Free Fire - 4-2","Hammero Blast - 4-2","Mike Sam Crash Press - 4-2","Safety Blitz - 4-2","Sam Blitz 2 - 4-2","Ss Sam Crash Press - 4-2","Tampa 2 - 4-2","Will Go Fire 3 - 4-2","Wk Corner Blitz - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "titans_def",
     name: "Tennessee Titans",
-    style: "",
     formations: {
       "46": {
         "Bear": ["Ag Mid Blitz","Cover 1","Cover 3","Engage Eight","Gap Press","Safety Fire","Slant Weak","Slant Weak 3","Wall Stunt"]
-      },
-      "Other": {
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
-        "4  3 Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Stir - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Sky Wk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz - 4"],
-        "4  3 Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 1 Spy - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "4  2  5 Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 1 Sting - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mikesam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
-        "4  2  5 Under": ["1 Fs Fire - 4-2","1 Slant Crash - 4-2","Cover 1 Hole - 4-2","Cover 2 Invert - 4-2","Cover 2 Man - 4-2","Cover 3 Match - 4-2","Cover 3 Skywk - 4-2","Cover 4 Quarters - 4-2","Free Fire - 4-2","Hammero Blast - 4-2","Mike Sam Crash Press - 4-2","Safety Blitz - 4-2","Sam Blitz 2 - 4-2","Tampa 2 - 4-2","Will Go Fire 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       },
       "Nickel": {
         "2  4 Load Dbl Mug": ["1 Dt Lb Loop - Nickel 2","Blitz Loop 0 - Nickel 2","Blitz Loop 3 - Nickel 2","Blitz Loop Sim 3 - Nickel 2","Cover 1 Lb Blitz - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Lb Blitz 6 - Nickel 2","Nickel Sim 2 - Nickel 2","Redzone Dt Drop - Nickel 2","Side Blitz - Nickel 2","Tampa 2 - Nickel 2"],
@@ -4030,28 +4192,31 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6"],
+        "Over": ["1 Hole Press - 4","1 Robber Press - 4","Cover 1 Contain - 4","Cover 1 Hole - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Stir - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Dbl Safety Blitz - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Sky Wk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz - 4"],
+        "Over Walk": ["Cover 1 Hole - 4","Cover 3 Cloud - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Mike Will Blitz - 4","Sam Will Blitz - 4","Ss Blitz - 4","Ss Blitz 3 - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 1 Spy - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "4-2-5": {
+        "Over Wide": ["Cover 1 Hole - 4-2","Cover 1 Robber - 4-2","Cover 1 Sting - 4-2","Cover 2 Man - 4-2","Cover 3 Cloud Show 2 - 4-2","Cover 3 Sim Pressure - 4-2","Cover 3 Sky - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Double Cb Blitz - 4-2","Fire Man - 4-2","Free Fire 3 - 4-2","Invert 2 Sim - 4-2","Mikesam Cross 3 - 4-2","Sam Blitz 3 - 4-2","Tampa 2 - 4-2","Thunder Smoke - 4-2","Will Blitz 3 - 4-2"],
+        "Under": ["1 Fs Fire - 4-2","1 Slant Crash - 4-2","Cover 1 Hole - 4-2","Cover 2 Invert - 4-2","Cover 2 Man - 4-2","Cover 3 Match - 4-2","Cover 3 Skywk - 4-2","Cover 4 Quarters - 4-2","Free Fire - 4-2","Hammero Blast - 4-2","Mike Sam Crash Press - 4-2","Safety Blitz - 4-2","Sam Blitz 2 - 4-2","Tampa 2 - 4-2","Will Go Fire 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "vikings_def",
     name: "Minnesota Vikings",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
-        "3  4 Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
-        "3  4 Tite 5 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Fs Fire - 3","Cover 1 Hole Wk - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Tampa 2 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "4  3 Even 6  1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
-        "4  3 Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Bravei - 4","Tampa 2 - 4","Will Buck 3 Press - 4"],
-        "3  3  5 3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"],
-        "4  2  5 3 High": ["3 Double Cloud - 4-2","3 Double Sky - 4-2","Blitz Dt Pop - 4-2","Cover 2 Lurk - 4-2","Cover 2 Match - 4-2","Cover 3 Match - 4-2","Cover 4 Quarters - 4-2","Edge Blitz 2 - 4-2","Edge Blitz 3 - 4-2","Hot Blitz 3 - 4-2","Lb Blitz 0 - 4-2","Tampa 2 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "2  4": ["1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 2 Match - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sammie - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -4073,24 +4238,41 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Even": ["Cov 1 Robber Press - 3","Cover 3 Cloud - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cross Fire 3 - 3","Mike Scrape 3 Press - 3","Pinch Buck O - 3","Tampa 2 - 3","Will Fire 3 Seam - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Over Ed": ["1 Pirate Spy - 3","1 Sting Tex - 3","2 Sim Tex - 3","3 Sim Tex - 3","Cover 1 Hole - 3","Cover 1 Robber Press - 3","Cover 2 Man - 3","Cover 3 - 3","Cover 3 Cloud - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Hot Blitz 3 - 3","Olb Fire Man - 3","Tampa 2 - 3"],
+        "Over Solid": ["Cover 1 Sting - 3","Cover 2 Invert - 3","Cover 3 Match - 3","Cover 3 Sky Wk - 3","Cover 4 Quarters - 3","Fs Blitz - 3","Hammero Blast - 3","Saw 0 Blast - 3","Tampa 2 - 3"],
+        "Tite 5 Tech": ["1 Robber Press - 3","2 Invert Hard Flat - 3","Cover 1 Fs Fire - 3","Cover 1 Hole Wk - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Dbl Safety Blitz - 3","Fs Slant 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Tampa 2 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 3 - 3","Fs Fire I - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "4-3": {
+        "Even 6-1": ["Cover 1 Hole - 4-3 Even 6","Cover 1 Mlb Blitz - 4-3 Even 6","Cover 2 Man - 4-3 Even 6","Cover 3 Buzz - 4-3 Even 6","Cover 4 Quarters - 4-3 Even 6","Mike Will Blitz - 4-3 Even 6","Sam Blitz 3 - 4-3 Even 6","Sam Will Blitz - 4-3 Even 6","Tampa 2 - 4-3 Even 6"],
+        "Odd Leo": ["Cover 1 Hole - 4","Cover 3 Match - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cross 3 Fire - 4","Pinch Buck O - 4","Pinch Dog 2 Press - 4","Saw Blitz 1 - 4","Ss 2 Trap - 4","Storm Bravei - 4","Tampa 2 - 4","Will Buck 3 Press - 4"]
+      },
+      "3-3-5": {
+        "3 High Penny": ["3 Double Buzz - 3-3","3 Double Cloud - 3-3","Cover 2 Lurk - 3-3","Cover 3 Sky - 3-3","Cover 4 Drop - 3-3","Cover 6 Invert - 3-3","Edge Blitz 2 - 3-3","Edge Blitz 3 - 3-3","Hot Blitz 3 - 3-3","Mike Blitz 0 - 3-3","Mike Sim 2 - 3-3","Tampa 2 - 3-3"]
+      },
+      "4-2-5": {
+        "3 High": ["3 Double Cloud - 4-2","3 Double Sky - 4-2","Blitz Dt Pop - 4-2","Cover 2 Lurk - 4-2","Cover 2 Match - 4-2","Cover 3 Match - 4-2","Cover 4 Quarters - 4-2","Edge Blitz 2 - 4-2","Edge Blitz 3 - 4-2","Hot Blitz 3 - 4-2","Lb Blitz 0 - 4-2","Tampa 2 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   },
   {
     id: "alt_46_def",
     name: "46 (Alt)",
-    style: "",
     formations: {
       "46": {
         "Bear": ["Ag Mid Blitz","Cover 1","Cover 3","Engage Eight","Gap Press","Safety Fire","Slant Weak","Slant Weak 3","Wall Stunt"],
         "Bear Under": ["Cover 1","Cover 3","Engage Eight","Gap Press","Lb Dogs","Lb Dogs 3"],
         "Normal": ["Cover 1 Contain","Cover 1 Hole","Cover 2 Invert","Cover 3","Cover 3 Match","Engage Eight","Fire Zone 3","Inside Blitz","Rush Outside"]
-      },
-      "Other": {
-        "3  4 Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam I - 3"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4","Zone Blitz - 4"],
-        "4  2  5 Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       },
       "Nickel": {
         "3  3": ["2 Invert Hard Flat - Nickel 3","3 Double Buzz - Nickel 3","Cover 1 Robber Press - Nickel 3","Cover 2 Drop - Nickel 3","Cover 2 Invert - Nickel 3","Cover 2 Man - Nickel 3","Cover 3 Drop - Nickel 3","Cover 4 Drop - Nickel 3","Lb Blitz 0 - Nickel 3","Lb Blitz 1 - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Ss Mike Blitz - Nickel 3","Tampa 2 - Nickel 3"],
@@ -4106,21 +4288,25 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "3-4": {
+        "Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam I - 3"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4","Zone Blitz - 4"]
+      },
+      "4-2-5": {
+        "Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "alt_3_4_def",
     name: "3-4 (Alt)",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam 1 - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "3  4 Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "2  4": ["1 Double Slot - Nickel 2","1 Double TE - Nickel 2","1 Double Wr1 - Nickel 2","1 Double Wr2 - Nickel 2","2 Invert Lurk - Nickel 2","Bracket Switch Willie - Nickel 2","Buck Slant 3 - Nickel 2","Cover 1 Contain - Nickel 2","Cover 1 Hole - Nickel 2","Cover 1 Robber - Nickel 2","Cover 2 Invert - Nickel 2","Cover 2 Man - Nickel 2","Cover 3 Buzz Match - Nickel 2","Cover 3 Cloud - Nickel 2","Cover 3 Match - Nickel 2","Cover 3 Sky - Nickel 2","Cover 4 Drop Field - Nickel 2","Cover 4 Palms - Nickel 2","Cover 4 Quarters - Nickel 2","Cover 6 - Nickel 2","Cover 6 Willie - Nickel 2","Cover 9 Show 2 - Nickel 2","Cross Sim 2 - Nickel 2","Dbl Safety Blitz - Nickel 2","Double Bracket - Nickel 2","Double Bracket Switch - Nickel 2","Edge Blitz 0 - Nickel 2","Edge Blitz 3 - Nickel 2","Field Sim 3 - Nickel 2","Fs Will Blitz 0 - Nickel 2","Lb Blitz 1 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Sim 2 - Nickel 2","Over Storm Brave - Nickel 2","Overload 3 Seam - Nickel 2","Roll 23 Cloud - Nickel 2","Roll Cover 2 Invert - Nickel 2","Roll Cover 3 Cloud - Nickel 2","Show Ss Sim 2 - Nickel 2","Silver Shoot Pinch - Nickel 2","Sim Pressure 3 - Nickel 2","Tampa 2 - Nickel 2"],
         "2  4 Dbl Mug": ["Blitz Loop 3 - Nickel 2","Coffee House 3 Seam - Nickel 2","Cover 1 Hole - Nickel 2","Cover 2 Invert - Nickel 2","Cover 3 Seam - Nickel 2","Cover 3 Sky - Nickel 2","Field Sim 3 - Nickel 2","Lb Blitz 3 - Nickel 2","Mid Blitz 0 - Nickel 2","Nickel 2 Trap - Nickel 2","Nickel Dog 3 Buzz - Nickel 2","Nickel Overload 3 - Nickel 2","Nickel Sim 2 - Nickel 2","Ss Blitz 3 - Nickel 2","Tampa 2 - Nickel 2"],
@@ -4137,23 +4323,22 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "1  3  7": ["3 Dbl Mable Cloud - Quarter 1-3","3 Double Buzz - Quarter 1-3","3 Double Mable - Quarter 1-3","Cover 1 Thief - Quarter 1-3","Cover 2 Man Spy - Quarter 1-3","Cover 2 Spy - Quarter 1-3","Cover 3 Mable - Quarter 1-3","Cover 3 Spy - Quarter 1-3","Cover 4 Drop - Quarter 1-3","Db Strike 1 - Quarter 1-3","Fz 2 Deep - Quarter 1-3","Fz 3 Sky - Quarter 1-3","Man Up 3 Deep - Quarter 1-3","Overload 3 Seam - Quarter 1-3","Under Smoke - Quarter 1-3"]
+      },
+      "3-4": {
+        "Bear": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 - 3","Cover 3 Hard Flat - 3","Lb Blitz 0 - 3","Sam Mike 1 - 3","Trio Sky Zone - 3","Will Sam 1 - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
+        "Over": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Buzz Mike - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Olb Fire 2 - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Ss Blitz 1 - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Under": ["2 Invert Hard Flat - 3","Cover 1 Hole - 3","Cover 2 Invert - 3","Cover 3 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Quarters - 3","Cover 6 - 3","Fs Fire 1 - 3","Fs Fire 3 - 3","Mlb Cross Fire 3 - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Weak Blitz 1 - 3","Weak Blitz 3 - 3"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "alt_4_3_def",
     name: "4-3 (Alt)",
-    style: "",
     formations: {
-      "Other": {
-        "4  3 Over": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "4  4 Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"],
-        "4  2  5 Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "3  3": ["2 Invert Hard Flat - Nickel 3","3 Double Buzz - Nickel 3","Cover 1 Robber Press - Nickel 3","Cover 2 Drop - Nickel 3","Cover 2 Invert - Nickel 3","Cover 2 Man - Nickel 3","Cover 3 Drop - Nickel 3","Cover 4 Drop - Nickel 3","Lb Blitz 0 - Nickel 3","Lb Blitz 1 - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Ss Mike Blitz - Nickel 3","Tampa 2 - Nickel 3"],
         "Double Mug": ["2 Invert Hard Flat","Blitz Loop 3","Coffee House 3 Seam","Cover 1 Hole","Cover 2 Invert","Cover 3 Match","Cover 3 Sky","Field Sim 3","Lb Blitz 3","Mid Blitz 0","Nickel 2 Trap","Nickel Overload 3","Nickel Sim 2","Ss Blitz 3","Tampa 2"],
@@ -4168,20 +4353,28 @@ const DEFENSIVE_PLAYBOOKS = [
         "5  3": ["Gaps Ab - Goal Line 5","Gaps All - Goal Line 5","Gaps All Lb - Goal Line 5","Gaps B - Goal Line 5","Gl Man - Goal Line 5","Mlb Gap A - Goal Line 5"],
         "6  2": ["60 Base - Goal Line 6","60 Half Out - Goal Line 6","60 Out - Goal Line 6","60 Out Jacks - Goal Line 6","60 Pinch - Goal Line 6","Guts - Goal Line 6"],
         "Pinch": ["Base"]
+      },
+      "4-3": {
+        "Over": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Solid": ["2 Invert Hard Flat - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Hammero Blast - 4","Sam Isting - 4","Saw 0 Blast - 4","Ss Blitz 1 - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "4-4": {
+        "Split": ["Cover 1 - 4","Cover 2 Invert - 4","Cover 3 - 4","Cover 3 Match - 4","Crash 3 - 4","Engage Eight - 4","Fs Blitz - 4","Lb Fire - 4","Monster Green - 4"]
+      },
+      "4-2-5": {
+        "Over G": ["Casino Blitz - 4-2","Corner Blitz 3 - 4-2","Cover 1 Hole - 4-2","Cover 2 - 4-2","Cover 2 Contain - 4-2","Cover 2 Man - 4-2","Cover 3 - 4-2","Cover 3 Buzz Match Wk - 4-2","Cover 3 Match - 4-2","Cover 3 Sky - 4-2","Cover 4 Palms - 4-2","Cover 4 Quarters - 4-2","Cover 6 - 4-2","Cover 6 Invert - 4-2","Cover 6 Trap - 4-2","Lb Blitz - 4-2","Mike Ss 3 - 4-2","Pinch Blitz - 4-2","Ss Blitz 2 - 4-2","Ss Blitz 3 - 4-2","Ss Lb Blitz - 4-2","Ws Blitz 1 - 4-2","Ws Blitz 2 - 4-2","Ws Blitz 3 - 4-2"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "alt_cover_2_def",
     name: "Cover 2 (Alt)",
-    style: "",
     formations: {
-      "Other": {
-        "4  3 Over": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
-      },
       "Nickel": {
         "3  3": ["2 Invert Hard Flat - Nickel 3","3 Double Buzz - Nickel 3","Cover 1 Robber Press - Nickel 3","Cover 2 Drop - Nickel 3","Cover 2 Invert - Nickel 3","Cover 2 Man - Nickel 3","Cover 3 Drop - Nickel 3","Cover 4 Drop - Nickel 3","Lb Blitz 0 - Nickel 3","Lb Blitz 1 - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Ss Mike Blitz - Nickel 3","Tampa 2 - Nickel 3"],
         "Double Mug": ["2 Invert Hard Flat","Blitz Loop 3","Coffee House 3 Seam","Cover 1 Hole","Cover 2 Invert","Cover 3 Match","Cover 3 Sky","Field Sim 3","Lb Blitz 3","Mid Blitz 0","Nickel 2 Trap","Nickel Overload 3","Nickel Sim 2","Ss Blitz 3","Tampa 2"],
@@ -4197,24 +4390,21 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "Normal": ["3 Dbl Mable Cloud","3 Double Buzz","3 Double Mable","Cover 1 Thief","Cover 2 Man Spy","Cover 2 Spy","Cover 3 Mable","Cover 3 Spy","Cover 4 Drop","Db Strike","Fz 2 Deep","Fz 3 Sky","Man Up 3 Deep","Overload 3","Under Smoke"]
+      },
+      "4-3": {
+        "Over": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloud Str - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Over Wide": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 3 Sky - 4","Cover 4 Quarters - 4","Cover 6 - 4","Cover I Spy - 4","Fire Man - 4","Sam Blitz 3 - 4","Tampa 2 - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
       }
     }
   },
   {
     id: "alt_multiple_d_def",
     name: "Multiple D (Alt)",
-    style: "",
     formations: {
-      "Other": {
-        "3  4 Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
-        "3  4 Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"],
-        "4  3 Odd": ["Cover 1 Robber Press - 4","Cover 2 Man - 4","Cover 3 Cloud - 4","Cover 3 Sky - 4","Cover 6 - 4","Lb Dogs - 4","Pinch Zone 4 - 4","Strong Slant 3 - 4","Tampa 2 - 4"],
-        "4  3 Over": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloudstr - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
-        "4  3 Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"],
-        "5  2 Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"],
-        "Prevent 3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"],
-        "2  4  5 Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
-      },
       "Nickel": {
         "3  3": ["2 Invert Hard Flat - Nickel 3","3 Double Buzz - Nickel 3","Cover 1 Robber Press - Nickel 3","Cover 2 Drop - Nickel 3","Cover 2 Invert - Nickel 3","Cover 2 Man - Nickel 3","Cover 3 Drop - Nickel 3","Cover 4 Drop - Nickel 3","Lb Blitz 0 - Nickel 3","Lb Blitz 1 - Nickel 3","Nickel 2 Trap - Nickel 3","Nickel Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Ss Mike Blitz - Nickel 3","Tampa 2 - Nickel 3"],
         "3  3 Cub": ["1 Sam Ss Blitz - Nickel 3","Blitz Lb Lurk 1 - Nickel 3","Boca Blitz 2 - Nickel 3","Cover 3 Buzz - Nickel 3","Cover 4 Show 2 - Nickel 3","Mike Blitz 0 - Nickel 3","Nickel Blitz 3 - Nickel 3","Olb Blitz 1 - Nickel 3","Sam Ss Blitz 3 - Nickel 3","Sam Will Blitz 3 - Nickel 3","Ss Blitz 0 - Nickel 3","Tampa 2 - Nickel 3"],
@@ -4235,6 +4425,24 @@ const DEFENSIVE_PLAYBOOKS = [
       },
       "Quarter": {
         "Normal": ["3 Dbl Mable Cloud","3 Double Buzz","3 Double Mable","Cover 1 Thief","Cover 2 Man Spy","Cover 2 Spy","Cover 3 Mable","Cover 3 Spy","Cover 4 Drop","Db Strike","Fz 2 Deep","Fz 3 Sky","Man Up 3 Deep","Overload 3","Under Smoke"]
+      },
+      "3-4": {
+        "Cub": ["Cover 1 Hole - 3","Cover 3 Sky - 3","Gap Press - 3","Olb Blitz - 3","Sting Pinch - 3","Trio Sky Zone - 3"],
+        "Odd": ["Cover 1 Hole - 3","Cover 1 Robber - 3","Cover 2 Hard Flat - 3","Cover 3 Match - 3","Cover 3 Sky - 3","Cover 4 Drop - 3","Cover 4 Quarters - 3","Cover 6 - 3","Cross 3 Fire - 3","Pinch Buck O - 3","Saw Blitz 1 - 3","Ss 2 Trap - 3","Storm Brave 1 - 3","Tampa 2 - 3","Will Buck 3 Press - 3"]
+      },
+      "4-3": {
+        "Odd": ["Cover 1 Robber Press - 4","Cover 2 Man - 4","Cover 3 Cloud - 4","Cover 3 Sky - 4","Cover 6 - 4","Lb Dogs - 4","Pinch Zone 4 - 4","Strong Slant 3 - 4","Tampa 2 - 4"],
+        "Over": ["Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Hard Flat - 4","Cover 2 Man - 4","Cover 3 Cloudstr - 4","Cover 3 Sky - 4","Cover 4 Press - 4","Cover 4 Quarters - 4","Cover 6 - 4","Free Fire - 4","Lb Sting I - 4","Olb Fire Man - 4","Sam Edge 3 - 4","Tampa 2 - 4","Thunder Smoke - 4"],
+        "Under": ["2 Invert Hard Flat - 4","Cover 1 Hole - 4","Cover 1 Robber - 4","Cover 2 Invert - 4","Cover 3 Hard Flat - 4","Cover 3 Match - 4","Cover 3 Skywk - 4","Cover 4 Quarters - 4","Free Fire O - 4","Fs Fire 3 - 4","Fs Fire I - 4","Hammero Blast - 4","Sam Crash 3 - 4","Sam Crash I - 4","Will Go Fire 3 - 4"]
+      },
+      "5-2": {
+        "Normal": ["Cover 1 - 5","Cover 3 - 5","Dt Loop - 5","Fire Zone 2 - 5","Pinch - 5","Trio Sky Zone - 5"]
+      },
+      "Prevent": {
+        "3 Deep": ["1 Double Buzz","3 Deep Blitz","Cover 2 Drop","Cover 3","Man 3 Deep","Prevent"]
+      },
+      "2-4-5": {
+        "Over Wide": ["Cover 1 Hole - 2-4","Cover 1 Robber - 2-4","Cover 1 Sting - 2-4","Cover 2 Man - 2-4","Cover 3 Cloud Show 2 - 2-4","Cover 3 Sim Pressure - 2-4","Cover 3 Sky - 2-4","Cover 4 Quarters - 2-4","Cover 6 - 2-4","Double Cb Blitz - 2-4","Fire Man - 2-4","Free Fire 3 - 2-4","Invert 2 Sim - 2-4","Mikesam Cross 3 - 2-4","Sam Blitz 3 - 2-4","Tampa 2 - 2-4","Thunder Smoke - 2-4","Will Blitz 3 - 2-4"]
       }
     }
   }
