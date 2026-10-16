@@ -56,6 +56,14 @@ let liveAnimEnabled = true;
 function cleanup() {
   renderers.forEach(r => r.destroy());
   renderers = [];
+  // Disconnect IntersectionObservers and destroy static renderers on all cards
+  if (grid) {
+    grid.querySelectorAll('.coverage-card').forEach(card => {
+      if (card._observer) { card._observer.disconnect(); card._observer = null; }
+      if (card._staticRenderer) { card._staticRenderer.destroy(); card._staticRenderer = null; }
+      if (card._renderer) { card._renderer.destroy(); card._renderer = null; }
+    });
+  }
 }
 
 function getTypeClass(type) {
@@ -97,6 +105,11 @@ function deactivateCard(card) {
     const idx = card.dataset.covIdx;
     const cov = COVERAGES[parseInt(idx)];
     if (canvas && cov) {
+      // Destroy old static renderer before creating new one
+      if (card._staticRenderer) {
+        card._staticRenderer.destroy();
+        renderers = renderers.filter(r => r !== card._staticRenderer);
+      }
       const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
       r.renderCoverageCard('Nickel', cov.name);
       card._staticRenderer = r;
@@ -532,8 +545,8 @@ function buildPosFilter() {
 function updateVisibleGroups() {
   const container = document.getElementById('posFilterContainer');
   if (!container) return;
-  const activeToggles = container.querySelectorAll('.pos-toggle.active');
-  const allToggles = container.querySelectorAll('.pos-toggle');
+  const activeToggles = container.querySelectorAll('.pos-toggle.active[data-group]');
+  const allToggles = container.querySelectorAll('.pos-toggle[data-group]');
   if (activeToggles.length === allToggles.length) {
     visibleGroups = null; // All visible
   } else {

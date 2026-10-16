@@ -15,6 +15,9 @@ let currentCoverage = null;
 let interactiveMode = true; // default to interactive
 let playerPositions = {}; // dynamic player positions {key: [x, y]}
 let playerRoutes = {}; // custom route overrides {key: routeName}
+let originalPlayerPositions = null; // stored before first flip for perfect restore
+let originalPlayerRoutes = null; // stored before first flip for perfect restore
+let originalRoutePaths = null; // stored ROUTE_PATHS_LOCAL state before first flip
 let selectedPlayer = null;
 let draggedPlayer = null;
 let isDragging = false;
@@ -688,6 +691,10 @@ btnReplay.addEventListener('click', () => {
 btnLoop.addEventListener('click', () => {
   isLooping = !isLooping;
   btnLoop.classList.toggle('active', isLooping);
+  // Update currently running renderer so change takes effect immediately
+  if (activeRenderer) {
+    activeRenderer.loopEnabled = isLooping;
+  }
 });
 btnLoop.classList.add('active');
 
@@ -1116,9 +1123,6 @@ function initCreatorControls() {
   }
 
   btnFlip.addEventListener('click', () => {
-    isFlipped = !isFlipped;
-    btnFlip.classList.toggle('active', isFlipped);
-
     // Route swap pairs: left <-> right variants
     const FLIP_ROUTE_MAP = {
       'drag': 'drag_left', 'drag_left': 'drag',
@@ -1130,28 +1134,62 @@ function initCreatorControls() {
       'qb_boot_left': 'qb_boot_right', 'qb_boot_right': 'qb_boot_left',
     };
 
-    // Flip all positions horizontally
-    for (const [key, pos] of Object.entries(playerPositions)) {
-      playerPositions[key] = [1 - pos[0], pos[1]];
-    }
-
-    // Swap left/right route variants and negate x-components of waypoints
-    for (const [key, route] of Object.entries(playerRoutes)) {
-      if (key.startsWith('_')) continue; // skip _qb, _isRun, _ball_target
-      if (FLIP_ROUTE_MAP[route]) {
-        playerRoutes[key] = FLIP_ROUTE_MAP[route];
+    if (isFlipped) {
+      // Already flipped — restore originals for perfect round-trip
+      isFlipped = false;
+      btnFlip.classList.remove('active');
+      if (originalPlayerPositions) {
+        playerPositions = JSON.parse(JSON.stringify(originalPlayerPositions));
       }
-    }
-    // Also flip QB action if applicable
-    if (playerRoutes._qb && FLIP_ROUTE_MAP[playerRoutes._qb]) {
-      playerRoutes._qb = FLIP_ROUTE_MAP[playerRoutes._qb];
-    }
+      if (originalPlayerRoutes) {
+        playerRoutes = JSON.parse(JSON.stringify(originalPlayerRoutes));
+      }
+      if (originalRoutePaths) {
+        // Restore ROUTE_PATHS_LOCAL waypoints from stored originals
+        for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+          if (originalRoutePaths[routeName]) {
+            ROUTE_PATHS_LOCAL[routeName] = originalRoutePaths[routeName].map(wp => [...wp]);
+          }
+        }
+      }
+      originalPlayerPositions = null;
+      originalPlayerRoutes = null;
+      originalRoutePaths = null;
+    } else {
+      // Store originals before first flip
+      originalPlayerPositions = JSON.parse(JSON.stringify(playerPositions));
+      originalPlayerRoutes = JSON.parse(JSON.stringify(playerRoutes));
+      originalRoutePaths = {};
+      for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+        originalRoutePaths[routeName] = ROUTE_PATHS_LOCAL[routeName].map(wp => [...wp]);
+      }
 
-    // Negate x-component of all route waypoints in the local route paths
-    for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
-      const waypoints = ROUTE_PATHS_LOCAL[routeName];
-      for (let i = 0; i < waypoints.length; i++) {
-        waypoints[i] = [-waypoints[i][0], waypoints[i][1]];
+      isFlipped = true;
+      btnFlip.classList.add('active');
+
+      // Flip all positions horizontally
+      for (const [key, pos] of Object.entries(playerPositions)) {
+        playerPositions[key] = [1 - pos[0], pos[1]];
+      }
+
+      // Swap left/right route variants
+      for (const [key, route] of Object.entries(playerRoutes)) {
+        if (key.startsWith('_')) continue; // skip _qb, _isRun, _ball_target
+        if (FLIP_ROUTE_MAP[route]) {
+          playerRoutes[key] = FLIP_ROUTE_MAP[route];
+        }
+      }
+      // Also flip QB action if applicable
+      if (playerRoutes._qb && FLIP_ROUTE_MAP[playerRoutes._qb]) {
+        playerRoutes._qb = FLIP_ROUTE_MAP[playerRoutes._qb];
+      }
+
+      // Negate x-component of all route waypoints in the local route paths
+      for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+        const waypoints = ROUTE_PATHS_LOCAL[routeName];
+        for (let i = 0; i < waypoints.length; i++) {
+          waypoints[i] = [-waypoints[i][0], waypoints[i][1]];
+        }
       }
     }
 
@@ -1160,6 +1198,19 @@ function initCreatorControls() {
 
   btnReset.addEventListener('click', () => {
     isFlipped = false;
+    btnFlip.classList.remove('active');
+    // Clear stored flip originals
+    originalPlayerPositions = null;
+    originalPlayerRoutes = null;
+    // Restore ROUTE_PATHS_LOCAL to default (undo any negated waypoints from flipping)
+    if (originalRoutePaths) {
+      for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+        if (originalRoutePaths[routeName]) {
+          ROUTE_PATHS_LOCAL[routeName] = originalRoutePaths[routeName].map(wp => [...wp]);
+        }
+      }
+      originalRoutePaths = null;
+    }
     document.getElementById('creatorPlayName').value = '';
     resetInteractivePositions();
     if (currentPlay) loadPlayRoutes();

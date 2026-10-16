@@ -1220,6 +1220,10 @@ const PLAY_ROUTES = {
     routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
+  'HB Toss Crack': {
+    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.12, 0]] }
+  },
   'HB Draw': {
     routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'run_inside' },
     qb: 'qb_drop', isRun: true
@@ -1229,6 +1233,10 @@ const PLAY_ROUTES = {
     qb: 'option_keep', isRun: true
   },
   'Jet Sweep': {
+    routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.20, 0]] }
+  },
+  'Jet Sweep Touch': {
     routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.20, 0]] }
   },
@@ -1458,7 +1466,7 @@ const PLAY_ROUTES = {
   },
   'Orbit': {
     routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
-    qb: 'qb_handoff', isRun: true
+    qb: 'qb_handoff', isRun: true, motion: { player: 'RB', path: [[0.20, 0]] }
   },
   'Orbit Screen': {
     routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
@@ -1506,7 +1514,7 @@ const PLAY_ROUTES = {
   },
   'PA Cross': {
     routes: { WR1: 'deep_in', WR2: 'shallow_cross', WR3: 'deep_post', WR4: 'streak', TE: 'drag', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR1'
+    qb: 'qb_drop', ball_target: 'WR1', motion: { player: 'TE', path: [[0.10, 0]] }
   },
   'PA Seams': {
     routes: { WR1: 'go', WR2: 'seam', WR3: 'seam', WR4: 'go', TE: 'seam', RB: 'check_down' },
@@ -1514,7 +1522,7 @@ const PLAY_ROUTES = {
   },
   'PA Slide': {
     routes: { WR1: 'shallow_cross', WR2: 'curl', WR3: 'flat', WR4: 'go', TE: 'dig', RB: 'block' },
-    qb: 'qb_boot_right', ball_target: 'WR2'
+    qb: 'qb_boot_right', ball_target: 'WR2', motion: { player: 'TE', path: [[0.08, 0]] }
   },
   'Verticals': {
     routes: { WR1: 'go', WR2: 'seam', WR3: 'seam', WR4: 'go', TE: 'seam', RB: 'check_down' },
@@ -1580,7 +1588,7 @@ const PLAY_ROUTES = {
   },
   'PA Waggle': {
     routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
-    qb: 'qb_boot_right', ball_target: 'WR2'
+    qb: 'qb_boot_right', ball_target: 'WR2', motion: { player: 'TE', path: [[0.10, 0]] }
   },
   'PA Counter Shot': {
     routes: { WR1: 'post', WR2: 'streak', WR3: 'seam', WR4: 'streak', TE: 'drag', RB: 'block' },
@@ -2138,7 +2146,7 @@ const PLAY_ROUTES = {
   },
   'Reverse': {
     routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
-    qb: 'qb_handoff', isRun: true
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR3', path: [[-0.25, 0]] }
   },
   'HB Counter': {
     routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_counter' },
@@ -2190,7 +2198,7 @@ const PLAY_ROUTES = {
   },
   'MTN Drive': {
     routes: { WR1: 'in', WR2: 'flat', WR3: 'drag', WR4: 'curl', TE: 'in', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR1'
+    qb: 'qb_drop', ball_target: 'WR1', motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
   'MTN FK Screen Wheel': {
     routes: { WR1: 'streak', WR2: 'screen', WR3: 'wheel', WR4: 'streak', TE: 'block', RB: 'flat' },
@@ -2234,11 +2242,11 @@ const PLAY_ROUTES = {
   },
   'MTN HB Toss Crack': {
     routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_handoff', isRun: true
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.12, 0]] }
   },
   'MTN Inside Zone': {
     routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' },
-    qb: 'qb_handoff', isRun: true
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
   'MTN Mesh Spot': {
     routes: { WR1: 'drag', WR2: 'drag_left', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'flat' },
@@ -2250,7 +2258,7 @@ const PLAY_ROUTES = {
   },
   'MTN Outside Zone': {
     routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside' },
-    qb: 'qb_handoff', isRun: true
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
   'MTN PA FK Slide': {
     routes: { WR1: 'in', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'drag', RB: 'block' },
@@ -2318,7 +2326,7 @@ const PLAY_ROUTES = {
   },
   'MTN Smash': {
     routes: { WR1: 'hitch', WR2: 'corner', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR2'
+    qb: 'qb_drop', ball_target: 'WR2', motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
   'MTN Smash Sluggo': {
     routes: { WR1: 'hitch', WR2: 'post', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'block' },
@@ -2359,6 +2367,14 @@ const PLAY_ROUTES = {
   'MTN Z Spot': {
     routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'flat', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'MTN Zone Toss': {
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.20, 0]] }
+  },
+  'MTN Duo': {
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
+    qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
 
   // Orbit / Shuffle Motion Plays
@@ -2426,7 +2442,7 @@ const PLAY_ROUTES = {
   },
   'PA Cross': {
     routes: { WR1: 'deep_in', WR2: 'drag', WR3: 'skinny_post', WR4: 'streak', TE: 'drag', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR3'
+    qb: 'qb_drop', ball_target: 'WR3', motion: { player: 'TE', path: [[0.10, 0]] }
   },
   'PA Draw Shot': {
     routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
@@ -3252,7 +3268,16 @@ function inferRoutes(name) {
   const qb = isPA ? (base.includes('boot') || base.includes('waggle') ? (base.includes('lt') || base.includes('left') ? 'qb_boot_left' : 'qb_boot_right') : 'qb_drop') : 'qb_drop';
 
   // Jet/motion overlay
-  const motion = (base.includes('jet') || base.includes('mtn')) ? { player: 'WR2', path: [[-0.20, 0]] } : undefined;
+  let motion;
+  if (base.includes('jet') || base.includes('mtn')) {
+    motion = { player: 'WR2', path: [[-0.20, 0]] };
+  } else if (base.includes('orbit')) {
+    motion = { player: 'RB', path: [[0.20, 0]] };
+  } else if (base.includes('reverse') || base.includes('end around')) {
+    motion = { player: 'WR3', path: [[-0.25, 0]] };
+  } else if (base.includes('pa boot') || base.includes('pa waggle') || base.includes('pa slide') || base.includes('pa cross')) {
+    motion = { player: 'TE', path: [[0.10, 0]] };
+  }
 
   const result = { routes: r, qb, ball_target: target };
   if (isRPO) result.isRPO = true;
@@ -3739,7 +3764,8 @@ class PlayArtRenderer {
     // Build offensive player animation data
     const offPlayers = [];
     const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
-    const gapLabels = ['D', 'C', 'B', 'A', 'A', 'B', 'C', 'D'];
+    // Gap labels (left to right): D(outside LT), C(LT-LG), B(LG-C), A(C-RG), B(RG-RT), C(outside RT)
+    const gapLabels = ['D', 'C', 'B', 'A', 'B', 'C'];
 
     for (const [key, startPos] of Object.entries(offPositions)) {
       const isOL = olKeys.includes(key);
@@ -3769,6 +3795,25 @@ class PlayArtRenderer {
         color: isQB ? BALL_COLOR : (isOL ? '#4B0082' : OFF_COLOR),
         size: isQB ? 9 : (isOL ? 7 : 8)
       });
+    }
+
+    // Adjust motion player's startPos to post-motion endpoint so routes originate from there
+    if (playData.motion) {
+      const motionPlayer = offPlayers.find(p => p.key === playData.motion.player);
+      if (motionPlayer) {
+        let mx = motionPlayer.startPos[0], my = motionPlayer.startPos[1];
+        for (const [dx, dy] of playData.motion.path) { mx += dx; my += dy; }
+        const motionEndPos = [mx, my];
+        // Recompute endPos relative to the motion endpoint
+        let endX = mx, endY = my;
+        for (const [dx, dy] of motionPlayer.path) { endX += dx; endY += dy; }
+        endX = Math.max(0.02, Math.min(0.98, endX));
+        endY = Math.max(0.02, Math.min(0.98, endY));
+        // Store original start for pre-snap drawing, update startPos to motion endpoint
+        motionPlayer._origStartPos = [...motionPlayer.startPos];
+        motionPlayer.startPos = motionEndPos;
+        motionPlayer.endPos = [endX, endY];
+      }
     }
 
     // Build defensive player animation data
@@ -3803,10 +3848,15 @@ class PlayArtRenderer {
         if (nearest) {
           assignedReceivers.add(nearest);
           const followFactor = def.isDB ? 0.85 : 0.6;
-          manAssignments[def.key] = [
-            nearest.startPos[0] + (nearest.endPos[0] - nearest.startPos[0]) * followFactor + (def.isDB ? 0.02 : 0),
-            nearest.startPos[1] + (nearest.endPos[1] - nearest.startPos[1]) * followFactor + 0.02
-          ];
+          manAssignments[def.key] = {
+            endPos: [
+              nearest.startPos[0] + (nearest.endPos[0] - nearest.startPos[0]) * followFactor + (def.isDB ? 0.02 : 0),
+              nearest.startPos[1] + (nearest.endPos[1] - nearest.startPos[1]) * followFactor + 0.02
+            ],
+            receiver: nearest,
+            followFactor: followFactor,
+            offset: [def.isDB ? 0.02 : 0, 0.02]
+          };
         }
       }
     }
@@ -3828,7 +3878,7 @@ class PlayArtRenderer {
       } else {
         // Man: use pre-computed 1-to-1 assignment
         const manTarget = manAssignments[key];
-        if (manTarget) { endX = manTarget[0]; endY = manTarget[1]; }
+        if (manTarget) { endX = manTarget.endPos[0]; endY = manTarget.endPos[1]; }
       }
 
       // Look up defensive assignment from DEF_ASSIGNMENTS
@@ -3836,6 +3886,7 @@ class PlayArtRenderer {
       const assignmentPath = (defAssignment && defAssignment !== 'man_trail') ? (ROUTE_PATHS[defAssignment] || []) : [];
       const isBlitz = isBlitzAssignment(defAssignment);
 
+      const manData = manAssignments[key] || null;
       defPlayers.push({
         key, startPos: [...startPos], endPos: [endX, endY],
         isDL, isLB, isDB,
@@ -3843,7 +3894,10 @@ class PlayArtRenderer {
         color: DEF_COLOR, size: 8,
         assignment: defAssignment,
         assignmentPath: assignmentPath,
-        isBlitz: isBlitz
+        isBlitz: isBlitz,
+        manReceiver: manData ? manData.receiver : null,
+        manFollowFactor: manData ? manData.followFactor : 0,
+        manOffset: manData ? manData.offset : [0, 0]
       });
     }
 
@@ -3877,9 +3931,11 @@ class PlayArtRenderer {
         if (motionPlayer) {
           const motionT = t / 0.08; // 0 to 1 during preSnap
           const ctx = this.ctx;
-          const sx = motionPlayer.startPos[0] * this.width;
-          const sy = motionPlayer.startPos[1] * this.height;
-          let ex = motionPlayer.startPos[0], ey = motionPlayer.startPos[1];
+          // Use original (pre-motion) position as the start of the motion path
+          const origPos = motionPlayer._origStartPos || motionPlayer.startPos;
+          const sx = origPos[0] * this.width;
+          const sy = origPos[1] * this.height;
+          let ex = origPos[0], ey = origPos[1];
           for (const [dx, dy] of motionData.path) { ex += dx; ey += dy; }
           const endPx = ex * this.width;
           const endPy = ey * this.height;
@@ -4023,8 +4079,16 @@ class PlayArtRenderer {
       for (const p of defPlayers) {
         const vis = this._isVisible(p.key, visibleGroups);
         const mt = p.isDL ? Math.min(moveT * 1.5, 1) : moveT;
-        const x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? mt : 0);
-        const y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? mt : 0);
+        let x, y;
+        if (p.manReceiver && p.manReceiver.path && p.manReceiver.path.length > 0 && developPhase) {
+          // Man coverage: follow matched receiver's path with offset
+          const recPos = this._posAlongPath(p.manReceiver.startPos[0], p.manReceiver.startPos[1], p.manReceiver.path, mt * p.manFollowFactor);
+          x = Math.max(0.02, Math.min(0.98, recPos.x + p.manOffset[0]));
+          y = Math.max(0.02, Math.min(0.98, recPos.y + p.manOffset[1]));
+        } else {
+          x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? mt : 0);
+          y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? mt : 0);
+        }
         this.ctx.globalAlpha = vis ? dimOpp : 0.12;
         const glow = !isOffSide && developPhase && vis;
         if (glow) this._drawGlow(x, y, DEF_COLOR, p.size + 3);
@@ -4037,10 +4101,19 @@ class PlayArtRenderer {
       for (const p of offPlayers) {
         const vis = this._isVisible(p.key, visibleGroups);
         let x, y;
-        if (p.isOL) {
+        if (p.isOL && p.isPull && p.path && p.path.length > 0) {
+          // Pull routes: follow waypoints (down then across)
+          const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
+          const pos = this._posAlongPath(p.startPos[0], p.startPos[1], p.path, olT);
+          x = pos.x; y = pos.y;
+        } else if (p.isOL) {
           const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
           x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * olT;
           y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * olT;
+        } else if (p.path && p.path.length > 0) {
+          // Non-OL: follow route waypoints
+          const pos = this._posAlongPath(p.startPos[0], p.startPos[1], p.path, developPhase ? moveT : 0);
+          x = pos.x; y = pos.y;
         } else {
           x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? moveT : 0);
           y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? moveT : 0);
@@ -4118,6 +4191,55 @@ class PlayArtRenderer {
       'LB': 'LB', 'LB1': 'LB', 'LB2': 'LB', 'LB3': 'LB', 'LB4': 'LB'
     };
     return labels[key] || key.replace(/\d/g, '').substring(0, 2);
+  }
+
+  /**
+   * Walk along a path of waypoint deltas, returning {x, y} at normalized time t (0-1).
+   * Each segment is weighted by its length so movement speed is proportional to distance.
+   */
+  _posAlongPath(startX, startY, waypoints, t) {
+    if (!waypoints || waypoints.length === 0) return { x: startX, y: startY };
+    t = Math.max(0, Math.min(1, t));
+
+    // Build absolute waypoint positions and compute cumulative segment lengths
+    const pts = [{ x: startX, y: startY }];
+    let cx = startX, cy = startY;
+    for (const [dx, dy] of waypoints) {
+      cx += dx;
+      cy += dy;
+      pts.push({ x: cx, y: cy });
+    }
+
+    // Compute segment lengths
+    const segLengths = [];
+    let totalLen = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const len = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+      segLengths.push(len);
+      totalLen += len;
+    }
+
+    if (totalLen === 0) return { x: startX, y: startY };
+
+    // Find which segment t falls into
+    const targetDist = t * totalLen;
+    let accumulated = 0;
+    for (let i = 0; i < segLengths.length; i++) {
+      if (accumulated + segLengths[i] >= targetDist) {
+        const segT = (targetDist - accumulated) / segLengths[i];
+        const x = Math.max(0.02, Math.min(0.98, pts[i].x + (pts[i + 1].x - pts[i].x) * segT));
+        const y = Math.max(0.02, Math.min(0.98, pts[i].y + (pts[i + 1].y - pts[i].y) * segT));
+        return { x, y };
+      }
+      accumulated += segLengths[i];
+    }
+
+    // t === 1, return last point clamped
+    const last = pts[pts.length - 1];
+    return {
+      x: Math.max(0.02, Math.min(0.98, last.x)),
+      y: Math.max(0.02, Math.min(0.98, last.y))
+    };
   }
 
   _getOffLabel(key) {
@@ -4292,17 +4414,18 @@ class PlayArtRenderer {
     const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
     const olPositions = olKeys.filter(k => offPositions[k]).map(k => offPositions[k]);
     const gaps = [];
-    const labels = ['C/D', 'B', 'A', 'A', 'B', 'C/D'];
+    // Between-OL gap labels: LT-LG=C, LG-C=B, C-RG=A, RG-RT=B
+    const labels = ['C', 'B', 'A', 'B'];
     // Gaps between OL
     for (let i = 0; i < olPositions.length - 1; i++) {
       const x = (olPositions[i][0] + olPositions[i + 1][0]) / 2;
       const y = olPositions[i][1] - 0.02;
       gaps.push({ x, y, label: labels[i] || 'G' });
     }
-    // Outside gaps
+    // Outside gaps: left of LT = D gap, right of RT = C gap
     if (olPositions.length >= 2) {
       gaps.unshift({ x: olPositions[0][0] - 0.06, y: olPositions[0][1] - 0.02, label: 'D' });
-      gaps.push({ x: olPositions[olPositions.length - 1][0] + 0.06, y: olPositions[olPositions.length - 1][1] - 0.02, label: 'D' });
+      gaps.push({ x: olPositions[olPositions.length - 1][0] + 0.06, y: olPositions[olPositions.length - 1][1] - 0.02, label: 'C' });
     }
     return gaps;
   }
@@ -4876,10 +4999,17 @@ class PlayArtRenderer {
         for (const p of players) {
           const vis = this._isVisible(p.key, visibleGroups);
           let x, y;
-          if (p.isOL) {
+          if (p.isOL && p.isPull && p.path && p.path.length > 0) {
+            const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
+            const pos = this._posAlongPath(p.startPos[0], p.startPos[1], p.path, olT);
+            x = pos.x; y = pos.y;
+          } else if (p.isOL) {
             const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
             x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * olT;
             y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * olT;
+          } else if (p.path && p.path.length > 0) {
+            const pos = this._posAlongPath(p.startPos[0], p.startPos[1], p.path, developPhase ? moveT : 0);
+            x = pos.x; y = pos.y;
           } else {
             x = p.startPos[0] + (p.endPos[0] - p.startPos[0]) * (developPhase ? moveT : 0);
             y = p.startPos[1] + (p.endPos[1] - p.startPos[1]) * (developPhase ? moveT : 0);
@@ -4980,7 +5110,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration });
+              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups });
             }
           }, 1200);
         }

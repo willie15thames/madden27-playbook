@@ -1,7 +1,5 @@
 import COVERAGES from '../data/coverages.js';
 import PLAY_TYPES from '../data/plays.js';
-import DEFENSIVE_PLAYS from '../data/defensive-plays.js';
-import OFFENSIVE_PLAYS from '../data/offensive-plays.js';
 import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer, PLAY_ROUTES, COVERAGE_BEATERS } from '../components/playArt.js';
 import { calculateMatchupGrade, recommendPlays, recommendCoverages, getConceptKey, CONCEPT_LABELS } from '../data/analytics.js';
@@ -160,7 +158,10 @@ function clearMatchupDisplay() {
   const verdictDetail = document.getElementById('verdictDetail');
   if (verdictText) { verdictText.textContent = ''; verdictText.className = ''; }
   if (verdictDetail) verdictDetail.textContent = '';
-  if (verdictPanel) verdictPanel.style.borderColor = '#2F4F4F';
+  if (verdictPanel) {
+    verdictPanel.style.borderColor = '#2F4F4F';
+    verdictPanel.querySelectorAll('.matchup-grade-bar').forEach(el => el.remove());
+  }
 
   // Clear analysis panels
   const offenseAnalysis = document.getElementById('offenseAnalysis');
@@ -206,6 +207,9 @@ function checkMatchup() {
   const verdictText = document.getElementById('verdictText');
   const verdictDetail = document.getElementById('verdictDetail');
 
+  // Remove any previously appended grade bars to prevent stacking
+  verdictPanel.querySelectorAll('.matchup-grade-bar').forEach(el => el.remove());
+
   if (offPlayData && defCoverageData) {
     const offWins = doesOffenseBeat(offPlay, offPlayData, defPlay, defCoverageData);
     const defWins = doesDefenseBeat(defPlay, defCoverageData, offPlay, offPlayData);
@@ -235,7 +239,7 @@ function checkMatchup() {
 
     // Analytics Grade Bar
     const gradeBar = document.createElement('div');
-    gradeBar.className = 'mt-4';
+    gradeBar.className = 'mt-4 matchup-grade-bar';
     gradeBar.innerHTML = `
       <div class="flex items-center justify-between mb-1">
         <span class="text-xs font-bold text-gray-400 uppercase">Offensive Matchup Grade</span>
