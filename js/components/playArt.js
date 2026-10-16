@@ -3748,15 +3748,33 @@ class PlayArtRenderer {
   // ============================
   // Players physically move: WRs run routes, OL engages DL, DBs drop/follow, gaps fill
   // side: 'offense' | 'defense' - which side is highlighted
-  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null }) {
+  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null, positionOverrides = null, routeOverrides = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     this._currentCoverage = coverageName || null;
 
-    const offPositions = this.getOffensePositions(offFormation, offSubFormation);
+    let offPositions = this.getOffensePositions(offFormation, offSubFormation);
     const defPositions = this.getDefensePositions(defFormation, defSubFormation);
-    const playData = this.getPlayRoutes(playFamily);
+    let playData = this.getPlayRoutes(playFamily);
     const coverageData = this.getCoverageZones(coverageName);
+
+    // Apply position overrides (from Scheme Builder custom edits)
+    if (positionOverrides) {
+      offPositions = { ...offPositions };
+      for (const [key, pos] of Object.entries(positionOverrides)) {
+        if (!key.startsWith('_')) offPositions[key] = [...pos];
+      }
+    }
+    // Apply route overrides (from Scheme Builder custom edits)
+    if (routeOverrides) {
+      playData = { ...playData, routes: { ...playData.routes } };
+      for (const [key, route] of Object.entries(routeOverrides)) {
+        if (key === '_qb') playData.qb = route;
+        else if (key === '_isRun') playData.isRun = route;
+        else if (key === '_ball_target') playData.ball_target = route;
+        else if (!key.startsWith('_')) playData.routes[key] = route;
+      }
+    }
     const routes = playData.routes;
     const isRun = !!playData.isRun;
     const isOffSide = side === 'offense';
@@ -4233,7 +4251,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups });
+              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides });
             }
           }, 1500);
         }
@@ -4926,14 +4944,32 @@ class PlayArtRenderer {
   // === SINGLE-PLAY LIVE ANIMATION (no opponent, card view) ===
   // Shows only offense OR defense animated, for card previews
   // visibleGroups: null (all) or Set of group names: 'OL','QB','WR','TE','RB','DL','LB','DB'
-  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null }) {
+  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null, positionOverrides = null, routeOverrides = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     this._currentCoverage = coverageName || null;
 
     const isOff = mode === 'offense';
-    const offPositions = isOff ? this.getOffensePositions(offFormation, offSubFormation) : null;
-    const playData = isOff ? this.getPlayRoutes(playFamily) : null;
+    let offPositions = isOff ? this.getOffensePositions(offFormation, offSubFormation) : null;
+    let playData = isOff ? this.getPlayRoutes(playFamily) : null;
+
+    // Apply position overrides (from Scheme Builder custom edits)
+    if (positionOverrides && offPositions) {
+      offPositions = { ...offPositions };
+      for (const [key, pos] of Object.entries(positionOverrides)) {
+        if (!key.startsWith('_')) offPositions[key] = [...pos];
+      }
+    }
+    // Apply route overrides (from Scheme Builder custom edits)
+    if (routeOverrides && playData) {
+      playData = { ...playData, routes: { ...playData.routes } };
+      for (const [key, route] of Object.entries(routeOverrides)) {
+        if (key === '_qb') playData.qb = route;
+        else if (key === '_isRun') playData.isRun = route;
+        else if (key === '_ball_target') playData.ball_target = route;
+        else if (!key.startsWith('_')) playData.routes[key] = route;
+      }
+    }
     const defPositions = !isOff ? this.getDefensePositions(defFormation, defSubFormation) : null;
     const coverageData = !isOff ? this.getCoverageZones(coverageName) : null;
 
@@ -5186,7 +5222,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups });
+              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides });
             }
           }, 1200);
         }

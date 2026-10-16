@@ -68,6 +68,7 @@ const ROUTE_OPTIONS = [
   { id: 'flat', name: 'Flat', icon: '⤵' },
   { id: 'flat_left', name: 'Flat Left', icon: '⤶' },
   { id: 'swing', name: 'Swing', icon: '⤵' },
+  { id: 'swing_left', name: 'Swing Left', icon: '⤶' },
   { id: 'check_down', name: 'Check Down', icon: '⤵' },
   { id: 'texas', name: 'Texas', icon: '⤴' },
   // Wheel / Whip
@@ -275,6 +276,11 @@ function updateAnimation() {
   const subFormation = sfSelect.value || 'Spread Y-Flex';
   const play = currentPlay || 'Inside Zone';
 
+  // Pass custom positions/routes if the user has edited them
+  const hasCustomEdits = Object.keys(playerPositions).length > 0 || Object.keys(playerRoutes).length > 0;
+  const posOverrides = hasCustomEdits ? playerPositions : null;
+  const routeOvr = hasCustomEdits ? playerRoutes : null;
+
   if (currentCoverage) {
     renderer.renderLivePlay({
       side: 'offense',
@@ -283,7 +289,9 @@ function updateAnimation() {
       playFamily: play,
       defFormation: 'Nickel',
       coverageName: currentCoverage,
-      duration: 3500
+      duration: 3500,
+      positionOverrides: posOverrides,
+      routeOverrides: routeOvr
     });
   } else {
     renderer.renderSinglePlayLive({
@@ -291,48 +299,91 @@ function updateAnimation() {
       offFormation: formation,
       offSubFormation: subFormation,
       playFamily: play,
-      duration: 3500
+      duration: 3500,
+      positionOverrides: posOverrides,
+      routeOverrides: routeOvr
     });
   }
 }
 
 // ===== INTERACTIVE CANVAS RENDERING =====
+// Mirrored from ROUTE_PATHS in playArt.js — must stay in sync
 const ROUTE_PATHS_LOCAL = {
-  'streak': [[0, -0.35]],
-  'post': [[0, -0.15], [-0.12, -0.30]],
-  'corner': [[0, -0.15], [0.12, -0.30]],
-  'out': [[0, -0.12], [0.12, 0]],
-  'in': [[0, -0.12], [-0.12, 0]],
-  'slant': [[-0.10, -0.18]],
-  'drag': [[0, -0.04], [0.30, -0.04]],
-  'drag_left': [[0, -0.04], [-0.30, -0.04]],
-  'curl': [[0, -0.15], [0, 0.03]],
-  'comeback': [[0, -0.18], [0.04, 0.04]],
-  'flat': [[0.10, -0.02]],
-  'flat_left': [[-0.10, -0.02]],
-  'wheel': [[0.08, -0.02], [0.08, -0.30]],
-  'seam': [[0, -0.30]],
-  'hitch': [[0, -0.08], [0, 0.02]],
-  'fade': [[0.04, -0.35]],
-  'screen': [[0.06, 0.04], [0.10, 0.02]],
-  'screen_left': [[-0.06, 0.04], [-0.10, 0.02]],
-  'angle': [[0.04, 0.04], [0.15, -0.12]],
+  // Vertical routes
+  'streak': [[0, -0.30]],
+  'go': [[0, -0.30]],
+  'fade': [[0.03, -0.30]],
+  'seam': [[0, -0.26]],
+  // Post family
+  'post': [[0, -0.12], [-0.08, -0.18]],
+  'deep_post': [[0, -0.16], [-0.06, -0.16]],
+  'skinny_post': [[0, -0.10], [-0.03, -0.18]],
+  'post_corner': [[0, -0.10], [-0.05, -0.10], [0.06, -0.12]],
+  // Corner / Out family
+  'corner': [[0, -0.12], [0.06, -0.18]],
+  'deep_corner': [[0, -0.16], [0.06, -0.14]],
+  'out': [[0, -0.10], [0.08, 0]],
+  'deep_out': [[0, -0.14], [0.08, 0]],
+  'speed_out': [[0.08, -0.04]],
+  // In / Cross family
+  'in': [[0, -0.10], [-0.08, 0]],
+  'deep_in': [[0, -0.14], [-0.08, 0]],
+  'dig': [[0, -0.14], [-0.08, 0]],
+  'shallow_cross': [[0, -0.03], [0.18, -0.02]],
+  'drag': [[0, -0.03], [0.22, 0]],
+  'drag_left': [[0, -0.03], [-0.22, 0]],
+  // Slant
+  'slant': [[-0.06, -0.14]],
+  // Curl / Comeback / Hitch
+  'curl': [[0, -0.13], [0, 0.03]],
+  'comeback': [[0, -0.14], [0.03, 0.04]],
+  'hitch': [[0, -0.07], [0, 0.02]],
+  // Flat / Swing / Check-down
+  'flat': [[0.10, -0.03]],
+  'flat_left': [[-0.10, -0.03]],
+  'swing': [[0.06, 0.02], [0.08, -0.04]],
+  'swing_left': [[-0.06, 0.02], [-0.08, -0.04]],
+  'check_down': [[0.04, 0.01], [0.06, -0.03]],
+  'texas': [[0.06, 0.02], [0.04, -0.14]],
+  // Wheel / Whip / Angle
+  'wheel': [[0.06, -0.02], [0.04, -0.26]],
+  'whip': [[0, -0.06], [0.05, 0.03], [0.06, -0.04]],
+  'angle': [[0.03, 0.03], [0.10, -0.10]],
+  // Screen
+  'screen': [[-0.04, 0.03], [-0.06, 0.01]],
+  'screen_right': [[0.04, 0.03], [0.06, 0.01]],
+  'screen_left': [[-0.04, 0.03], [-0.06, 0.01]],
+  // Blocking
   'block': [],
-  'run_right': [[0.15, -0.05]],
-  'run_left': [[-0.15, -0.05]],
-  'run_inside': [[0, -0.12]],
-  'run_power': [[0.06, -0.12]],
-  'run_counter': [[-0.05, -0.02], [0.10, -0.12]],
-  'run_stretch': [[0.20, -0.04]],
-  'run_dive': [[0, -0.08]],
-  'run_outside': [[0.20, -0.06]],
-  'qb_drop': [[0, 0.04]],
-  'qb_boot_right': [[0.22, 0.02], [0.06, -0.12]],
-  'qb_boot_left': [[-0.22, 0.02], [-0.06, -0.12]],
+  'pass_block': [[0, -0.01]],
+  'lead_block': [[0.04, -0.08]],
+  'stalk_block': [[0, -0.04]],
+  'crack_block': [[-0.06, -0.06]],
+  'zone_step_right': [[0.04, -0.04]],
+  'zone_step_left': [[-0.04, -0.04]],
+  'combo_block': [[0, -0.06]],
+  // Run paths
+  'run_right': [[0.10, -0.06]],
+  'run_left': [[-0.10, -0.06]],
+  'run_inside': [[0.02, -0.10]],
+  'run_power': [[0.06, -0.10]],
+  'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
+  'run_stretch': [[0.16, -0.04]],
+  'run_dive': [[0.01, -0.07]],
+  'run_outside': [[0.14, -0.05]],
+  // Option / QB
+  'option_give': [[0.08, -0.06]],
+  'option_keep': [[-0.06, -0.08]],
+  'qb_boot_right': [[0.16, 0.02], [0.04, -0.10]],
+  'qb_boot_left': [[-0.16, 0.02], [-0.04, -0.10]],
+  'qb_drop': [[0, 0.03]],
+  'qb_scramble': [[-0.04, -0.08]],
   'qb_handoff': [[0, 0.02]],
-  'qb_scramble': [[-0.05, -0.10]],
-  'option_give': [[0.10, -0.06]],
-  'option_keep': [[-0.08, -0.10]],
+  // OL movement
+  'pull_left': [[-0.08, 0.0], [-0.06, -0.08]],
+  'pull_right': [[0.08, 0.0], [0.06, -0.08]],
+  'ol_release_right': [[0.10, -0.02], [0.05, -0.05]],
+  'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]],
 };
 
 function renderInteractive() {
