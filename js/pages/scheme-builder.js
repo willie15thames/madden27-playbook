@@ -894,6 +894,73 @@ function renderPanelMacros() {
   });
 }
 
+// Route overrides for offensive macros, keyed by macro id.
+// Keys use generic skill-position labels that are mapped to actual formation positions below.
+const MACRO_ROUTES = {
+  anti_cover3: {
+    // Flood concept: streak + corner + flat attack the 3-deep shell
+    intent: { outside_top: 'streak', outside_mid: 'corner', rb: 'flat', inside: 'drag', te: 'flat' }
+  },
+  anti_cover2: {
+    // Posts and seams split the two deep safeties
+    intent: { outside_top: 'post', outside_mid: 'seam', inside: 'post', te: 'seam', rb: 'drag' }
+  },
+  flood_right: {
+    // Three levels right: streak, corner, flat
+    intent: { outside_top: 'streak', outside_mid: 'corner', inside: 'out', te: 'flat', rb: 'swing' }
+  },
+  quick_attack: {
+    // Quick-game concepts: slants, drags, hitches
+    intent: { outside_top: 'slant', outside_mid: 'drag', inside: 'hitch', te: 'drag', rb: 'check_down' }
+  },
+  max_protect: {
+    // Only 2-3 out, rest block
+    intent: { outside_top: 'streak', outside_mid: 'in', inside: 'block', te: 'block', rb: 'block' }
+  },
+  run_setup: {
+    // Blocking assignments for a run look
+    intent: { outside_top: 'stalk_block', outside_mid: 'stalk_block', inside: 'block', te: 'block', rb: 'run_inside' }
+  },
+  tempo_attack: {
+    // Mix of quick reads
+    intent: { outside_top: 'slant', outside_mid: 'curl', inside: 'drag', te: 'flat', rb: 'swing' }
+  }
+};
+
+// Map generic intent slots to actual formation positions
+function mapMacroRoutesToPositions(intent) {
+  const olKeys = ['LT', 'LG', 'C', 'RG', 'RT', 'QB'];
+  const positions = Object.keys(playerPositions).filter(k => !olKeys.includes(k));
+  const routes = {};
+
+  // Categorize positions by role
+  const wrs = positions.filter(p => p.startsWith('WR') || p === 'X' || p === 'Z' || p === 'SLOT');
+  const tes = positions.filter(p => p.startsWith('TE') || p === 'Y');
+  const rbs = positions.filter(p => p.startsWith('RB') || p.startsWith('HB') || p === 'FB');
+  const others = positions.filter(p => !wrs.includes(p) && !tes.includes(p) && !rbs.includes(p));
+
+  // Sort WRs by x-position (left to right) so assignments make spatial sense
+  wrs.sort((a, b) => (playerPositions[a]?.[0] || 0) - (playerPositions[b]?.[0] || 0));
+
+  // Assign outside_top to the widest WR (last), outside_mid to next, inside to remaining
+  if (wrs.length >= 1 && intent.outside_top) routes[wrs[wrs.length - 1]] = intent.outside_top;
+  if (wrs.length >= 2 && intent.outside_mid) routes[wrs[wrs.length - 2]] = intent.outside_mid;
+  if (wrs.length >= 3 && intent.inside) routes[wrs[wrs.length - 3]] = intent.inside;
+
+  // TE
+  if (tes.length >= 1 && intent.te) routes[tes[0]] = intent.te;
+
+  // RB
+  if (rbs.length >= 1 && intent.rb) routes[rbs[0]] = intent.rb;
+
+  // Remaining skill players get the 'inside' route or block
+  for (const p of others) {
+    routes[p] = intent.inside || 'block';
+  }
+
+  return routes;
+}
+
 function applyMacroAdjustments(macroId) {
   const macro = MACROS.find(m => m.id === macroId);
   if (!macro) return;
@@ -910,6 +977,16 @@ function applyMacroAdjustments(macroId) {
   for (const adjId of macro.adjustments) {
     const btn = container.querySelector(`[data-adj="${adjId}"]`);
     if (btn) btn.classList.add('active');
+  }
+
+  // Apply macro route overrides for offensive macros
+  if (macro.side === 'offense' && MACRO_ROUTES[macroId]) {
+    const routeOverrides = mapMacroRoutesToPositions(MACRO_ROUTES[macroId].intent);
+    for (const [pos, route] of Object.entries(routeOverrides)) {
+      playerRoutes[pos] = route;
+    }
+    renderInteractive();
+    renderPanelHotRoutes();
   }
 
   updateDisplay();
@@ -1091,6 +1168,232 @@ function initCreatorControls() {
   });
 }
 
+// ===== SAVED SCHEMES (localStorage) =====
+const STORAGE_KEY = 'savedSchemes';
+
+function getSavedSchemes() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    console.warn('Failed to parse saved schemes:', e);
+    return {};
+  }
+}
+
+function putSavedSchemes(schemes) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
+}
+
+function saveScheme() {
+  const nameInput = document.getElementById('creatorPlayName');
+  const name = (nameInput.value || '').trim();
+  if (!name) {
+    nameInput.focus();
+    nameInput.style.borderColor = '#FF1493';
+    setTimeout(() => { nameInput.style.borderColor = ''; }, 1500);
+    return;
+  }
+
+  const schemes = getSavedSchemes();
+
+  // Capture active adjustments
+  const activeAdj = [];
+  document.querySelectorAll('#offAdjContent [data-adj].active, #defAdjContent [data-adj].active').forEach(btn => {
+    activeAdj.push(btn.dataset.adj);
+  });
+
+  schemes[name] = {
+    currentFormation,
+    currentSubFormation,
+    currentPlay,
+    currentCoverage,
+    playerPositions: { ...playerPositions },
+    playerRoutes: { ...playerRoutes },
+    isFlipped,
+    activeAdjustments: activeAdj,
+    // Also save select values so we can restore the cascade
+    pbValue: pbSelect.value,
+    fmValue: fmSelect.value,
+    sfValue: sfSelect.value,
+    plValue: plSelect.value,
+    covValue: covSelect.value,
+    savedAt: new Date().toISOString()
+  };
+
+  putSavedSchemes(schemes);
+  renderSavedSchemesList();
+
+  // Brief visual feedback
+  nameInput.style.borderColor = '#00FFFF';
+  setTimeout(() => { nameInput.style.borderColor = ''; }, 1000);
+}
+
+function loadScheme(name) {
+  const schemes = getSavedSchemes();
+  const scheme = schemes[name];
+  if (!scheme) return;
+
+  // Restore state variables
+  currentFormation = scheme.currentFormation || 'Gun';
+  currentSubFormation = scheme.currentSubFormation || 'Spread Y-Flex';
+  currentPlay = scheme.currentPlay || null;
+  currentCoverage = scheme.currentCoverage || null;
+  isFlipped = scheme.isFlipped || false;
+  playerPositions = scheme.playerPositions ? { ...scheme.playerPositions } : {};
+  playerRoutes = scheme.playerRoutes ? { ...scheme.playerRoutes } : {};
+  selectedPlayer = null;
+
+  // Restore select cascade: playbook -> formation -> sub-formation -> play
+  if (scheme.pbValue) {
+    pbSelect.value = scheme.pbValue;
+    // Repopulate formation select
+    const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === scheme.pbValue);
+    if (book && book.formations) {
+      fmSelect.innerHTML = '<option value="">Formation...</option>';
+      Object.keys(book.formations).sort().forEach(f => {
+        fmSelect.innerHTML += `<option value="${f}">${f}</option>`;
+      });
+      fmSelect.disabled = false;
+
+      if (scheme.fmValue) {
+        fmSelect.value = scheme.fmValue;
+        sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
+        if (book.formations[scheme.fmValue]) {
+          Object.keys(book.formations[scheme.fmValue]).sort().forEach(s => {
+            sfSelect.innerHTML += `<option value="${s}">${s}</option>`;
+          });
+          sfSelect.disabled = false;
+
+          if (scheme.sfValue) {
+            sfSelect.value = scheme.sfValue;
+            plSelect.innerHTML = '<option value="">Play...</option>';
+            const plays = book.formations[scheme.fmValue][scheme.sfValue] || [];
+            [...plays].sort().forEach(p => {
+              plSelect.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+            plSelect.disabled = false;
+
+            if (scheme.plValue) {
+              plSelect.value = scheme.plValue;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (scheme.covValue) {
+    covSelect.value = scheme.covValue;
+  }
+
+  // Restore creator panel fields
+  const nameInput = document.getElementById('creatorPlayName');
+  if (nameInput) nameInput.value = name;
+
+  const creatorFormation = document.getElementById('creatorFormation');
+  if (creatorFormation) creatorFormation.value = currentFormation;
+
+  const btnFlip = document.getElementById('btnFlip');
+  if (btnFlip) btnFlip.classList.toggle('active', isFlipped);
+
+  // Restore adjustments
+  document.querySelectorAll('#offAdjContent [data-adj].active, #defAdjContent [data-adj].active').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  if (scheme.activeAdjustments) {
+    for (const adjId of scheme.activeAdjustments) {
+      const btn = document.querySelector(`#offAdjContent [data-adj="${adjId}"], #defAdjContent [data-adj="${adjId}"]`);
+      if (btn) btn.classList.add('active');
+    }
+  }
+
+  // Ensure we are in interactive mode
+  isPlaying = false;
+  interactiveMode = true;
+  btnPlay.innerHTML = '<i class="bi bi-play-fill"></i>';
+
+  renderInteractive();
+  renderPanelHotRoutes();
+  updatePlayInfo(currentPlay, currentCoverage);
+  updateAnalytics();
+}
+
+function deleteScheme(name) {
+  const schemes = getSavedSchemes();
+  delete schemes[name];
+  putSavedSchemes(schemes);
+  renderSavedSchemesList();
+}
+
+function renderSavedSchemesList() {
+  const dropdown = document.getElementById('savedSchemesDropdown');
+  const listContainer = document.getElementById('savedSchemesList');
+  const schemes = getSavedSchemes();
+  const names = Object.keys(schemes).sort();
+
+  // Populate dropdown
+  dropdown.innerHTML = '<option value="">Load a saved scheme...</option>' +
+    names.map(n => `<option value="${n}">${n}</option>`).join('');
+
+  // Populate list with delete buttons
+  if (names.length === 0) {
+    listContainer.innerHTML = '<p class="text-xs text-gray-500">No saved schemes yet</p>';
+  } else {
+    listContainer.innerHTML = names.map(n => {
+      const scheme = schemes[n];
+      const info = [scheme.currentFormation, scheme.currentPlay].filter(Boolean).join(' / ') || 'Custom';
+      return `
+        <div class="flex items-center gap-1 group">
+          <button class="flex-1 text-left text-xs text-gray-300 hover:text-white truncate" data-load-scheme="${n}" title="Load ${n}">
+            <i class="bi bi-folder2-open mr-1 text-neon-cyan"></i>${n}
+            <span class="text-gray-500 ml-1">${info}</span>
+          </button>
+          <button class="text-gray-600 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-delete-scheme="${n}" title="Delete ${n}">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    // Wire load buttons
+    listContainer.querySelectorAll('[data-load-scheme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        loadScheme(btn.dataset.loadScheme);
+      });
+    });
+
+    // Wire delete buttons
+    listContainer.querySelectorAll('[data-delete-scheme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        deleteScheme(btn.dataset.deleteScheme);
+      });
+    });
+  }
+}
+
+function initSavedSchemes() {
+  // Save button
+  const btnSave = document.getElementById('btnSaveScheme');
+  if (btnSave) {
+    btnSave.addEventListener('click', saveScheme);
+  }
+
+  // Dropdown load
+  const dropdown = document.getElementById('savedSchemesDropdown');
+  if (dropdown) {
+    dropdown.addEventListener('change', () => {
+      if (dropdown.value) {
+        loadScheme(dropdown.value);
+        dropdown.value = ''; // reset dropdown after loading
+      }
+    });
+  }
+
+  // Initial render of saved schemes list
+  renderSavedSchemesList();
+}
+
 // ===== MODAL CLOSE =====
 detailModal.addEventListener('click', (e) => {
   if (e.target === detailModal) detailModal.classList.remove('active');
@@ -1104,6 +1407,7 @@ renderOffAdj();
 renderDefAdj();
 renderPanelMacros();
 initCreatorControls();
+initSavedSchemes();
 
 // Start in interactive mode with empty field
 isPlaying = false;

@@ -22,6 +22,10 @@ let currentSide = 'offense';
 let currentPlaybooks = OFFENSIVE_PLAYBOOKS;
 let currentPb = null;
 let renderers = [];
+let currentPlayList = [];   // plays in the currently displayed sub-formation
+let currentPlayIndex = -1;  // index of the currently open play in currentPlayList
+let currentPlayFormation = null;
+let currentPlaySubFormation = null;
 function cleanupRenderers() { renderers.forEach(r => r.destroy()); renderers = []; }
 
 // Build playbook lookup for "found in X playbooks"
@@ -291,6 +295,17 @@ function renderChipCanvas(canvas) {
 
 function openPlayDetail(playName, formation, subFormation) {
   cleanupRenderers();
+
+  // Track current play list for swipe navigation
+  currentPlayFormation = formation;
+  currentPlaySubFormation = subFormation;
+  if (currentPb && currentPb.formations && currentPb.formations[formation] && currentPb.formations[formation][subFormation]) {
+    currentPlayList = [...currentPb.formations[formation][subFormation]].sort((a, b) => a.localeCompare(b));
+  } else {
+    currentPlayList = [];
+  }
+  currentPlayIndex = currentPlayList.indexOf(playName);
+
   if (currentSide === 'offense') {
     openOffenseDetail(playName, formation, subFormation);
   } else {
@@ -656,12 +671,18 @@ document.addEventListener('touchend', (e) => {
   if (modal && modal.classList.contains('active') && e.changedTouches.length) {
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
-    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2) {
-      // Find prev/next buttons and click them
-      const prevBtn = modal.querySelector('[data-nav="prev"]');
-      const nextBtn = modal.querySelector('[data-nav="next"]');
-      if (dx > 0 && prevBtn) prevBtn.click();
-      else if (dx < 0 && nextBtn) nextBtn.click();
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2 && currentPlayList.length > 1) {
+      let newIndex = currentPlayIndex;
+      if (dx > 0) {
+        // Swipe right = previous play
+        newIndex = (currentPlayIndex - 1 + currentPlayList.length) % currentPlayList.length;
+      } else {
+        // Swipe left = next play
+        newIndex = (currentPlayIndex + 1) % currentPlayList.length;
+      }
+      if (newIndex !== currentPlayIndex && currentPlayList[newIndex]) {
+        openPlayDetail(currentPlayList[newIndex], currentPlayFormation, currentPlaySubFormation);
+      }
     }
   }
 });
