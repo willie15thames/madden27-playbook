@@ -293,13 +293,11 @@ function normalizeCoverageName(coverageName) {
   return name;
 }
 
-// ===== MATCHUP GRADE CALCULATOR =====
-function calculateMatchupGrade(playName, coverageName, options = {}) {
-  const conceptKey = getConceptKey(playName);
-  if (!conceptKey) return { grade: 50, label: 'Unknown', color: '#9ca3af' };
-
+// ===== CORE GRADE COMPUTATION (single source of truth) =====
+// Computes grade for a known concept key against a coverage, with optional modifiers
+function computeGradeForConcept(conceptKey, coverageName, options = {}) {
   const conceptGrades = MATCHUP_GRADES[conceptKey];
-  if (!conceptGrades) return { grade: 50, label: 'Unknown', color: '#9ca3af' };
+  if (!conceptGrades) return { grade: 50, label: 'Unknown', color: '#9ca3af', conceptKey };
 
   const normalizedCoverage = normalizeCoverageName(coverageName);
   let grade = conceptGrades[normalizedCoverage] || 50;
@@ -345,6 +343,15 @@ function calculateMatchupGrade(playName, coverageName, options = {}) {
   };
 }
 
+// ===== MATCHUP GRADE CALCULATOR =====
+// Public API: maps play name -> concept key, then delegates to computeGradeForConcept
+function calculateMatchupGrade(playName, coverageName, options = {}) {
+  const conceptKey = getConceptKey(playName);
+  if (!conceptKey) return { grade: 50, label: 'Unknown', color: '#9ca3af' };
+
+  return computeGradeForConcept(conceptKey, coverageName, options);
+}
+
 function getGradeLabel(grade) {
   if (grade >= 85) return 'Dominant';
   if (grade >= 75) return 'Strong';
@@ -366,34 +373,19 @@ function getGradeColor(grade) {
 
 // ===== PLAY RECOMMENDATION ENGINE =====
 // Given a coverage, recommend best play concepts
+// Delegates to computeGradeForConcept to ensure identical scoring logic with calculateMatchupGrade
 function recommendPlays(coverageName, options = {}) {
-  const normalizedCoverage = normalizeCoverageName(coverageName);
   const results = [];
-  for (const [conceptKey, grades] of Object.entries(MATCHUP_GRADES)) {
-    let grade = grades[normalizedCoverage] || 50;
 
-    if (options.situation && SITUATION_MODIFIERS[options.situation]) {
-      grade = Math.round(grade * (SITUATION_MODIFIERS[options.situation][conceptKey] || 1.0));
-    }
-    if (options.personnel && PERSONNEL_BONUS[options.personnel]) {
-      grade = Math.round(grade + (PERSONNEL_BONUS[options.personnel][conceptKey] || 0));
-    }
-    if (options.adjustments && Array.isArray(options.adjustments)) {
-      for (const adj of options.adjustments) {
-        const mod = ADJUSTMENT_MODIFIERS[adj];
-        if (mod && mod[conceptKey]) {
-          grade += mod[conceptKey];
-        }
-      }
-    }
-    grade = Math.max(0, Math.min(100, grade));
+  for (const conceptKey of Object.keys(MATCHUP_GRADES)) {
+    const gradeResult = computeGradeForConcept(conceptKey, coverageName, options);
 
     results.push({
       conceptKey,
       conceptLabel: CONCEPT_LABELS[conceptKey] || conceptKey,
-      grade,
-      label: getGradeLabel(grade),
-      color: getGradeColor(grade)
+      grade: gradeResult.grade,
+      label: gradeResult.label,
+      color: gradeResult.color
     });
   }
 

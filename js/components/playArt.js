@@ -3150,6 +3150,7 @@ class PlayArtRenderer {
     this.animProgress = 0;
     this.animFrame = null;
     this.isAnimating = false;
+    this.loopEnabled = true;
     this._initTouchHandlers();
   }
 
@@ -3418,7 +3419,7 @@ class PlayArtRenderer {
       const color = isQB ? BALL_COLOR : OFF_COLOR;
       this.drawPlayer(pos[0], pos[1], color, label, isQB ? 9 : 8);
     }
-    this._drawLegend();
+    if (this.width >= 300) this._drawLegend();
   }
 
   renderDefense(formation, coverageName, subFormation) {
@@ -3935,11 +3936,13 @@ class PlayArtRenderer {
         this.animFrame = requestAnimationFrame(animate);
       } else {
         this.isAnimating = false;
-        this._loopTimeout = setTimeout(() => {
-          if (this.canvas.isConnected) {
-            this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups });
-          }
-        }, 1500);
+        if (this.loopEnabled) {
+          this._loopTimeout = setTimeout(() => {
+            if (this.canvas.isConnected) {
+              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups });
+            }
+          }, 1500);
+        }
       }
     };
 
@@ -4818,11 +4821,13 @@ class PlayArtRenderer {
         this.animFrame = requestAnimationFrame(animate);
       } else {
         this.isAnimating = false;
-        this._loopTimeout = setTimeout(() => {
-          if (this.canvas.isConnected) {
-            this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration });
-          }
-        }, 1200);
+        if (this.loopEnabled) {
+          this._loopTimeout = setTimeout(() => {
+            if (this.canvas.isConnected) {
+              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration });
+            }
+          }, 1200);
+        }
       }
     };
 
@@ -4882,8 +4887,9 @@ class PlayArtRenderer {
     let lastDist = 0;
     let scale = 1;
     let originX = 0, originY = 0;
+    let lastTap = 0;
 
-    canvas.addEventListener('touchstart', (e) => {
+    this._touchStartHandler = (e) => {
       if (e.touches.length === 2) {
         e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -4892,9 +4898,9 @@ class PlayArtRenderer {
         originX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         originY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
       }
-    }, { passive: false });
+    };
 
-    canvas.addEventListener('touchmove', (e) => {
+    this._touchMoveHandler = (e) => {
       if (e.touches.length === 2) {
         e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -4910,9 +4916,9 @@ class PlayArtRenderer {
         }
         lastDist = dist;
       }
-    }, { passive: false });
+    };
 
-    canvas.addEventListener('touchend', (e) => {
+    this._touchEndHandler = (e) => {
       if (e.touches.length < 2) {
         lastDist = 0;
         if (scale <= 1.05) {
@@ -4921,11 +4927,7 @@ class PlayArtRenderer {
           canvas.style.transformOrigin = '';
         }
       }
-    });
-
-    // Double-tap to reset zoom
-    let lastTap = 0;
-    canvas.addEventListener('touchend', (e) => {
+      // Double-tap to reset zoom
       if (e.touches.length === 0) {
         const now = Date.now();
         if (now - lastTap < 300) {
@@ -4935,7 +4937,11 @@ class PlayArtRenderer {
         }
         lastTap = now;
       }
-    });
+    };
+
+    canvas.addEventListener('touchstart', this._touchStartHandler, { passive: false });
+    canvas.addEventListener('touchmove', this._touchMoveHandler, { passive: false });
+    canvas.addEventListener('touchend', this._touchEndHandler);
   }
 
   destroy() {
@@ -4943,6 +4949,21 @@ class PlayArtRenderer {
     if (this._resizeObserver) {
       this._resizeObserver.disconnect();
       this._resizeObserver = null;
+    }
+    // Remove touch handlers
+    if (this.canvas) {
+      if (this._touchStartHandler) {
+        this.canvas.removeEventListener('touchstart', this._touchStartHandler);
+        this._touchStartHandler = null;
+      }
+      if (this._touchMoveHandler) {
+        this.canvas.removeEventListener('touchmove', this._touchMoveHandler);
+        this._touchMoveHandler = null;
+      }
+      if (this._touchEndHandler) {
+        this.canvas.removeEventListener('touchend', this._touchEndHandler);
+        this._touchEndHandler = null;
+      }
     }
   }
 }

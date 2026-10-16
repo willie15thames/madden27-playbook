@@ -107,6 +107,29 @@ const togglePanelBtn = document.getElementById('togglePanelBtn');
 const detailModal = document.getElementById('detailModal');
 const detailModalContent = document.getElementById('detailModalContent');
 
+// ===== CLEAR DEPENDENT STATE =====
+function clearSchemeBuilderState() {
+  // Clear adjustment toggles
+  document.querySelectorAll('#offAdjContent [data-adj].active, #defAdjContent [data-adj].active').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Clear analytics display
+  if (analyticsGradeDisplay) analyticsGradeDisplay.innerHTML = '<p class="text-xs text-gray-500">Select a play and coverage to see grades</p>';
+  if (analyticsRecommendations) analyticsRecommendations.innerHTML = '';
+
+  // Clear play info
+  const nameEl = document.getElementById('infoPlayName');
+  const typeEl = document.getElementById('infoPlayType');
+  const vsEl = document.getElementById('infoVsCoverage');
+  if (nameEl) nameEl.textContent = 'Select a play';
+  if (typeEl) typeEl.textContent = 'Choose a playbook, formation, and play above';
+  if (vsEl) { vsEl.textContent = ''; vsEl.className = 'text-xs text-gray-500'; }
+
+  // Destroy active renderer
+  if (activeRenderer) { activeRenderer.destroy(); activeRenderer = null; }
+}
+
 // ===== POPULATE SELECTS =====
 function initSelects() {
   const sorted = [...OFFENSIVE_PLAYBOOKS].sort((a, b) => a.name.localeCompare(b.name));
@@ -123,12 +146,22 @@ function initSelects() {
     sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
     plSelect.innerHTML = '<option value="">Play...</option>';
     fmSelect.disabled = true; sfSelect.disabled = true; plSelect.disabled = true;
+    // Clear all dependent state
+    currentPlay = null;
+    currentFormation = 'Gun';
+    currentSubFormation = 'Spread Y-Flex';
+    playerRoutes = {};
+    selectedPlayer = null;
+    clearSchemeBuilderState();
     if (book && book.formations) {
       Object.keys(book.formations).sort().forEach(f => {
         fmSelect.innerHTML += `<option value="${f}">${f}</option>`;
       });
       fmSelect.disabled = false;
     }
+    resetInteractivePositions();
+    renderInteractive();
+    renderPanelHotRoutes();
   });
 
   fmSelect.addEventListener('change', () => {
@@ -137,6 +170,10 @@ function initSelects() {
     plSelect.innerHTML = '<option value="">Play...</option>';
     sfSelect.disabled = true; plSelect.disabled = true;
     currentFormation = fmSelect.value || 'Gun';
+    currentPlay = null;
+    playerRoutes = {};
+    selectedPlayer = null;
+    clearSchemeBuilderState();
     if (book && book.formations && book.formations[fmSelect.value]) {
       Object.keys(book.formations[fmSelect.value]).sort().forEach(s => {
         sfSelect.innerHTML += `<option value="${s}">${s}</option>`;
@@ -152,6 +189,10 @@ function initSelects() {
     plSelect.innerHTML = '<option value="">Play...</option>';
     plSelect.disabled = true;
     currentSubFormation = sfSelect.value || 'Spread Y-Flex';
+    currentPlay = null;
+    playerRoutes = {};
+    selectedPlayer = null;
+    clearSchemeBuilderState();
     if (book && book.formations && book.formations[fmSelect.value]) {
       const plays = book.formations[fmSelect.value][sfSelect.value] || [];
       [...plays].sort().forEach(p => {
@@ -224,6 +265,7 @@ function updateAnimation() {
   }
 
   const renderer = new PlayArtRenderer(liveCanvas, { width: 640, height: 480 });
+  renderer.loopEnabled = isLooping;
   activeRenderer = renderer;
 
   const formation = fmSelect.value || 'Gun';
@@ -984,14 +1026,58 @@ if (situationSelect) {
 function initCreatorControls() {
   const btnFlip = document.getElementById('btnFlip');
   const btnReset = document.getElementById('btnReset');
+  const creatorFormation = document.getElementById('creatorFormation');
+
+  if (creatorFormation) {
+    creatorFormation.addEventListener('change', () => {
+      currentFormation = creatorFormation.value || 'Gun';
+      resetInteractivePositions();
+      if (currentPlay) loadPlayRoutes();
+      renderInteractive();
+      renderPanelHotRoutes();
+    });
+  }
 
   btnFlip.addEventListener('click', () => {
     isFlipped = !isFlipped;
     btnFlip.classList.toggle('active', isFlipped);
+
+    // Route swap pairs: left <-> right variants
+    const FLIP_ROUTE_MAP = {
+      'drag': 'drag_left', 'drag_left': 'drag',
+      'flat': 'flat_left', 'flat_left': 'flat',
+      'screen_left': 'screen_right', 'screen_right': 'screen_left',
+      'pull_left': 'pull_right', 'pull_right': 'pull_left',
+      'zone_step_left': 'zone_step_right', 'zone_step_right': 'zone_step_left',
+      'run_left': 'run_right', 'run_right': 'run_left',
+      'qb_boot_left': 'qb_boot_right', 'qb_boot_right': 'qb_boot_left',
+    };
+
     // Flip all positions horizontally
     for (const [key, pos] of Object.entries(playerPositions)) {
       playerPositions[key] = [1 - pos[0], pos[1]];
     }
+
+    // Swap left/right route variants and negate x-components of waypoints
+    for (const [key, route] of Object.entries(playerRoutes)) {
+      if (key.startsWith('_')) continue; // skip _qb, _isRun, _ball_target
+      if (FLIP_ROUTE_MAP[route]) {
+        playerRoutes[key] = FLIP_ROUTE_MAP[route];
+      }
+    }
+    // Also flip QB action if applicable
+    if (playerRoutes._qb && FLIP_ROUTE_MAP[playerRoutes._qb]) {
+      playerRoutes._qb = FLIP_ROUTE_MAP[playerRoutes._qb];
+    }
+
+    // Negate x-component of all route waypoints in the local route paths
+    for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+      const waypoints = ROUTE_PATHS_LOCAL[routeName];
+      for (let i = 0; i < waypoints.length; i++) {
+        waypoints[i] = [-waypoints[i][0], waypoints[i][1]];
+      }
+    }
+
     renderInteractive();
   });
 

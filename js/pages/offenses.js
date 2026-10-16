@@ -103,9 +103,22 @@ function deactivateCard(card) {
   card.classList.remove('live-active');
 }
 
+const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+
 function bindHoverEvents(card) {
-  card.addEventListener('mouseenter', () => activateCard(card));
-  card.addEventListener('mouseleave', () => deactivateCard(card));
+  if (isTouchDevice) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) activateCard(card);
+        else deactivateCard(card);
+      });
+    }, { threshold: 0.5 });
+    observer.observe(card);
+    card._observer = observer;
+  } else {
+    card.addEventListener('mouseenter', () => activateCard(card));
+    card.addEventListener('mouseleave', () => deactivateCard(card));
+  }
 }
 
 function renderCards(filter = 'all', search = '') {

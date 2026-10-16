@@ -66,8 +66,9 @@ offPlaybookSelect.addEventListener('change', () => {
   resetSelect(offFormationSelect, 'Choose a formation...');
   resetSelect(offSubFormationSelect, 'Choose a sub-formation...');
   resetSelect(offPlaySelect, 'Choose a play...');
+  currentOff = { formation: '', subFormation: '', play: '' };
   if (pb) { populateSelect(offFormationSelect, Object.keys(pb.formations).sort()); }
-  checkMatchup();
+  clearMatchupDisplay();
 });
 offFormationSelect.addEventListener('change', () => {
   const pb = OFFENSIVE_PLAYBOOKS.find(p => p.id === offPlaybookSelect.value);
@@ -97,8 +98,9 @@ defPlaybookSelect.addEventListener('change', () => {
   resetSelect(defFormationSelect, 'Choose a formation...');
   resetSelect(defSubFormationSelect, 'Choose a sub-formation...');
   resetSelect(defPlaySelect, 'Choose a coverage...');
+  currentDef = { formation: '', subFormation: '', play: '' };
   if (pb) { populateSelect(defFormationSelect, Object.keys(pb.formations).sort()); }
-  checkMatchup();
+  clearMatchupDisplay();
 });
 defFormationSelect.addEventListener('change', () => {
   const pb = DEFENSIVE_PLAYBOOKS.find(p => p.id === defPlaybookSelect.value);
@@ -133,6 +135,52 @@ function populateSelect(sel, items) {
     sel.appendChild(opt);
   });
   sel.disabled = false;
+}
+
+function clearMatchupDisplay() {
+  // Hide the entire results section
+  matchupResults.classList.add('hidden');
+
+  // Clear VS canvas
+  const vsContainer = document.getElementById('vsCanvasContainer');
+  if (vsContainer) vsContainer.innerHTML = '';
+  if (vsRenderer) { vsRenderer.destroy(); vsRenderer = null; }
+
+  // Clear static play art
+  const offArtContainer = document.getElementById('offArtContainer');
+  const defArtContainer = document.getElementById('defArtContainer');
+  if (offArtContainer) offArtContainer.innerHTML = '';
+  if (defArtContainer) defArtContainer.innerHTML = '';
+  if (offStaticRenderer) { offStaticRenderer.destroy(); offStaticRenderer = null; }
+  if (defStaticRenderer) { defStaticRenderer.destroy(); defStaticRenderer = null; }
+
+  // Clear verdict
+  const verdictPanel = document.getElementById('verdictPanel');
+  const verdictText = document.getElementById('verdictText');
+  const verdictDetail = document.getElementById('verdictDetail');
+  if (verdictText) { verdictText.textContent = ''; verdictText.className = ''; }
+  if (verdictDetail) verdictDetail.textContent = '';
+  if (verdictPanel) verdictPanel.style.borderColor = '#2F4F4F';
+
+  // Clear analysis panels
+  const offenseAnalysis = document.getElementById('offenseAnalysis');
+  const defenseAnalysis = document.getElementById('defenseAnalysis');
+  if (offenseAnalysis) offenseAnalysis.innerHTML = '<p class="text-gray-500 text-sm">Select an offensive play.</p>';
+  if (defenseAnalysis) defenseAnalysis.innerHTML = '<p class="text-gray-500 text-sm">Select a defensive coverage.</p>';
+
+  // Clear recommendations
+  const recommendations = document.getElementById('recommendations');
+  if (recommendations) recommendations.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">Select both sides to see recommendations.</p>';
+
+  // Clear play name/type labels
+  const offPlayName = document.getElementById('offPlayName');
+  const defPlayName = document.getElementById('defPlayName');
+  const offPlayType = document.getElementById('offPlayType');
+  const defPlayType = document.getElementById('defPlayType');
+  if (offPlayName) offPlayName.textContent = '—';
+  if (defPlayName) defPlayName.textContent = '—';
+  if (offPlayType) offPlayType.textContent = 'Select a play';
+  if (defPlayType) defPlayType.textContent = 'Select a coverage';
 }
 
 function checkMatchup() {
@@ -301,7 +349,16 @@ function checkMatchup() {
 
     // Add coverage intelligence
     const defPlayName = defCoverageData ? defCoverageData.name : '';
-    const cbMatch = Object.keys(COVERAGE_BEATERS).find(k => defPlayName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(defPlayName.toLowerCase().split('(')[0].trim()));
+    // Find best COVERAGE_BEATERS key: exact match first, then longest key that starts the coverage name
+    const defNameLower = defPlayName.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
+    const cbKeys = Object.keys(COVERAGE_BEATERS);
+    let cbMatch = cbKeys.find(k => k.toLowerCase() === defNameLower);
+    if (!cbMatch) {
+      // Find the longest key that the coverage name starts with
+      const candidates = cbKeys.filter(k => defNameLower.startsWith(k.toLowerCase()))
+        .sort((a, b) => b.length - a.length);
+      cbMatch = candidates[0] || null;
+    }
     if (cbMatch) {
       const cb = COVERAGE_BEATERS[cbMatch];
       // Find the play's tags from PLAY_ROUTES by matching the offensive play name
@@ -392,7 +449,71 @@ function checkMatchup() {
 
 function findCoverage(name) {
   if (!name) return null;
-  return COVERAGES.find(c => c.name.toLowerCase().includes(name.toLowerCase().split('(')[0].trim()) || name.toLowerCase().includes(c.name.split('(')[0].trim().toLowerCase())) || null;
+  const nameLower = name.toLowerCase().trim();
+
+  // 1. Exact match
+  const exact = COVERAGES.find(c => c.name === name);
+  if (exact) return exact;
+
+  // 2. Case-insensitive exact match
+  const ciExact = COVERAGES.find(c => c.name.toLowerCase() === nameLower);
+  if (ciExact) return ciExact;
+
+  // 3. Match after stripping parentheticals from coverage name
+  //    e.g., "Cover 4 Quarters" should match "Cover 4 (Quarters)"
+  const stripped = COVERAGES.find(c => {
+    const base = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
+    return base === nameLower;
+  });
+  if (stripped) return stripped;
+
+  // 4. Match coverage names with parenthetical content treated as alternate name
+  //    e.g., "Cover 4 Quarters" matches "Cover 4 (Quarters)" because "Quarters" is in the parens
+  const parenMatch = COVERAGES.find(c => {
+    const parenContent = c.name.match(/\(([^)]+)\)/);
+    if (!parenContent) return false;
+    const baseName = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
+    const altName = (baseName + ' ' + parenContent[1].trim()).toLowerCase();
+    return altName === nameLower;
+  });
+  if (parenMatch) return parenMatch;
+
+  // 5. Handle specific naming pattern mismatches between defensive playbooks and COVERAGES:
+  //    "Cover 2 Invert" <-> "Inverted Cover 2"
+  //    "Cover 3 Buzz Match" <-> "Cover 3 Buzz" or "Cover 3 Match"
+  //    "Cover 4 Drop Field" <-> "Cover 4 Drop"
+  //    "Cover 2 Man" <-> "Cover 2 Man Under"
+  const nameWords = nameLower.split(/\s+/);
+  let bestMatch = null;
+  let bestScore = 0;
+  for (const c of COVERAGES) {
+    const covLower = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
+    const covWords = covLower.split(/\s+/);
+    // Count matching words
+    let matchCount = 0;
+    for (const w of nameWords) {
+      if (covWords.includes(w)) matchCount++;
+    }
+    // Also check if a coverage alternate word (from parens) matches
+    const parenContent = c.name.match(/\(([^)]+)\)/);
+    if (parenContent) {
+      const altWords = parenContent[1].toLowerCase().split(/[\s-]+/);
+      for (const w of nameWords) {
+        if (altWords.includes(w)) matchCount++;
+      }
+    }
+    // Handle "Invert" <-> "Inverted"
+    if (nameLower.includes('invert') && covLower.includes('invert')) matchCount += 2;
+
+    const score = matchCount / Math.max(nameWords.length, covWords.length);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = c;
+    }
+  }
+  if (bestMatch && bestScore >= 0.5) return bestMatch;
+
+  return null;
 }
 function doesOffenseBeat(offName, offData, defName, defData) {
   const defLow = defData.name.toLowerCase();

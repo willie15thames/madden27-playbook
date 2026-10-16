@@ -105,9 +105,23 @@ function deactivateCard(card) {
   card.classList.remove('live-active');
 }
 
+const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+
 function bindHoverEvents(card) {
-  card.addEventListener('mouseenter', () => activateCard(card));
-  card.addEventListener('mouseleave', () => deactivateCard(card));
+  if (isTouchDevice) {
+    // On touch/mobile, auto-play when card scrolls into view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) activateCard(card);
+        else deactivateCard(card);
+      });
+    }, { threshold: 0.5 });
+    observer.observe(card);
+    card._observer = observer;
+  } else {
+    card.addEventListener('mouseenter', () => activateCard(card));
+    card.addEventListener('mouseleave', () => deactivateCard(card));
+  }
 }
 
 function renderCards(filter = 'all', search = '', shell = 'all') {
@@ -127,7 +141,7 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
     const card = document.createElement('div');
     card.className = 'coverage-card animate-fade-in';
     card.style.animationDelay = `${i * 0.05}s`;
-    card.style.borderLeft = `3px solid ${cov.color}`;
+    // Uniform card styling - no colored left border
     card.dataset.covIdx = covIdx;
     card.innerHTML = `
       <div class="play-art-wrapper">
@@ -198,6 +212,24 @@ function openModal(cov, variants) {
         <button class="side-btn" data-side="offense"><i class="bi bi-lightning-fill mr-1"></i>Run Offense</button>
         <button class="side-btn active" data-side="defense"><i class="bi bi-shield-fill mr-1"></i>Run Defense</button>
       </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <select id="covFormationSelect" class="custom-select">
+        <option value="Nickel" selected>Nickel</option>
+        <option value="Dime">Dime</option>
+        <option value="Dollar">Dollar</option>
+        <option value="Quarter">Quarter</option>
+        <option value="3-4">3-4</option>
+        <option value="4-3">4-3</option>
+        <option value="4-4">4-4</option>
+        <option value="Big Nickel">Big Nickel</option>
+        <option value="46">46</option>
+        <option value="5-2">5-2</option>
+        <option value="Goal Line">Goal Line</option>
+      </select>
+      <select id="covSubFormationSelect" class="custom-select">
+        <option value="">Default Look</option>
+      </select>
     </div>
     <div class="flex justify-center mb-2">
       <canvas id="modalCovArt" width="560" height="440" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
@@ -341,6 +373,10 @@ function openModal(cov, variants) {
     return groups;
   };
 
+  let covDefFormation = 'Nickel';
+  const covFormSel = document.getElementById('covFormationSelect');
+  const covSubFormSel = document.getElementById('covSubFormationSelect');
+
   const startCovAnim = () => {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
@@ -348,13 +384,23 @@ function openModal(cov, variants) {
       const r = new PlayArtRenderer(mainCanvas, { width: 560, height: 440 });
       r.renderLivePlay({
         side: covModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
-        playFamily: 'PA Crossers', defFormation: 'Nickel', coverageName: cov.name,
+        playFamily: 'PA Crossers', defFormation: covDefFormation, coverageName: cov.name,
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });
       renderers.push(r);
     }
   };
   startCovAnim();
+
+  if (covFormSel) {
+    covFormSel.addEventListener('change', () => {
+      covDefFormation = covFormSel.value;
+      startCovAnim();
+    });
+  }
+  if (covSubFormSel) {
+    covSubFormSel.addEventListener('change', () => startCovAnim());
+  }
 
   const covToggle = document.getElementById('covSideToggle');
   if (covToggle) {
