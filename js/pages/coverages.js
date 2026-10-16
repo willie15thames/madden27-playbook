@@ -52,6 +52,66 @@ let renderers = [];
 let visibleGroups = null;
 let animSpeed = 3500;
 let liveAnimEnabled = true;
+let currentDefFormation = 'Nickel';
+let currentDefSubFormation = '';
+
+const defFormationSelect = document.getElementById('defFormationSelect');
+const defSubFormationSelect = document.getElementById('defSubFormationSelect');
+
+// Populate defensive formation dropdown from all DEFENSIVE_PLAYBOOKS
+function populateDefFormations() {
+  const formationSet = new Set();
+  DEFENSIVE_PLAYBOOKS.forEach(pb => {
+    if (pb.formations) {
+      Object.keys(pb.formations).forEach(fm => formationSet.add(fm));
+    }
+  });
+  const formations = [...formationSet].sort();
+  if (defFormationSelect) {
+    defFormationSelect.innerHTML = formations.map(f =>
+      `<option value="${f}"${f === 'Nickel' ? ' selected' : ''}>${f}</option>`
+    ).join('');
+  }
+}
+
+function populateDefSubFormations(defFormation) {
+  const subSet = new Set();
+  DEFENSIVE_PLAYBOOKS.forEach(pb => {
+    if (pb.formations && pb.formations[defFormation]) {
+      Object.keys(pb.formations[defFormation]).forEach(sf => subSet.add(sf));
+    }
+  });
+  const subs = [...subSet].sort();
+  if (defSubFormationSelect) {
+    if (subs.length > 0) {
+      defSubFormationSelect.innerHTML = '<option value="">Default Look</option>' +
+        subs.map(s => `<option value="${s}">${s}</option>`).join('');
+      defSubFormationSelect.disabled = false;
+    } else {
+      defSubFormationSelect.innerHTML = '<option value="">Default Look</option>';
+      defSubFormationSelect.disabled = true;
+    }
+  }
+}
+
+populateDefFormations();
+populateDefSubFormations('Nickel');
+
+if (defFormationSelect) {
+  defFormationSelect.addEventListener('change', () => {
+    currentDefFormation = defFormationSelect.value || 'Nickel';
+    currentDefSubFormation = '';
+    populateDefSubFormations(currentDefFormation);
+    renderCards(activeFilter, searchInput.value, activeShell);
+  });
+}
+
+if (defSubFormationSelect) {
+  defSubFormationSelect.addEventListener('change', () => {
+    currentDefSubFormation = defSubFormationSelect.value || '';
+    renderCards(activeFilter, searchInput.value, activeShell);
+  });
+}
 
 function cleanup() {
   renderers.forEach(r => r.destroy());
@@ -84,7 +144,8 @@ function activateCard(card) {
   const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
   r.renderSinglePlayLive({
     mode: 'defense',
-    defFormation: 'Nickel',
+    defFormation: currentDefFormation,
+    defSubFormation: currentDefSubFormation || undefined,
     coverageName: cov.name,
     duration: animSpeed,
     visibleGroups
@@ -111,7 +172,7 @@ function deactivateCard(card) {
         renderers = renderers.filter(r => r !== card._staticRenderer);
       }
       const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
-      r.renderCoverageCard('Nickel', cov.name);
+      r.renderCoverageCard(currentDefFormation, cov.name);
       card._staticRenderer = r;
     }
   }
@@ -195,7 +256,7 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
       canvas.style.maxWidth = '100%';
       canvas.style.height = 'auto';
       const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
-      r.renderCoverageCard('Nickel', cov.name);
+      r.renderCoverageCard(currentDefFormation, cov.name);
       card._staticRenderer = r;
     }
   });
@@ -227,19 +288,7 @@ function openModal(cov, variants) {
       </div>
     </div>
     <div class="grid grid-cols-2 gap-3 mb-3">
-      <select id="covFormationSelect" class="custom-select">
-        <option value="Nickel" selected>Nickel</option>
-        <option value="Dime">Dime</option>
-        <option value="Dollar">Dollar</option>
-        <option value="Quarter">Quarter</option>
-        <option value="3-4">3-4</option>
-        <option value="4-3">4-3</option>
-        <option value="4-4">4-4</option>
-        <option value="Big Nickel">Big Nickel</option>
-        <option value="46">46</option>
-        <option value="5-2">5-2</option>
-        <option value="Goal Line">Goal Line</option>
-      </select>
+      <select id="covFormationSelect" class="custom-select"></select>
       <select id="covSubFormationSelect" class="custom-select">
         <option value="">Default Look</option>
       </select>
@@ -386,9 +435,43 @@ function openModal(cov, variants) {
     return groups;
   };
 
-  let covDefFormation = 'Nickel';
+  let covDefFormation = currentDefFormation;
+  let covDefSubFormation = currentDefSubFormation;
   const covFormSel = document.getElementById('covFormationSelect');
   const covSubFormSel = document.getElementById('covSubFormationSelect');
+
+  // Populate modal formation dropdown dynamically
+  if (covFormSel) {
+    const fmSet = new Set();
+    DEFENSIVE_PLAYBOOKS.forEach(pb => {
+      if (pb.formations) Object.keys(pb.formations).forEach(fm => fmSet.add(fm));
+    });
+    const fmList = [...fmSet].sort();
+    covFormSel.innerHTML = fmList.map(f =>
+      `<option value="${f}"${f === covDefFormation ? ' selected' : ''}>${f}</option>`
+    ).join('');
+  }
+
+  // Populate modal subformation dropdown
+  const populateModalSubFormations = (formation) => {
+    if (!covSubFormSel) return;
+    const subSet = new Set();
+    DEFENSIVE_PLAYBOOKS.forEach(pb => {
+      if (pb.formations && pb.formations[formation]) {
+        Object.keys(pb.formations[formation]).forEach(sf => subSet.add(sf));
+      }
+    });
+    const subs = [...subSet].sort();
+    if (subs.length > 0) {
+      covSubFormSel.innerHTML = '<option value="">Default Look</option>' +
+        subs.map(s => `<option value="${s}"${s === covDefSubFormation ? ' selected' : ''}>${s}</option>`).join('');
+      covSubFormSel.disabled = false;
+    } else {
+      covSubFormSel.innerHTML = '<option value="">Default Look</option>';
+      covSubFormSel.disabled = true;
+    }
+  };
+  populateModalSubFormations(covDefFormation);
 
   const startCovAnim = () => {
     renderers.forEach(r => r.destroy()); renderers = [];
@@ -397,7 +480,9 @@ function openModal(cov, variants) {
       const r = new PlayArtRenderer(mainCanvas, { width: 560, height: 440 });
       r.renderLivePlay({
         side: covModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
-        playFamily: 'PA Crossers', defFormation: covDefFormation, coverageName: cov.name,
+        playFamily: 'PA Crossers', defFormation: covDefFormation,
+        defSubFormation: covDefSubFormation || undefined,
+        coverageName: cov.name,
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });
       renderers.push(r);
@@ -408,11 +493,16 @@ function openModal(cov, variants) {
   if (covFormSel) {
     covFormSel.addEventListener('change', () => {
       covDefFormation = covFormSel.value;
+      covDefSubFormation = '';
+      populateModalSubFormations(covDefFormation);
       startCovAnim();
     });
   }
   if (covSubFormSel) {
-    covSubFormSel.addEventListener('change', () => startCovAnim());
+    covSubFormSel.addEventListener('change', () => {
+      covDefSubFormation = covSubFormSel.value || '';
+      startCovAnim();
+    });
   }
 
   const covToggle = document.getElementById('covSideToggle');

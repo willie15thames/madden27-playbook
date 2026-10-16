@@ -454,8 +454,8 @@ function buildOffensePositions(formation, subFormation) {
 
 // Build defensive positions dynamically from formation + subFormation names
 function buildDefensePositions(formation, subFormation) {
-  const form = (formation || '').toLowerCase();
-  const sub = (subFormation || '').toLowerCase();
+  const form = (formation || '').toLowerCase().replace(/\s{2,}/g, '-');
+  const sub = (subFormation || '').toLowerCase().replace(/\s{2,}/g, '-');
   const full = form + ' ' + sub;
 
   // Goal Line
@@ -761,6 +761,7 @@ const ROUTE_PATHS = {
   'run_left': [[-0.10, -0.06]],
   'run_inside': [[0.02, -0.10]],
   'run_power': [[0.06, -0.10]],
+  'run_power_left': [[-0.06, -0.10]],
   'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
   'run_stretch': [[0.16, -0.04]],
   'run_stretch_left': [[-0.16, -0.04]],
@@ -1754,7 +1755,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'TE'
   },
   'Slip Screen': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'flat_left', RB: 'screen_left', LG: 'zone_step_left', C: 'zone_step_left', RG: 'zone_step_left' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'Slow Screen': {
@@ -1890,11 +1891,11 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Right': {
-    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch', LT: 'zone_step_right', LG: 'zone_step_right', C: 'zone_step_right', RG: 'zone_step_right', RT: 'zone_step_right' },
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Left': {
-    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch_left', LT: 'zone_step_left', LG: 'zone_step_left', C: 'zone_step_left', RG: 'zone_step_left', RT: 'zone_step_left' },
     qb: 'qb_handoff', isRun: true
   },
   'Inside Trap': {
@@ -2162,7 +2163,7 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true
   },
   'Power Left': {
-    routes: { WR1: 'stalk_block', WR2: 'crack_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_power' },
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'crack_block', TE: 'block', RB: 'run_power_left', LG: 'pull_right' },
     qb: 'qb_handoff', isRun: true
   },
   'Power Right': {
@@ -2744,7 +2745,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'HB Slip Screen': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'flat_left', RB: 'screen_left', LG: 'zone_step_left', C: 'zone_step_left', RG: 'zone_step_left' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'HB Cross Screen': {
@@ -3124,6 +3125,11 @@ const COVERAGE_BEATERS = {
     beats: ['deep', 'verticals'],
     tip: 'Single high safety \u2014 flood one side to create 2-on-1 matchups'
   },
+  'Cover 1 Robber': {
+    beatenBy: ['flood', 'levels', 'smash'],
+    beats: ['mesh', 'short', 'quick_game'],
+    tip: 'Robber takes away the middle \u2014 attack the sidelines with corners, outs, and flood concepts'
+  },
   'Cover 2 Zone': {
     beatenBy: ['deep', 'verticals', 'smash'],
     beats: ['short', 'quick_game'],
@@ -3191,7 +3197,11 @@ function inferRoutes(name) {
 
   if (isRun) {
     const r = { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' };
-    if (base.includes('power')) { r.RB = 'run_power'; r.FB = 'lead_block'; r.RG = 'pull_left'; }
+    if (base.includes('power')) {
+      const goLeft = base.includes('left') || base.includes('lt') || base.includes('wk');
+      r.RB = goLeft ? 'run_power_left' : 'run_power'; r.FB = 'lead_block';
+      if (goLeft) { r.LG = 'pull_right'; } else { r.RG = 'pull_left'; }
+    }
     else if (base.includes('counter')) { r.RB = 'run_counter'; r.RG = 'pull_left'; r.RT = 'pull_left'; }
     else if (base.includes('stretch') || base.includes('toss') || base.includes('sweep') || base.includes('pitch')) {
       const goLeft = base.includes('left') || base.includes('lt') || base.includes('wk');
@@ -3763,7 +3773,7 @@ class PlayArtRenderer {
   // ============================
   // Players physically move: WRs run routes, OL engages DL, DBs drop/follow, gaps fill
   // side: 'offense' | 'defense' - which side is highlighted
-  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null, positionOverrides = null, routeOverrides = null }) {
+  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null, positionOverrides = null, routeOverrides = null, flipped = false }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     this._currentCoverage = coverageName || null;
@@ -3801,11 +3811,25 @@ class PlayArtRenderer {
     // NFL gap labels (used for gap weighting, not display — display uses _computeGaps)
     const gapLabels = ['C', 'B', 'A', 'A', 'B', 'C'];
 
+    // Routes that already have directional variants — their waypoints are correct as-is when flipped
+    const DIRECTIONAL_ROUTES = new Set([
+      'drag', 'drag_left', 'flat', 'flat_left', 'swing', 'swing_left',
+      'screen_left', 'screen_right', 'pull_left', 'pull_right',
+      'zone_step_left', 'zone_step_right', 'run_left', 'run_right',
+      'run_stretch', 'run_stretch_left', 'run_outside', 'run_outside_left',
+      'run_power', 'run_power_left', 'ol_release_left', 'ol_release_right',
+      'qb_boot_left', 'qb_boot_right'
+    ]);
+
     for (const [key, startPos] of Object.entries(offPositions)) {
       const isOL = olKeys.includes(key);
       const isQB = key === 'QB';
       const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
-      const path = ROUTE_PATHS[routeName] || [];
+      let path = ROUTE_PATHS[routeName] || [];
+      // When flipped, negate x-component of non-directional routes so animation matches editor
+      if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
+        path = path.map(([dx, dy]) => [-dx, dy]);
+      }
 
       // Compute final position by following waypoints, clamped to field bounds
       let endX = startPos[0], endY = startPos[1];
@@ -3870,7 +3894,12 @@ class PlayArtRenderer {
       manDefenders.sort((a, b) => (b.isDB ? 1 : 0) - (a.isDB ? 1 : 0));
       for (const def of manDefenders) {
         if (isRun && def.isLB) {
-          manAssignments[def.key] = [def.pos[0], def.pos[1] + 0.06];
+          manAssignments[def.key] = {
+            endPos: [def.pos[0], def.pos[1] + 0.06],
+            receiver: null,
+            followFactor: 0,
+            offset: [0, 0]
+          };
           continue;
         }
         let nearest = null, minDist = Infinity;
@@ -4173,8 +4202,9 @@ class PlayArtRenderer {
           const shiftedStart = [p.startPos[0] + motionShiftDx, p.startPos[1]];
           if (p.manReceiver && p.manReceiver.path && p.manReceiver.path.length > 0 && developPhase) {
             const recPos = this._posAlongPath(p.manReceiver.startPos[0], p.manReceiver.startPos[1], p.manReceiver.path, mt * p.manFollowFactor);
-            x = Math.max(0.02, Math.min(0.98, recPos.x + p.manOffset[0]));
-            y = Math.max(0.02, Math.min(0.98, recPos.y + p.manOffset[1]));
+            const easeIn = Math.min(mt / 0.2, 1);
+            x = Math.max(0.02, Math.min(0.98, shiftedStart[0] + (recPos.x + p.manOffset[0] - shiftedStart[0]) * easeIn));
+            y = Math.max(0.02, Math.min(0.98, shiftedStart[1] + (recPos.y + p.manOffset[1] - shiftedStart[1]) * easeIn));
           } else {
             x = shiftedStart[0] + (p.endPos[0] - shiftedStart[0]) * (developPhase ? mt : 0);
             y = shiftedStart[1] + (p.endPos[1] - shiftedStart[1]) * (developPhase ? mt : 0);
@@ -4269,7 +4299,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides });
+              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides, flipped });
             }
           }, 1500);
         }
@@ -4727,9 +4757,11 @@ class PlayArtRenderer {
       const distFromCenter = Math.abs(i - midIdx);
       if (rbRoute === 'run_inside' || rbRoute === 'run_dive') {
         gapOpenings[i].score *= (1 + 0.3 / (1 + distFromCenter)); // A gap: center
-      } else if (rbRoute === 'run_power') {
+      } else if (rbRoute === 'run_power' || rbRoute === 'run_power_left') {
         const distFromB = Math.min(Math.abs(i - (midIdx - 1)), Math.abs(i - (midIdx + 1)));
         gapOpenings[i].score *= (1 + 0.3 / (1 + distFromB)); // B gap: one off center
+        if (rbRoute === 'run_power_left') gapOpenings[i].score *= i < midIdx ? 1.3 : 0.7;
+        else gapOpenings[i].score *= i > midIdx ? 1.3 : 0.7;
       } else if (rbRoute === 'run_outside' || rbRoute === 'run_outside_left') {
         const distFromC = Math.min(Math.abs(i - (midIdx - 2)), Math.abs(i - (midIdx + 2)));
         gapOpenings[i].score *= (1 + 0.3 / (1 + distFromC)); // C gap: two off center
@@ -4984,7 +5016,7 @@ class PlayArtRenderer {
   // === SINGLE-PLAY LIVE ANIMATION (no opponent, card view) ===
   // Shows only offense OR defense animated, for card previews
   // visibleGroups: null (all) or Set of group names: 'OL','QB','WR','TE','RB','DL','LB','DB'
-  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null, positionOverrides = null, routeOverrides = null }) {
+  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null, positionOverrides = null, routeOverrides = null, flipped = false }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     this._currentCoverage = coverageName || null;
@@ -5017,13 +5049,26 @@ class PlayArtRenderer {
     const players = [];
     const olKeys = ['LT', 'LG', 'C', 'RG', 'RT'];
 
+    // Directional routes whose waypoints are already correct when flipped
+    const DIRECTIONAL_ROUTES = new Set([
+      'drag', 'drag_left', 'flat', 'flat_left', 'swing', 'swing_left',
+      'screen_left', 'screen_right', 'pull_left', 'pull_right',
+      'zone_step_left', 'zone_step_right', 'run_left', 'run_right',
+      'run_stretch', 'run_stretch_left', 'run_outside', 'run_outside_left',
+      'run_power', 'run_power_left', 'ol_release_left', 'ol_release_right',
+      'qb_boot_left', 'qb_boot_right'
+    ]);
+
     if (isOff && offPositions && playData) {
       const routes = playData.routes;
       for (const [key, startPos] of Object.entries(offPositions)) {
         const isOL = olKeys.includes(key);
         const isQB = key === 'QB';
         const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
-        const path = ROUTE_PATHS[routeName] || [];
+        let path = ROUTE_PATHS[routeName] || [];
+        if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
+          path = path.map(([dx, dy]) => [-dx, dy]);
+        }
         let endX = startPos[0], endY = startPos[1];
         for (const [dx, dy] of path) { endX += dx; endY += dy; }
         let isPull = false;
@@ -5262,7 +5307,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides });
+              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides, flipped });
             }
           }, 1200);
         }

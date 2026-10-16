@@ -341,7 +341,8 @@ function updateAnimation() {
       coverageName: currentCoverage,
       duration: 3500,
       positionOverrides: posOverrides,
-      routeOverrides: routeOvr
+      routeOverrides: routeOvr,
+      flipped: isFlipped
     });
   } else {
     renderer.renderSinglePlayLive({
@@ -351,7 +352,8 @@ function updateAnimation() {
       playFamily: play,
       duration: 3500,
       positionOverrides: posOverrides,
-      routeOverrides: routeOvr
+      routeOverrides: routeOvr,
+      flipped: isFlipped
     });
   }
 }
@@ -417,6 +419,7 @@ const ROUTE_PATHS_LOCAL = {
   'run_left': [[-0.10, -0.06]],
   'run_inside': [[0.02, -0.10]],
   'run_power': [[0.06, -0.10]],
+  'run_power_left': [[-0.06, -0.10]],
   'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
   'run_stretch': [[0.16, -0.04]],
   'run_stretch_left': [[-0.16, -0.04]],
@@ -1207,7 +1210,10 @@ function updateAnalytics() {
 }
 
 if (situationSelect) {
-  situationSelect.addEventListener('change', updateAnalytics);
+  situationSelect.addEventListener('change', () => {
+    updatePlayInfo(currentPlay, currentCoverage);
+    updateAnalytics();
+  });
 }
 
 // ===== PLAY CREATOR CONTROLS =====
@@ -1238,6 +1244,7 @@ function initCreatorControls() {
       'run_left': 'run_right', 'run_right': 'run_left',
       'run_stretch': 'run_stretch_left', 'run_stretch_left': 'run_stretch',
       'run_outside': 'run_outside_left', 'run_outside_left': 'run_outside',
+      'run_power': 'run_power_left', 'run_power_left': 'run_power',
       'ol_release_left': 'ol_release_right', 'ol_release_right': 'ol_release_left',
       'qb_boot_left': 'qb_boot_right', 'qb_boot_right': 'qb_boot_left',
     };

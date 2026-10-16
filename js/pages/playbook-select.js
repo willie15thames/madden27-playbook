@@ -694,7 +694,12 @@ function getSimilarPlaysHTML(playName) {
   `;
 }
 
-function closeModal() { cleanupRenderers(); modal.classList.remove('active'); }
+function closeModal() {
+  // Only destroy modal renderers — don't disconnect chip IntersectionObservers
+  renderers.forEach(r => r.destroy());
+  renderers = [];
+  modal.classList.remove('active');
+}
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
