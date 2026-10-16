@@ -174,7 +174,7 @@ function getConceptKey(playName) {
   if (lower.includes('smash') || lower.includes('hitch corner') || lower.includes('curl corner')) return 'smash';
 
   // Corner/Out concepts
-  if (lower.includes('corner') || lower.includes('out') || lower.includes('comeback') ||
+  if (lower.includes('corner') || /\bout\b/.test(lower) || lower.includes('comeback') ||
       lower.includes('fade') || lower.includes('flag')) return 'corner_out';
 
   // Quick game

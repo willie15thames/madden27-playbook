@@ -116,7 +116,7 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
 .play-art-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 320 / 260;
+  aspect-ratio: 500 / 350;
   background: #1a472a;
   overflow: hidden;
 }
@@ -336,6 +336,11 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
   transition: border-color 0.2s;
 }
 .custom-select:focus { border-color: #00FFFF; }
+.custom-select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  color: #6b7280;
+}
 .custom-select option { background: #2a0055; color: white; }
 
 /* Playbook Tree */

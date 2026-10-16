@@ -3974,6 +3974,34 @@ class PlayArtRenderer {
           ctx.textAlign = 'center';
           ctx.fillText('MOTION', (sx + endPx) / 2, Math.min(sy, endPy) - 6);
           ctx.restore();
+
+          // === Defensive reaction to motion (man coverage DB follows laterally) ===
+          if (coverageData.type !== 'zone') {
+            // Find the nearest DB to the motion player's original position
+            let nearestDef = null, minDist = Infinity;
+            for (const dp of defPlayers) {
+              if (!dp.isDB) continue;
+              const d = Math.hypot(origPos[0] - dp.startPos[0], origPos[1] - dp.startPos[1]);
+              if (d < minDist) { minDist = d; nearestDef = dp; }
+            }
+            if (nearestDef) {
+              // DB shifts laterally to track the motion player
+              const motionDx = (ex - origPos[0]) * motionT;
+              const dbX = (nearestDef.startPos[0] + motionDx) * this.width;
+              const dbY = nearestDef.startPos[1] * this.height;
+              ctx.save();
+              ctx.globalAlpha = 0.5;
+              ctx.strokeStyle = DEF_COLOR;
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([3, 3]);
+              ctx.beginPath();
+              ctx.moveTo(nearestDef.startPos[0] * this.width, nearestDef.startPos[1] * this.height);
+              ctx.lineTo(dbX, dbY);
+              ctx.stroke();
+              ctx.setLineDash([]);
+              ctx.restore();
+            }
+          }
         }
       }
 
@@ -4074,13 +4102,50 @@ class PlayArtRenderer {
         this._drawBlockEngagements(offPlayers, defPlayers, moveT, isOffSide);
       }
 
+      // === Pre-snap: find nearest DB to motion player for shift tracking ===
+      let motionTrackingDB = null;
+      let motionShiftDx = 0;
+      if (playData.motion && coverageData.type !== 'zone') {
+        const motionPlayer = offPlayers.find(p => p.key === playData.motion.player);
+        if (motionPlayer) {
+          const origPos = motionPlayer._origStartPos || motionPlayer.startPos;
+          let minDist = Infinity;
+          for (const dp of defPlayers) {
+            if (!dp.isDB) continue;
+            const d = Math.hypot(origPos[0] - dp.startPos[0], origPos[1] - dp.startPos[1]);
+            if (d < minDist) { minDist = d; motionTrackingDB = dp; }
+          }
+          // Compute full lateral shift from motion path
+          let totalDx = 0;
+          for (const [dx] of playData.motion.path) { totalDx += dx; }
+          motionShiftDx = totalDx;
+        }
+      }
+
       // === Move and draw defensive players ===
       const dimOpp = isOffSide ? 0.55 : 1.0;
       for (const p of defPlayers) {
         const vis = this._isVisible(p.key, visibleGroups);
         const mt = p.isDL ? Math.min(moveT * 1.5, 1) : moveT;
         let x, y;
-        if (p.manReceiver && p.manReceiver.path && p.manReceiver.path.length > 0 && developPhase) {
+        // Pre-snap: DB tracking motion player shifts laterally
+        const isMotionTracker = motionTrackingDB && p.key === motionTrackingDB.key;
+        if (isMotionTracker && preSnap) {
+          const motionT = t / 0.08;
+          x = p.startPos[0] + motionShiftDx * motionT;
+          y = p.startPos[1];
+        } else if (isMotionTracker && !preSnap) {
+          // After snap, start from shifted position
+          const shiftedStart = [p.startPos[0] + motionShiftDx, p.startPos[1]];
+          if (p.manReceiver && p.manReceiver.path && p.manReceiver.path.length > 0 && developPhase) {
+            const recPos = this._posAlongPath(p.manReceiver.startPos[0], p.manReceiver.startPos[1], p.manReceiver.path, mt * p.manFollowFactor);
+            x = Math.max(0.02, Math.min(0.98, recPos.x + p.manOffset[0]));
+            y = Math.max(0.02, Math.min(0.98, recPos.y + p.manOffset[1]));
+          } else {
+            x = shiftedStart[0] + (p.endPos[0] - shiftedStart[0]) * (developPhase ? mt : 0);
+            y = shiftedStart[1] + (p.endPos[1] - shiftedStart[1]) * (developPhase ? mt : 0);
+          }
+        } else if (p.manReceiver && p.manReceiver.path && p.manReceiver.path.length > 0 && developPhase) {
           // Man coverage: follow matched receiver's path with offset
           const recPos = this._posAlongPath(p.manReceiver.startPos[0], p.manReceiver.startPos[1], p.manReceiver.path, mt * p.manFollowFactor);
           x = Math.max(0.02, Math.min(0.98, recPos.x + p.manOffset[0]));
@@ -4596,15 +4661,26 @@ class PlayArtRenderer {
     const rbRoute = routes['RB'] || routes['FB'] || 'run_inside';
     const midIdx = Math.floor(gapOpenings.length / 2);
 
-    // Weight gaps by run direction
-    for (let i = 0; i < gapOpenings.length; i++) {
+    // Weight gaps by run direction to match gap labels:
+    // Gaps array: [D(outside left), C(LT-LG), B(LG-C), A(C-RG), B(RG-RT), C(outside right)]
+    // run_inside/run_dive -> A gap (center), run_power -> B gap, run_outside -> C gap, run_stretch -> D gap
+    const totalGaps = gapOpenings.length; // typically 6
+    for (let i = 0; i < totalGaps; i++) {
       const distFromCenter = Math.abs(i - midIdx);
       if (rbRoute === 'run_inside' || rbRoute === 'run_dive') {
-        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromCenter)); // prefer center
-      } else if (rbRoute === 'run_stretch' || rbRoute === 'run_outside') {
-        gapOpenings[i].score *= (1 + distFromCenter * 0.15); // prefer edges
+        // A gap = center (index midIdx area)
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromCenter));
       } else if (rbRoute === 'run_power') {
-        gapOpenings[i].score *= i > midIdx ? 1.3 : 0.8; // prefer strong side
+        // B gap = one step from center (indices midIdx-1 and midIdx+1)
+        const distFromB = Math.min(Math.abs(i - (midIdx - 1)), Math.abs(i - (midIdx + 1)));
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromB));
+      } else if (rbRoute === 'run_outside') {
+        // C gap = two steps from center (indices midIdx-2 and midIdx+2)
+        const distFromC = Math.min(Math.abs(i - (midIdx - 2)), Math.abs(i - (midIdx + 2)));
+        gapOpenings[i].score *= (1 + 0.3 / (1 + distFromC));
+      } else if (rbRoute === 'run_stretch') {
+        // D gap = outermost (prefer edges/outside)
+        gapOpenings[i].score *= (1 + distFromCenter * 0.2);
       } else if (rbRoute === 'run_counter') {
         gapOpenings[i].score *= i < midIdx ? 1.3 : 0.8; // prefer weak side
       }
