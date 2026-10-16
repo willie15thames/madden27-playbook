@@ -1077,7 +1077,32 @@ function getDefAssignment(coverageName, defKey) {
   if (DEF_ASSIGNMENTS[coverageName]) {
     return DEF_ASSIGNMENTS[coverageName][defKey] || null;
   }
-  const lower = coverageName.toLowerCase();
+  const lower = coverageName.toLowerCase().replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/, '').trim();
+  // Huddle.gg format: leading number = Cover X
+  const numPrefix = lower.match(/^(\d)\s/);
+  if (numPrefix) {
+    const expanded = 'Cover ' + numPrefix[1];
+    const remainder = lower.substring(2).trim();
+    const keys = Object.keys(DEF_ASSIGNMENTS).sort((a, b) => b.length - a.length);
+    for (const key of keys) {
+      const kl = key.toLowerCase();
+      if (kl.startsWith(expanded.toLowerCase()) && remainder.split(/\s+/).some(w => kl.includes(w))) {
+        return DEF_ASSIGNMENTS[key][defKey] || null;
+      }
+    }
+    // Fallback to base Cover X
+    for (const key of keys) {
+      if (key.toLowerCase().startsWith(expanded.toLowerCase())) {
+        return DEF_ASSIGNMENTS[key][defKey] || null;
+      }
+    }
+  }
+  // Special names
+  if (lower.includes('blitz') || lower.includes('fire zone')) {
+    return (DEF_ASSIGNMENTS['Mid Blitz'] || {})[defKey] || null;
+  }
+  if (lower.includes('tampa')) return (DEF_ASSIGNMENTS['Tampa 2'] || {})[defKey] || null;
+  // Longest key match
   const keys = Object.keys(DEF_ASSIGNMENTS).sort((a, b) => b.length - a.length);
   for (const key of keys) {
     const kl = key.toLowerCase();
@@ -3125,6 +3150,116 @@ const DEFAULT_RUN_ROUTES = {
   qb: 'qb_handoff', isRun: true
 };
 
+// Keyword-based route inference for plays not in PLAY_ROUTES
+function inferRoutes(name) {
+  const l = name.toLowerCase();
+  // Strip formation suffix (e.g. "- Gun Trey Y")
+  const base = l.replace(/\s*-\s*(gun|singleback|pistol|i form|strong|weak|shotgun|empty|trips|dbl|dbls|bunch|nickel|dime|quarter|3-3|4-2)\b.*$/i, '').trim();
+
+  // ---- RUN plays ----
+  const runWords = ['zone', 'power', 'dive', 'stretch', 'counter', 'toss', 'sweep', 'sneak',
+    'draw', 'iso', 'trap', 'wham', 'blast', 'slam', 'duo', 'pitch', 'veer', 'orbit',
+    'option', 'lead', 'buck', 'off tackle', 'plunge', 'ram', 'gut', 'belly', 'base'];
+  const isRun = runWords.some(w => base.includes(w)) ||
+    /^\d+\s+(iso|lead|duo|power|counter|zone|trap|dive|toss|sweep|blast|slam|base|gut|belly)/.test(base) ||
+    /^(hb|fb|qb)\s+(dive|stretch|toss|power|counter|slam|blast|iso|draw|wham|duo|gut|trap|zone|base|off tackle|plunge|sweep)/i.test(base);
+
+  if (isRun) {
+    const r = { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_inside' };
+    if (base.includes('power')) { r.RB = 'run_power'; r.FB = 'lead_block'; r.RG = 'pull_left'; }
+    else if (base.includes('counter')) { r.RB = 'run_counter'; r.RG = 'pull_left'; r.RT = 'pull_left'; }
+    else if (base.includes('stretch') || base.includes('toss') || base.includes('sweep') || base.includes('pitch')) { r.RB = 'run_stretch'; r.LT = 'zone_step_right'; r.LG = 'zone_step_right'; r.C = 'zone_step_right'; r.RG = 'zone_step_right'; r.RT = 'zone_step_right'; }
+    else if (base.includes('outside zone') || base.includes('oz')) { r.RB = 'run_outside'; r.LT = 'zone_step_right'; r.LG = 'zone_step_right'; r.C = 'zone_step_right'; r.RG = 'zone_step_right'; r.RT = 'zone_step_right'; }
+    else if (base.includes('inside zone') || base.includes('iz')) { r.RB = 'run_inside'; r.C = 'combo_block'; r.LG = 'zone_step_right'; r.RG = 'zone_step_right'; }
+    else if (base.includes('dive')) r.RB = 'run_dive';
+    else if (base.includes('draw')) r.RB = 'run_inside';
+    else if (base.includes('trap')) { r.RB = 'run_inside'; r.RG = 'pull_left'; }
+    else if (base.includes('iso')) { r.RB = 'run_inside'; r.FB = 'lead_block'; }
+    else if (base.includes('duo')) { r.RB = 'run_power'; r.C = 'combo_block'; }
+    else if (base.includes('wham')) { r.RB = 'run_inside'; r.FB = 'lead_block'; }
+    else if (base.includes('option')) { r.RB = 'option_give'; r.QB = 'option_keep'; }
+    if (base.includes('crack')) r.WR2 = 'crack_block';
+    return { routes: r, qb: base.includes('draw') ? 'qb_drop' : (base.includes('option') ? 'option_keep' : 'qb_handoff'), isRun: true };
+  }
+
+  // ---- SCREEN plays ----
+  if (base.includes('screen')) {
+    const r = { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'screen_left' };
+    if (base.includes('wr') || base.includes('bubble') || base.includes('tunnel') || base.includes('jailbreak')) { r.WR2 = 'screen_right'; r.RB = 'flat'; }
+    else if (base.includes('middle') || base.includes('mid')) { r.RB = 'screen'; r.WR2 = 'block'; }
+    else if (base.includes('slip')) { r.RB = 'screen_left'; r.TE = 'flat'; }
+    return { routes: r, qb: 'qb_drop', ball_target: base.includes('wr') ? 'WR2' : 'RB' };
+  }
+
+  // ---- PA / Play Action ----
+  const isPA = base.includes('pa ') || base.startsWith('pa ') || base.includes('play action') ||
+    base.includes('fake') || base.includes('paf') || base.startsWith('fk ');
+
+  // ---- RPO ----
+  const isRPO = base.includes('rpo') || base.includes('alert');
+
+  // ---- Build pass routes from keywords ----
+  const r = { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'seam', RB: isPA ? 'block' : 'flat' };
+  let target = 'WR2';
+
+  // Primary concept keywords
+  if (base.includes('corner strike')) { r.WR1 = 'corner'; r.WR2 = 'slant'; r.WR3 = 'flat'; target = 'WR1'; }
+  else if (base.includes('four vert') || base.includes('4 vert') || base.includes('all go')) { r.WR1 = 'streak'; r.WR2 = 'seam'; r.WR3 = 'seam'; r.WR4 = 'streak'; r.TE = 'seam'; target = 'WR2'; }
+  else if (base.includes('mesh')) { r.WR2 = 'drag'; r.WR3 = 'drag_left'; r.TE = 'drag'; target = 'WR2'; }
+  else if (base.includes('levels')) { r.WR2 = 'in'; r.WR3 = 'drag'; r.TE = 'seam'; target = 'WR3'; }
+  else if (base.includes('flood')) { r.WR2 = 'corner'; r.WR3 = 'out'; r.WR4 = 'flat'; target = 'WR3'; }
+  else if (base.includes('smash')) { r.WR1 = 'hitch'; r.WR2 = 'corner'; target = 'WR2'; }
+  else if (base.includes('spot')) { r.WR2 = 'corner'; r.WR3 = 'curl'; r.WR4 = 'flat'; target = 'WR3'; }
+  else if (base.includes('dagger')) { r.WR1 = 'post'; r.WR3 = 'dig'; target = 'WR1'; }
+  else if (base.includes('crosser') || base.includes('cross')) { r.WR1 = 'in'; r.WR2 = 'drag'; r.TE = 'drag'; target = 'WR1'; }
+  else if (base.includes('curl flat') || base.includes('curl flats')) { r.WR2 = 'curl'; r.WR3 = 'flat'; target = 'WR2'; }
+  else if (base.includes('stick')) { r.WR2 = 'out'; r.WR3 = 'flat'; r.TE = 'seam'; target = 'WR2'; }
+  else if (base.includes('drive')) { r.WR2 = 'dig'; r.WR3 = 'drag'; target = 'WR2'; }
+  else if (base.includes('sail')) { r.WR2 = 'deep_corner'; r.WR3 = 'out'; r.WR4 = 'flat'; target = 'WR2'; }
+  else if (base.includes('scissors')) { r.WR1 = 'post'; r.WR2 = 'corner'; target = 'WR2'; }
+  else if (base.includes('bench')) { r.WR1 = 'curl'; r.WR2 = 'speed_out'; r.WR3 = 'flat'; target = 'WR2'; }
+  else if (base.includes('spacing')) { r.WR1 = 'out'; r.WR2 = 'curl'; r.WR3 = 'flat'; r.TE = 'drag'; target = 'WR2'; }
+  else if (base.includes('y trail')) { r.WR2 = 'drag'; r.TE = 'angle'; target = 'TE'; }
+  else if (base.includes('mills')) { r.WR1 = 'skinny_post'; r.WR2 = 'dig'; r.WR3 = 'corner'; target = 'WR1'; }
+  else if (base.includes('texas')) { r.TE = 'flat'; r.RB = 'texas'; target = 'RB'; }
+  else if (base.includes('china')) { r.WR2 = 'corner'; r.WR3 = 'flat'; target = 'WR2'; }
+  else if (base.includes('dig')) { r.WR1 = 'dig'; r.WR2 = 'shallow_cross'; target = 'WR1'; }
+  else if (base.includes('hitch') || base.includes('all hitch')) { r.WR1 = 'hitch'; r.WR2 = 'hitch'; r.WR3 = 'hitch'; target = 'WR2'; }
+  else if (base.includes('all curl') || base.includes('curls')) { r.WR1 = 'curl'; r.WR2 = 'curl'; r.WR3 = 'curl'; target = 'WR2'; }
+  else if (base.includes('all slant') || base.includes('slants')) { r.WR1 = 'slant'; r.WR2 = 'slant'; r.WR3 = 'slant'; target = 'WR2'; }
+
+  // Overlay single-route keywords (these modify existing routes)
+  if (base.includes('post') && !base.includes('spot')) { r.WR1 = base.includes('deep post') ? 'deep_post' : (base.includes('skinny') ? 'skinny_post' : 'post'); target = 'WR1'; }
+  if (base.includes('corner') && !base.includes('corner strike') && !r.WR2.includes('corner')) { r.WR2 = base.includes('deep corner') ? 'deep_corner' : 'corner'; target = 'WR2'; }
+  if (base.includes('wheel')) { r.RB = 'wheel'; target = 'RB'; }
+  if (base.includes('seam') && !base.includes('seam show')) { r.TE = 'seam'; }
+  if (base.includes('drag') && !base.includes('dagger')) { r.WR3 = 'drag'; }
+  if (base.includes('out route') || (base.includes(' out') && !base.includes('outside'))) { r.WR2 = 'out'; target = 'WR2'; }
+  if (base.includes('go route') || base.includes('all go')) { r.WR1 = 'go'; }
+  if (base.includes('whip')) { r.WR1 = 'whip'; target = 'WR1'; }
+  if (base.includes('angle') && !base.includes('angle smash')) { r.TE = 'angle'; target = 'TE'; }
+  if (base.includes('swing')) { r.RB = 'swing'; target = 'RB'; }
+  if (base.includes('check down') || base.includes('checkdown')) { r.RB = 'check_down'; target = 'RB'; }
+  if (base.includes('flat') && !base.includes('curl flat')) { r.RB = 'flat'; }
+
+  // RPO overlay: add a run option
+  if (isRPO) {
+    r.RB = 'run_inside';
+    if (!base.includes('screen')) target = 'WR2';
+  }
+
+  // PA: QB boot
+  const qb = isPA ? (base.includes('boot') || base.includes('waggle') ? (base.includes('lt') || base.includes('left') ? 'qb_boot_left' : 'qb_boot_right') : 'qb_drop') : 'qb_drop';
+
+  // Jet/motion overlay
+  const motion = (base.includes('jet') || base.includes('mtn')) ? { player: 'WR2', path: [[-0.20, 0]] } : undefined;
+
+  const result = { routes: r, qb, ball_target: target };
+  if (isRPO) result.isRPO = true;
+  if (motion) result.motion = motion;
+  return result;
+}
+
 // ============================
 // RENDERING ENGINE
 // ============================
@@ -3362,9 +3497,8 @@ class PlayArtRenderer {
       if (isPA && PLAY_ROUTES[key].isRun) continue;
       if (lower.includes(kl) || kl.includes(lower)) return PLAY_ROUTES[key];
     }
-    // Fallback by type
-    const runWords = ['zone', 'power', 'dive', 'stretch', 'counter', 'toss', 'sweep', 'sneak', 'option', 'draw', 'iso', 'trap', 'wham', 'blast', 'slam', 'duo', 'pitch', 'veer', 'orbit'];
-    return runWords.some(w => lower.includes(w)) ? DEFAULT_RUN_ROUTES : DEFAULT_PASS_ROUTES;
+    // Infer routes from play name keywords
+    return inferRoutes(playFamily);
   }
 
   getCoverageZones(coverageName) {
@@ -3372,7 +3506,29 @@ class PlayArtRenderer {
     const lower = coverageName.toLowerCase();
     // Exact match
     if (COVERAGE_ZONES[coverageName]) return COVERAGE_ZONES[coverageName];
-    // Try longest key match first to avoid "Cover 1" matching before "Cover 1 Hole"
+    // Huddle.gg format: leading number = Cover X (e.g., "1 Double Buzz" -> Cover 1)
+    const numPrefix = lower.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/, '').trim().match(/^(\d)\s/);
+    if (numPrefix) {
+      const expanded = 'Cover ' + numPrefix[1];
+      // Try specific variant first
+      const remainder = lower.substring(2).trim();
+      const keys = Object.keys(COVERAGE_ZONES).sort((a, b) => b.length - a.length);
+      for (const key of keys) {
+        const kl = key.toLowerCase();
+        if (kl.startsWith(expanded.toLowerCase()) && remainder.split(/\s+/).some(w => kl.includes(w))) return COVERAGE_ZONES[key];
+      }
+      // Fallback to base Cover X
+      if (COVERAGE_ZONES[expanded]) return COVERAGE_ZONES[expanded];
+      for (const key of keys) {
+        if (key.toLowerCase().startsWith(expanded.toLowerCase())) return COVERAGE_ZONES[key];
+      }
+    }
+    // Special names
+    if (lower.includes('tampa')) return COVERAGE_ZONES['Tampa 2'] || COVERAGE_ZONES['Cover 2 Zone'];
+    if (lower.includes('blitz') || lower.includes('fire zone')) return COVERAGE_ZONES['Cover 0'] || COVERAGE_ZONES['Cover 1'];
+    if (lower.includes('prevent')) return COVERAGE_ZONES['Prevent'] || COVERAGE_ZONES['Cover 4'];
+    if (lower.includes('46')) return COVERAGE_ZONES['Cover 2 Man'] || COVERAGE_ZONES['Cover 2 Zone'];
+    // Try longest key match
     const keys = Object.keys(COVERAGE_ZONES).sort((a, b) => b.length - a.length);
     for (const key of keys) {
       const kl = key.toLowerCase();

@@ -460,15 +460,13 @@ function findCoverage(name) {
   if (ciExact) return ciExact;
 
   // 3. Match after stripping parentheticals from coverage name
-  //    e.g., "Cover 4 Quarters" should match "Cover 4 (Quarters)"
   const stripped = COVERAGES.find(c => {
     const base = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
     return base === nameLower;
   });
   if (stripped) return stripped;
 
-  // 4. Match coverage names with parenthetical content treated as alternate name
-  //    e.g., "Cover 4 Quarters" matches "Cover 4 (Quarters)" because "Quarters" is in the parens
+  // 4. Match parenthetical content as alternate name
   const parenMatch = COVERAGES.find(c => {
     const parenContent = c.name.match(/\(([^)]+)\)/);
     if (!parenContent) return false;
@@ -478,23 +476,60 @@ function findCoverage(name) {
   });
   if (parenMatch) return parenMatch;
 
-  // 5. Handle specific naming pattern mismatches between defensive playbooks and COVERAGES:
-  //    "Cover 2 Invert" <-> "Inverted Cover 2"
-  //    "Cover 3 Buzz Match" <-> "Cover 3 Buzz" or "Cover 3 Match"
-  //    "Cover 4 Drop Field" <-> "Cover 4 Drop"
-  //    "Cover 2 Man" <-> "Cover 2 Man Under"
+  // 5. Huddle.gg format: leading number = coverage type (e.g., "1 Double Buzz" = Cover 1)
+  //    Strip formation suffix (e.g., "- Nickel 2", "- Dime 3", "- 4-2")
+  const baseDefName = nameLower.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|3|4|dollar)\s*\d*$/i, '').trim();
+  const leadingNum = baseDefName.match(/^(\d)\s/);
+  if (leadingNum) {
+    const coverNum = leadingNum[1];
+    const remainder = baseDefName.substring(2).trim();
+    // Try "Cover X <remainder>" first for specificity
+    const expandedFull = 'cover ' + coverNum + ' ' + remainder;
+    const fullMatch = COVERAGES.find(c => {
+      const cl = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
+      return cl === expandedFull || expandedFull.startsWith(cl);
+    });
+    if (fullMatch) return fullMatch;
+
+    // Keyword-specific matching for common coverage variants
+    if (remainder.includes('robber')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('robber')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('hole')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('hole')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('invert')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('invert')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('man') || remainder.includes('press')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('man')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('palms')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('palms')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('match')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('match')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('cloud')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('cloud')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('sky')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('sky')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('buzz')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('buzz')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('sink')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('sink')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('lurk')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('lurk')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+    if (remainder.includes('hard flat')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes('hard flat')) || COVERAGES.find(c => c.name.toLowerCase().startsWith('cover ' + coverNum));
+
+    // Fallback: find the base Cover X
+    const baseCover = COVERAGES.find(c => {
+      const cl = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
+      return cl === 'cover ' + coverNum || cl.startsWith('cover ' + coverNum + ' ');
+    });
+    if (baseCover) return baseCover;
+  }
+
+  // 6. Special defense names
+  if (baseDefName.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
+  if (baseDefName.includes('prevent')) return COVERAGES.find(c => c.name.toLowerCase().includes('prevent'));
+  if (baseDefName.includes('mid blitz') || baseDefName.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('blitz') || c.name.toLowerCase().includes('cover 0')) || COVERAGES[0];
+  if (baseDefName.includes('46')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2') && c.name.toLowerCase().includes('man')) || COVERAGES.find(c => c.name.toLowerCase().includes('cover 2'));
+
+  // 7. Word-scoring fallback
   const nameWords = nameLower.split(/\s+/);
   let bestMatch = null;
   let bestScore = 0;
   for (const c of COVERAGES) {
     const covLower = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
     const covWords = covLower.split(/\s+/);
-    // Count matching words
     let matchCount = 0;
     for (const w of nameWords) {
       if (covWords.includes(w)) matchCount++;
     }
-    // Also check if a coverage alternate word (from parens) matches
     const parenContent = c.name.match(/\(([^)]+)\)/);
     if (parenContent) {
       const altWords = parenContent[1].toLowerCase().split(/[\s-]+/);
@@ -502,16 +537,11 @@ function findCoverage(name) {
         if (altWords.includes(w)) matchCount++;
       }
     }
-    // Handle "Invert" <-> "Inverted"
     if (nameLower.includes('invert') && covLower.includes('invert')) matchCount += 2;
-
     const score = matchCount / Math.max(nameWords.length, covWords.length);
-    if (score > bestScore) {
-      bestScore = score;
-      bestMatch = c;
-    }
+    if (score > bestScore) { bestScore = score; bestMatch = c; }
   }
-  if (bestMatch && bestScore >= 0.5) return bestMatch;
+  if (bestMatch && bestScore >= 0.4) return bestMatch;
 
   return null;
 }
