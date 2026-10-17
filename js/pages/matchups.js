@@ -489,10 +489,14 @@ function findCoverage(name) {
     const remainder = baseDefName.substring(2).trim();
     // Try "Cover X <remainder>" first for specificity
     const expandedFull = 'cover ' + coverNum + ' ' + remainder;
-    const fullMatch = COVERAGES.find(c => {
-      const cl = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
-      return cl === expandedFull || expandedFull.startsWith(cl);
-    });
+    // Sort candidates by name length descending to prefer more specific matches
+    // (e.g., "Cover 1 Robber" before "Cover 1", "Cover 3 Match" before "Cover 3")
+    const fullMatch = [...COVERAGES]
+      .sort((a, b) => b.name.length - a.name.length)
+      .find(c => {
+        const cl = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
+        return cl === expandedFull || expandedFull.startsWith(cl);
+      });
     if (fullMatch) return fullMatch;
 
     // Keyword-specific matching for common coverage variants

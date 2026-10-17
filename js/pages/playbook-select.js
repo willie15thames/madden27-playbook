@@ -336,7 +336,9 @@ function renderChipCanvas(canvas) {
 }
 
 function openPlayDetail(playName, formation, subFormation) {
-  cleanupRenderers();
+  // Only destroy renderers for the modal — preserve chip IntersectionObservers
+  renderers.forEach(r => r.destroy());
+  renderers = [];
 
   // Track current play list for swipe navigation
   currentPlayFormation = formation;
@@ -620,7 +622,7 @@ function openDefenseDetail(coverageName, formation) {
       const r = new PlayArtRenderer(pbModalCanvas, { width: 560, height: 440 });
       r.renderLivePlay({
         side: modalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
-        playFamily: 'Inside Zone', defFormation: fm, coverageName: coverageName,
+        playFamily: 'Inside Zone', defFormation: fm, defSubFormation: sf, coverageName: coverageName,
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });
       renderers.push(r);
@@ -694,11 +696,63 @@ function getSimilarPlaysHTML(playName) {
   `;
 }
 
+function reconnectChipObservers() {
+  // Disconnect any stale observers first
+  chipObservers.forEach(obs => obs.disconnect());
+  chipObservers = [];
+
+  if (!isTouchDevice) return;
+
+  // Re-observe all play chips inside currently open formation bodies
+  formationTree.querySelectorAll('.formation-body.open .play-chip-art').forEach(chip => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const canvas = chip.querySelector('canvas');
+        if (!canvas) return;
+        if (entry.isIntersecting) {
+          if (canvas._hoverAnim) return;
+          const pn = chip.dataset.play;
+          const fm = chip.dataset.formation;
+          const sf = chip.dataset.subformation;
+          const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+          if (currentSide === 'offense') {
+            r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
+          } else {
+            r.renderSinglePlayLive({ mode: 'defense', defFormation: fm, defSubFormation: sf, coverageName: pn, duration: 3000 });
+          }
+          canvas._hoverAnim = r;
+          renderers.push(r);
+        } else {
+          if (canvas._hoverAnim) {
+            canvas._hoverAnim.destroy();
+            renderers = renderers.filter(r => r !== canvas._hoverAnim);
+            canvas._hoverAnim = null;
+            delete canvas.dataset.rendered;
+            renderChipCanvas(canvas);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(chip);
+    chipObservers.push(observer);
+  });
+}
+
 function closeModal() {
   // Only destroy modal renderers — don't disconnect chip IntersectionObservers
   renderers.forEach(r => r.destroy());
   renderers = [];
   modal.classList.remove('active');
+
+  // Clear rendered flags on chip canvases so static art re-renders properly
+  formationTree.querySelectorAll('.formation-body.open .play-chip-art canvas').forEach(canvas => {
+    delete canvas.dataset.rendered;
+    canvas._hoverAnim = null;
+    renderChipCanvas(canvas);
+  });
+
+  // Reconnect IntersectionObservers for touch-device autoplay after modal close
+  reconnectChipObservers();
 }
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });

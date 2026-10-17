@@ -750,27 +750,27 @@ const ROUTE_PATHS = {
   // Blocking
   'block': [],
   'pass_block': [[0, -0.01]],
-  'lead_block': [[0.04, -0.08]],
+  'lead_block': [[0.04, -0.18]],
   'stalk_block': [[0, -0.04]],
   'crack_block': [[-0.06, -0.06]],
   'zone_step_right': [[0.04, -0.04]],
   'zone_step_left': [[-0.04, -0.04]],
   'combo_block': [[0, -0.06]],
-  // Run paths
-  'run_right': [[0.10, -0.06]],
-  'run_left': [[-0.10, -0.06]],
-  'run_inside': [[0.02, -0.10]],
-  'run_power': [[0.06, -0.10]],
-  'run_power_left': [[-0.06, -0.10]],
-  'run_counter': [[-0.04, -0.02], [0.08, -0.10]],
-  'run_stretch': [[0.16, -0.04]],
-  'run_stretch_left': [[-0.16, -0.04]],
-  'run_dive': [[0.01, -0.07]],
-  'run_outside': [[0.14, -0.05]],
-  'run_outside_left': [[-0.14, -0.05]],
+  // Run paths — deltas must carry RB through the LOS (~0.62) from start (~0.78)
+  'run_right': [[0.10, -0.16], [0.06, -0.12]],
+  'run_left': [[-0.10, -0.16], [-0.06, -0.12]],
+  'run_inside': [[0.02, -0.14], [0.01, -0.14]],
+  'run_power': [[0.06, -0.14], [0.02, -0.14]],
+  'run_power_left': [[-0.06, -0.14], [-0.02, -0.14]],
+  'run_counter': [[-0.04, -0.04], [0.08, -0.12], [0.02, -0.12]],
+  'run_stretch': [[0.16, -0.06], [0.06, -0.12], [0.02, -0.10]],
+  'run_stretch_left': [[-0.16, -0.06], [-0.06, -0.12], [-0.02, -0.10]],
+  'run_dive': [[0.01, -0.10], [0.0, -0.10], [0.0, -0.08]],
+  'run_outside': [[0.14, -0.08], [0.06, -0.10], [0.02, -0.10]],
+  'run_outside_left': [[-0.14, -0.08], [-0.06, -0.10], [-0.02, -0.10]],
   // Option / QB
-  'option_give': [[0.08, -0.06]],
-  'option_keep': [[-0.06, -0.08]],
+  'option_give': [[0.08, -0.10], [0.04, -0.12]],
+  'option_keep': [[-0.06, -0.10], [-0.04, -0.12]],
   'qb_boot_right': [[0.16, 0.02], [0.04, -0.10]],
   'qb_boot_left': [[-0.16, 0.02], [-0.04, -0.10]],
   'qb_drop': [[0, 0.03]],
@@ -3824,7 +3824,10 @@ class PlayArtRenderer {
     for (const [key, startPos] of Object.entries(offPositions)) {
       const isOL = olKeys.includes(key);
       const isQB = key === 'QB';
-      const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
+      // Use explicit OL route from PLAY_ROUTES when available (zone_step, pull, etc.)
+      const explicitRoute = isOL ? (routes[key] || null) : null;
+      const hasExplicitOLRoute = explicitRoute && explicitRoute !== 'block' && explicitRoute !== 'pass_block' && ROUTE_PATHS[explicitRoute];
+      const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[key] || 'block'));
       let path = ROUTE_PATHS[routeName] || [];
       // When flipped, negate x-component of non-directional routes so animation matches editor
       if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
@@ -3837,13 +3840,18 @@ class PlayArtRenderer {
       endX = Math.max(0.02, Math.min(0.98, endX));
       endY = Math.max(0.02, Math.min(0.98, endY));
 
-      // OL: compute block target based on play type
+      // OL: use explicit route path if available, otherwise fall back to _getOLBlockTarget
       let isPull = false;
       if (isOL) {
-        const blockTarget = this._getOLBlockTarget(key, playFamily);
-        endX = startPos[0] + blockTarget.dx;
-        endY = startPos[1] + blockTarget.dy;
-        isPull = blockTarget.isPull;
+        if (hasExplicitOLRoute) {
+          // Explicit route — endPos already computed from path above; use waypoint animation
+          isPull = true;
+        } else {
+          const blockTarget = this._getOLBlockTarget(key, playFamily);
+          endX = startPos[0] + blockTarget.dx;
+          endY = startPos[1] + blockTarget.dy;
+          isPull = blockTarget.isPull;
+        }
       }
 
       offPlayers.push({
@@ -3884,7 +3892,8 @@ class PlayArtRenderer {
     // Pre-compute man coverage 1-to-1 assignments to avoid multiple DBs on same WR
     const manAssignments = {};
     if (coverageData.type !== 'zone') {
-      const receivers = offPlayers.filter(p => !p.isOL && !p.isQB && p.routeName !== 'block');
+      const blockingRoutes = new Set(['block', 'pass_block', 'stalk_block', 'crack_block', 'lead_block']);
+      const receivers = offPlayers.filter(p => !p.isOL && !p.isQB && !blockingRoutes.has(p.routeName));
       const assignedReceivers = new Set();
       // Sort defenders: DBs first (by proximity priority), then LBs
       const manDefenders = defEntries
@@ -4435,12 +4444,14 @@ class PlayArtRenderer {
     const playRoutes = this.getPlayRoutes(playFamily);
     const isBootQB = playRoutes && (playRoutes.qb === 'qb_boot_right' || playRoutes.qb === 'qb_boot_left');
 
-    // Screen plays: OL releases downfield to block for screen
+    // Screen plays: OL releases toward screen side to block
     if (name.includes('screen')) {
-      if (olKey === 'LG' || olKey === 'C') return { dx: 0.10, dy: -0.08, isPull: true };
-      if (olKey === 'RG') return { dx: 0.12, dy: -0.06, isPull: true };
-      if (olKey === 'LT') return { dx: 0.06, dy: -0.06, isPull: false };
-      if (olKey === 'RT') return { dx: 0.14, dy: -0.04, isPull: true };
+      const goLeft = name.includes('slip') || name.includes('flare') || name.includes(' left') || name.includes(' lt');
+      const dir = goLeft ? -1 : 1;
+      if (olKey === 'LG' || olKey === 'C') return { dx: dir * 0.10, dy: -0.08, isPull: true };
+      if (olKey === 'RG') return { dx: dir * 0.12, dy: -0.06, isPull: true };
+      if (olKey === 'LT') return { dx: dir * 0.06, dy: -0.06, isPull: false };
+      if (olKey === 'RT') return { dx: dir * 0.14, dy: -0.04, isPull: true };
       return { dx: 0, dy: -0.03, isPull: false };
     }
 
@@ -4463,9 +4474,10 @@ class PlayArtRenderer {
       return { dx: 0.02, dy: -0.03, isPull: false };
     }
 
-    // Zone runs: entire OL slides one direction
+    // Zone runs: entire OL slides toward run direction
     if (name.includes('stretch') || name.includes('toss') || name.includes('outside zone') || name.includes('wide zone') || name.includes('sweep')) {
-      return { dx: 0.05, dy: -0.03, isPull: false };
+      const goLeft = name.includes('left') || name.includes(' lt') || name.includes(' wk');
+      return { dx: goLeft ? -0.05 : 0.05, dy: -0.03, isPull: false };
     }
 
     // Trap: guard pulls across to kick out
@@ -5064,19 +5076,27 @@ class PlayArtRenderer {
       for (const [key, startPos] of Object.entries(offPositions)) {
         const isOL = olKeys.includes(key);
         const isQB = key === 'QB';
-        const routeName = isOL ? 'block' : (isQB ? playData.qb : (routes[key] || 'block'));
+        const explicitRoute = isOL ? (routes[key] || null) : null;
+        const hasExplicitOLRoute = explicitRoute && explicitRoute !== 'block' && explicitRoute !== 'pass_block' && ROUTE_PATHS[explicitRoute];
+        const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[key] || 'block'));
         let path = ROUTE_PATHS[routeName] || [];
         if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
           path = path.map(([dx, dy]) => [-dx, dy]);
         }
         let endX = startPos[0], endY = startPos[1];
         for (const [dx, dy] of path) { endX += dx; endY += dy; }
+        endX = Math.max(0.02, Math.min(0.98, endX));
+        endY = Math.max(0.02, Math.min(0.98, endY));
         let isPull = false;
         if (isOL) {
-          const blockTarget = this._getOLBlockTarget(key, playFamily);
-          endX = startPos[0] + blockTarget.dx;
-          endY = startPos[1] + blockTarget.dy;
-          isPull = blockTarget.isPull;
+          if (hasExplicitOLRoute) {
+            isPull = true;
+          } else {
+            const blockTarget = this._getOLBlockTarget(key, playFamily);
+            endX = startPos[0] + blockTarget.dx;
+            endY = startPos[1] + blockTarget.dy;
+            isPull = blockTarget.isPull;
+          }
         }
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],

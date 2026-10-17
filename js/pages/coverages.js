@@ -22,12 +22,22 @@ function buildDefPlaybookLookup() {
 const DEF_PLAYBOOK_LOOKUP = buildDefPlaybookLookup();
 
 function getDefPlaybooks(covName) {
-  const key = covName.toLowerCase();
+  const key = covName.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
   const exact = DEF_PLAYBOOK_LOOKUP[key];
   if (exact) return [...exact].sort();
+  // Extract significant words: strip "cover"/"cov" prefix, keep number + family words
+  const sigWords = key.replace(/^cover\s+/, '').split(/\s+/).filter(w => w.length > 0);
   const matches = new Set();
   for (const [k, books] of Object.entries(DEF_PLAYBOOK_LOOKUP)) {
+    // Direct substring match
     if (k.includes(key) || key.includes(k)) {
+      for (const b of books) matches.add(b);
+      continue;
+    }
+    // Word-based: all significant words from coverage name must appear in play name
+    // This catches "Cover 3 Buzz Match" for query "Cover 3 Match" (both have "3" and "match")
+    // And "Cov 3 Buzz Match" and "3 Buzz Match Wk" (abbreviated/huddle.gg format)
+    if (sigWords.length > 0 && sigWords.every(w => k.includes(w))) {
       for (const b of books) matches.add(b);
     }
   }
@@ -172,7 +182,7 @@ function deactivateCard(card) {
         renderers = renderers.filter(r => r !== card._staticRenderer);
       }
       const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
-      r.renderCoverageCard(currentDefFormation, cov.name);
+      r.renderCoverageCard(currentDefFormation, cov.name, currentDefSubFormation || undefined);
       card._staticRenderer = r;
     }
   }
@@ -256,7 +266,7 @@ function renderCards(filter = 'all', search = '', shell = 'all') {
       canvas.style.maxWidth = '100%';
       canvas.style.height = 'auto';
       const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
-      r.renderCoverageCard(currentDefFormation, cov.name);
+      r.renderCoverageCard(currentDefFormation, cov.name, currentDefSubFormation || undefined);
       card._staticRenderer = r;
     }
   });
@@ -537,7 +547,7 @@ function openModal(cov, variants) {
     const thumbCanvas = document.getElementById(`varArt${vi}`);
     if (thumbCanvas) {
       const r = new PlayArtRenderer(thumbCanvas, { width: 75, height: 60 });
-      r.renderCoverageCard(v.formation, v.coverage);
+      r.renderCoverageCard(v.formation, v.coverage, v.subFormation);
       renderers.push(r);
     }
   });
@@ -557,7 +567,7 @@ function openModal(cov, variants) {
         if (bigCanvas && !bigCanvas.dataset.rendered) {
           const v = variants[vi];
           const r = new PlayArtRenderer(bigCanvas, { width: 300, height: 240 });
-          r.renderCoverageCard(v.formation, v.coverage);
+          r.renderCoverageCard(v.formation, v.coverage, v.subFormation);
           renderers.push(r);
           bigCanvas.dataset.rendered = '1';
         }
