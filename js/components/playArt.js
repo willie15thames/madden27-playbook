@@ -701,6 +701,96 @@ function buildDefensePositions(formation, subFormation) {
 const OFFENSE_POSITIONS = {};
 const DEFENSE_POSITIONS = {};
 
+// Apply pre-snap adjustment position tweaks to defense/offense positions
+function applyAdjustmentPositions(positions, adjustments, side) {
+  if (!adjustments || adjustments.length === 0) return positions;
+  const adj = new Set(adjustments);
+  const p = {};
+  for (const [k, v] of Object.entries(positions)) p[k] = [...v];
+
+  const DL_KEYS = ['DT', 'DT1', 'DT2', 'LE', 'RE', 'NT'];
+  const LB_KEYS = ['MLB', 'LOLB', 'ROLB', 'LILB', 'RILB', 'MLB1', 'MLB2', 'WLB', 'SLB'];
+  const DB_KEYS = ['CB1', 'CB2', 'CB3', 'CB4', 'NCB', 'SCB'];
+  const S_KEYS = ['SS', 'FS'];
+
+  if (side === 'defense' || side === 'both') {
+    // DL adjustments
+    if (adj.has('dl_pinch')) {
+      for (const k of DL_KEYS) if (p[k]) p[k][0] += (p[k][0] < 0.5 ? 0.02 : -0.02);
+    }
+    if (adj.has('dl_spread')) {
+      for (const k of DL_KEYS) if (p[k]) p[k][0] += (p[k][0] < 0.5 ? -0.02 : 0.02);
+    }
+    if (adj.has('dl_crash_left')) {
+      for (const k of DL_KEYS) if (p[k]) p[k][0] -= 0.03;
+    }
+    if (adj.has('dl_crash_right')) {
+      for (const k of DL_KEYS) if (p[k]) p[k][0] += 0.03;
+    }
+    // LB adjustments
+    if (adj.has('lb_pinch')) {
+      for (const k of LB_KEYS) if (p[k]) p[k][0] += (p[k][0] < 0.5 ? 0.02 : -0.02);
+    }
+    if (adj.has('lb_spread')) {
+      for (const k of LB_KEYS) if (p[k]) p[k][0] += (p[k][0] < 0.5 ? -0.02 : 0.02);
+    }
+    // Press / Off coverage
+    if (adj.has('press')) {
+      for (const k of DB_KEYS) if (p[k]) p[k][1] = Math.min(p[k][1] + 0.04, 0.60);
+    }
+    if (adj.has('off')) {
+      for (const k of DB_KEYS) if (p[k]) p[k][1] = Math.max(p[k][1] - 0.04, 0.20);
+    }
+    // Show blitz
+    if (adj.has('show_blitz')) {
+      for (const k of [...LB_KEYS, ...S_KEYS]) if (p[k]) p[k][1] = Math.min(p[k][1] + 0.04, 0.58);
+    }
+    // Safety adjustments
+    if (adj.has('safety_deep')) {
+      for (const k of S_KEYS) if (p[k]) p[k][1] = Math.max(p[k][1] - 0.05, 0.08);
+    }
+    if (adj.has('safety_robber')) {
+      for (const k of S_KEYS) if (p[k]) p[k][1] = Math.min(p[k][1] + 0.06, 0.50);
+    }
+    // Team shifts
+    if (adj.has('shift_left')) {
+      for (const k of Object.keys(p)) p[k][0] = Math.max(p[k][0] - 0.03, 0.02);
+    }
+    if (adj.has('shift_right')) {
+      for (const k of Object.keys(p)) p[k][0] = Math.min(p[k][0] + 0.03, 0.98);
+    }
+  }
+
+  if (side === 'offense' || side === 'both') {
+    const OL_KEYS = ['LT', 'LG', 'C', 'RG', 'RT'];
+    // OL slide/pinch
+    if (adj.has('slide_left')) {
+      for (const k of OL_KEYS) if (p[k]) p[k][0] -= 0.015;
+    }
+    if (adj.has('slide_right')) {
+      for (const k of OL_KEYS) if (p[k]) p[k][0] += 0.015;
+    }
+    if (adj.has('pinch')) {
+      for (const k of OL_KEYS) if (p[k]) p[k][0] += (p[k][0] < 0.5 ? 0.015 : -0.015);
+    }
+  }
+
+  return p;
+}
+
+// Routes that auto-mirror X toward the nearest sideline based on player position
+const SIDELINE_ROUTES = new Set([
+  'out', 'deep_out', 'speed_out', 'corner', 'deep_corner',
+  'comeback', 'fade', 'flat', 'swing', 'wheel'
+]);
+
+// Routes that should be drawn with rounded bends instead of sharp cuts
+const CURVED_ROUTES = new Set([
+  'wheel', 'swing', 'swing_left', 'texas', 'angle', 'check_down',
+  'sluggo', 'out_n_up', 'stutter_go', 'comeback_go', 'hitch_go',
+  'post_corner', 'whip', 'screen', 'screen_left', 'screen_right'
+]);
+
 // Route paths (waypoints as delta from start position, normalized)
 const ROUTE_PATHS = {
   // Vertical routes
@@ -743,6 +833,13 @@ const ROUTE_PATHS = {
   'wheel': [[0.06, -0.02], [0.04, -0.26]],
   'whip': [[0, -0.06], [0.05, 0.03], [0.06, -0.04]],
   'angle': [[0.03, 0.03], [0.10, -0.10]],
+  // Double moves
+  'sluggo': [[0, -0.06], [-0.03, -0.02], [0, -0.22]],  // slant fake → go
+  'out_n_up': [[0, -0.10], [0.06, 0], [0, -0.20]],     // out fake → streak
+  'stutter_go': [[0, -0.06], [0, 0.01], [0, -0.25]],    // hesitation → go
+  'comeback_go': [[0, -0.12], [0.02, 0.03], [0, -0.21]], // comeback fake → go
+  'hitch_go': [[0, -0.07], [0, 0.02], [0, -0.25]],      // hitch fake → go
+  'delay': [[0, 0.01], [0, -0.01], [0, -0.04], [0, -0.18]], // chip block then release deep
   // Screen
   'screen': [[-0.04, 0.03], [-0.06, 0.01]],
   'screen_right': [[0.04, 0.03], [0.06, 0.01]],
@@ -750,7 +847,7 @@ const ROUTE_PATHS = {
   // Blocking
   'block': [],
   'pass_block': [[0, -0.01]],
-  'lead_block': [[0.04, -0.18]],
+  'lead_block': [[0.04, -0.08], [0.02, -0.10]],
   'stalk_block': [[0, -0.04]],
   'crack_block': [[-0.06, -0.06]],
   'zone_step_right': [[0.04, -0.04]],
@@ -1086,13 +1183,16 @@ function getDefAssignment(coverageName, defKey) {
   if (numPrefix) {
     const expanded = 'Cover ' + numPrefix[1];
     const remainder = lower.substring(2).trim();
-    const keys = Object.keys(DEF_ASSIGNMENTS).sort((a, b) => b.length - a.length);
+    const remWords = remainder.split(/\s+/).filter(w => w.length > 1);
+    const keys = Object.keys(DEF_ASSIGNMENTS);
+    let bestKey = null, bestScore = 0;
     for (const key of keys) {
       const kl = key.toLowerCase();
-      if (kl.startsWith(expanded.toLowerCase()) && remainder.split(/\s+/).some(w => kl.includes(w))) {
-        return DEF_ASSIGNMENTS[key][defKey] || null;
-      }
+      if (!kl.startsWith(expanded.toLowerCase())) continue;
+      const score = remWords.filter(w => kl.includes(w)).length;
+      if (score > bestScore) { bestScore = score; bestKey = key; }
     }
+    if (bestKey) return DEF_ASSIGNMENTS[bestKey][defKey] || null;
     // Fallback to base Cover X
     for (const key of keys) {
       if (key.toLowerCase().startsWith(expanded.toLowerCase())) {
@@ -1260,6 +1360,48 @@ const PLAY_ROUTES = {
   },
   'Y Trail': {
     routes: { WR1: 'streak', WR2: 'drag', WR3: 'curl', WR4: 'streak', TE: 'angle', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  // Double-move plays
+  'Sluggo Seam': {
+    routes: { WR1: 'sluggo', WR2: 'seam', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Sluggo Verts': {
+    routes: { WR1: 'sluggo', WR2: 'streak', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Out N Ups': {
+    routes: { WR1: 'out_n_up', WR2: 'out_n_up', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Out N Up': {
+    routes: { WR1: 'out_n_up', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Stutter Gos': {
+    routes: { WR1: 'stutter_go', WR2: 'stutter_go', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'Stutter Wheel': {
+    routes: { WR1: 'stutter_go', WR2: 'curl', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Dbl Stutter Go': {
+    routes: { WR1: 'stutter_go', WR2: 'stutter_go', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR1'
+  },
+  // TE Option (passing play, NOT a run option)
+  'TE Option': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'drag', WR4: 'streak', TE: 'out', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'TE Option In': {
+    routes: { WR1: 'streak', WR2: 'curl', WR3: 'drag', WR4: 'streak', TE: 'in', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
+  },
+  'Verticals TE Option': {
+    routes: { WR1: 'streak', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'out', RB: 'block' },
     qb: 'qb_drop', ball_target: 'TE'
   },
   'Fade': {
@@ -2646,10 +2788,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'flat', TE: 'wheel', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'TE'
   },
-  'Out N Ups': {
-    routes: { WR1: 'corner', WR2: 'corner', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
   'X Post': {
     routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'curl', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
@@ -3191,7 +3329,8 @@ function inferRoutes(name) {
   const runWords = ['zone', 'power', 'dive', 'stretch', 'counter', 'toss', 'sweep', 'sneak',
     'draw', 'iso', 'trap', 'wham', 'blast', 'slam', 'duo', 'pitch', 'veer',
     'option', 'lead', 'buck', 'off tackle', 'plunge', 'ram', 'gut', 'belly', 'base'];
-  const isRun = !isPA && (runWords.some(w => base.includes(w)) ||
+  const isTeOption = base.includes('te option');
+  const isRun = !isPA && !isTeOption && (runWords.some(w => base.includes(w)) ||
     /^\d+\s+(iso|lead|duo|power|counter|zone|trap|dive|toss|sweep|blast|slam|base|gut|belly)/.test(base) ||
     /^(hb|fb|qb)\s+(dive|stretch|toss|power|counter|slam|blast|iso|draw|wham|duo|gut|trap|zone|base|off tackle|plunge|sweep)/i.test(base));
 
@@ -3251,8 +3390,22 @@ function inferRoutes(name) {
   const r = { WR1: 'streak', WR2: 'curl', WR3: 'in', WR4: 'streak', TE: 'seam', RB: isPA ? 'block' : 'flat' };
   let target = 'WR2';
 
+  // TE Option: passing play, NOT a run option
+  if (base.includes('te option')) {
+    r.TE = base.includes('in') ? 'in' : 'out'; r.WR1 = 'streak'; r.WR2 = 'curl'; r.WR3 = 'drag';
+    return { routes: r, qb: 'qb_drop', ball_target: 'TE' };
+  }
+
+  // Double moves
+  if (base.includes('sluggo')) { r.WR1 = 'sluggo'; target = 'WR1'; }
+  else if (base.includes('out n up')) { r.WR1 = 'out_n_up'; target = 'WR1'; }
+  else if (base.includes('stutter go') || base.includes('stutter gos') || base.includes('dbl stutter')) { r.WR1 = 'stutter_go'; r.WR2 = 'stutter_go'; target = 'WR1'; }
+  else if (base.includes('stutter wheel')) { r.WR1 = 'stutter_go'; r.RB = 'wheel'; target = 'RB'; }
+  else if (base.includes('stutter hook')) { r.WR1 = 'stutter_go'; r.WR2 = 'curl'; target = 'WR1'; }
+  else if (base.includes('hitch go') || base.includes('hitch n go')) { r.WR1 = 'hitch_go'; target = 'WR1'; }
+  else if (base.includes('comeback go')) { r.WR1 = 'comeback_go'; target = 'WR1'; }
   // Primary concept keywords
-  if (base.includes('corner strike')) { r.WR1 = 'corner'; r.WR2 = 'slant'; r.WR3 = 'flat'; target = 'WR1'; }
+  else if (base.includes('corner strike')) { r.WR1 = 'corner'; r.WR2 = 'slant'; r.WR3 = 'flat'; target = 'WR1'; }
   else if (base.includes('four vert') || base.includes('4 vert') || base.includes('all go')) { r.WR1 = 'streak'; r.WR2 = 'seam'; r.WR3 = 'seam'; r.WR4 = 'streak'; r.TE = 'seam'; target = 'WR2'; }
   else if (base.includes('mesh')) { r.WR2 = 'drag'; r.WR3 = 'drag_left'; r.TE = 'drag'; target = 'WR2'; }
   else if (base.includes('levels')) { r.WR2 = 'in'; r.WR3 = 'drag'; r.TE = 'seam'; target = 'WR3'; }
@@ -3438,7 +3591,7 @@ class PlayArtRenderer {
   }
 
   // Draw a route line (animated)
-  drawRoute(startX, startY, waypoints, color, progress = 1, lineWidth = 2, dashed = false) {
+  drawRoute(startX, startY, waypoints, color, progress = 1, lineWidth = 2, dashed = false, curved = false) {
     if (!waypoints || waypoints.length === 0) return;
     const ctx = this.ctx;
     ctx.strokeStyle = color;
@@ -3458,7 +3611,15 @@ class PlayArtRenderer {
       let [tx, ty] = this._clamp(cx + dx * this.width, cy + dy * this.height);
 
       if (i < Math.floor(segsToShow)) {
-        ctx.lineTo(tx, ty);
+        if (curved && i > 0 && i < totalSegs) {
+          // Rounded bend: use quadratic curve through the corner
+          const midX = cx + (tx - cx) * 0.4;
+          const midY = cy + (ty - cy) * 0.4;
+          ctx.quadraticCurveTo(cx, cy, midX, midY);
+          ctx.lineTo(tx, ty);
+        } else {
+          ctx.lineTo(tx, ty);
+        }
         cx = tx; cy = ty;
       } else if (i < segsToShow) {
         const frac = segsToShow - Math.floor(segsToShow);
@@ -3567,13 +3728,18 @@ class PlayArtRenderer {
     const numPrefix = lower.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/, '').trim().match(/^(\d)\s/);
     if (numPrefix) {
       const expanded = 'Cover ' + numPrefix[1];
-      // Try specific variant first
+      // Try specific variant — score by number of matching words, prefer highest
       const remainder = lower.substring(2).trim();
-      const keys = Object.keys(COVERAGE_ZONES).sort((a, b) => b.length - a.length);
+      const remWords = remainder.split(/\s+/).filter(w => w.length > 1);
+      const keys = Object.keys(COVERAGE_ZONES);
+      let bestZone = null, bestScore = 0;
       for (const key of keys) {
         const kl = key.toLowerCase();
-        if (kl.startsWith(expanded.toLowerCase()) && remainder.split(/\s+/).some(w => kl.includes(w))) return COVERAGE_ZONES[key];
+        if (!kl.startsWith(expanded.toLowerCase())) continue;
+        const score = remWords.filter(w => kl.includes(w)).length;
+        if (score > bestScore) { bestScore = score; bestZone = key; }
       }
+      if (bestZone) return COVERAGE_ZONES[bestZone];
       // Fallback to base Cover X
       if (COVERAGE_ZONES[expanded]) return COVERAGE_ZONES[expanded];
       for (const key of keys) {
@@ -3618,10 +3784,14 @@ class PlayArtRenderer {
     for (const key of skillPositions) {
       const pos = positions[key];
       const routeName = key === 'QB' ? playData.qb : (routes[key] || 'block');
-      const path = ROUTE_PATHS[routeName] || [];
+      let path = ROUTE_PATHS[routeName] || [];
+      // Auto-mirror sideline-seeking routes for left-side receivers
+      if (SIDELINE_ROUTES.has(routeName) && pos[0] < 0.5 && path.length > 0) {
+        path = path.map(([dx, dy]) => [-dx, dy]);
+      }
       if (path.length > 0) {
         const isRun = playData.isRun && key !== 'QB';
-        this.drawRoute(pos[0], pos[1], path, isRun ? BALL_COLOR : ROUTE_COLOR, 1, 2, routeName === 'block');
+        this.drawRoute(pos[0], pos[1], path, isRun ? BALL_COLOR : ROUTE_COLOR, 1, 2, routeName === 'block', CURVED_ROUTES.has(routeName));
       }
     }
 
@@ -3721,10 +3891,13 @@ class PlayArtRenderer {
       for (const key of skillPositions) {
         const pos = offPositions[key];
         const routeName = key === 'QB' ? playData.qb : (routes[key] || 'block');
-        const path = ROUTE_PATHS[routeName] || [];
+        let path = ROUTE_PATHS[routeName] || [];
+        if (SIDELINE_ROUTES.has(routeName) && pos[0] < 0.5 && path.length > 0) {
+          path = path.map(([dx, dy]) => [-dx, dy]);
+        }
         if (path.length > 0) {
           const isRun = playData.isRun && key !== 'QB';
-          this.drawRoute(pos[0], pos[1], path, isRun ? BALL_COLOR : ROUTE_COLOR, routeProgress, 2, routeName === 'block');
+          this.drawRoute(pos[0], pos[1], path, isRun ? BALL_COLOR : ROUTE_COLOR, routeProgress, 2, routeName === 'block', CURVED_ROUTES.has(routeName));
         }
       }
 
@@ -3781,13 +3954,17 @@ class PlayArtRenderer {
   // ============================
   // Players physically move: WRs run routes, OL engages DL, DBs drop/follow, gaps fill
   // side: 'offense' | 'defense' - which side is highlighted
-  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null, positionOverrides = null, routeOverrides = null, flipped = false }) {
+  renderLivePlay({ side = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 4000, visibleGroups = null, positionOverrides = null, routeOverrides = null, flipped = false, adjustments = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     this._currentCoverage = coverageName || null;
 
     let offPositions = this.getOffensePositions(offFormation, offSubFormation);
-    const defPositions = this.getDefensePositions(defFormation, defSubFormation);
+    let defPositions = this.getDefensePositions(defFormation, defSubFormation);
+    if (adjustments && adjustments.length > 0) {
+      offPositions = applyAdjustmentPositions(offPositions, adjustments, 'offense');
+      defPositions = applyAdjustmentPositions(defPositions, adjustments, 'defense');
+    }
     let playData = this.getPlayRoutes(playFamily);
     const coverageData = this.getCoverageZones(coverageName);
 
@@ -3839,6 +4016,10 @@ class PlayArtRenderer {
       let path = ROUTE_PATHS[routeName] || [];
       // When flipped, negate x-component of non-directional routes so animation matches editor
       if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
+        path = path.map(([dx, dy]) => [-dx, dy]);
+      }
+      // Auto-mirror sideline-seeking routes for left-side receivers (break toward nearest sideline)
+      if (!DIRECTIONAL_ROUTES.has(routeName) && SIDELINE_ROUTES.has(routeName) && startPos[0] < 0.5 && path.length > 0) {
         path = path.map(([dx, dy]) => [-dx, dy]);
       }
 
@@ -4126,7 +4307,7 @@ class PlayArtRenderer {
             this.ctx.stroke();
             this.ctx.setLineDash([]);
           } else {
-            this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+            this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, moveT, 2, p.routeName === 'block', CURVED_ROUTES.has(p.routeName));
           }
           this.ctx.globalAlpha = 1;
           // Route name labels (offense perspective)
@@ -4316,7 +4497,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides, flipped });
+              this.renderLivePlay({ side, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides, flipped, adjustments });
             }
           }, 1500);
         }
@@ -5036,13 +5217,16 @@ class PlayArtRenderer {
   // === SINGLE-PLAY LIVE ANIMATION (no opponent, card view) ===
   // Shows only offense OR defense animated, for card previews
   // visibleGroups: null (all) or Set of group names: 'OL','QB','WR','TE','RB','DL','LB','DB'
-  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null, positionOverrides = null, routeOverrides = null, flipped = false }) {
+  renderSinglePlayLive({ mode = 'offense', offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration = 3500, visibleGroups = null, positionOverrides = null, routeOverrides = null, flipped = false, adjustments = null }) {
     if (this.animFrame) cancelAnimationFrame(this.animFrame);
     this.isAnimating = true;
     this._currentCoverage = coverageName || null;
 
     const isOff = mode === 'offense';
     let offPositions = isOff ? this.getOffensePositions(offFormation, offSubFormation) : null;
+    if (adjustments && adjustments.length > 0 && offPositions) {
+      offPositions = applyAdjustmentPositions(offPositions, adjustments, 'offense');
+    }
     let playData = isOff ? this.getPlayRoutes(playFamily) : null;
 
     // Apply position overrides (from Scheme Builder custom edits)
@@ -5089,6 +5273,10 @@ class PlayArtRenderer {
         const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[key] || 'block'));
         let path = ROUTE_PATHS[routeName] || [];
         if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
+          path = path.map(([dx, dy]) => [-dx, dy]);
+        }
+        // Auto-mirror sideline-seeking routes for left-side receivers
+        if (!DIRECTIONAL_ROUTES.has(routeName) && SIDELINE_ROUTES.has(routeName) && startPos[0] < 0.5 && path.length > 0) {
           path = path.map(([dx, dy]) => [-dx, dy]);
         }
         let endX = startPos[0], endY = startPos[1];
@@ -5209,7 +5397,7 @@ class PlayArtRenderer {
               this.ctx.stroke();
               this.ctx.setLineDash([]);
             } else {
-              this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, routeT, 2, p.routeName === 'block');
+              this.drawRoute(p.startPos[0], p.startPos[1], p.path, routeColor, moveT, 2, p.routeName === 'block', CURVED_ROUTES.has(p.routeName));
             }
             if (routeT > 0.3 && !p.isQB && p.routeName !== 'block') {
               this._drawRouteLabel(p, routeT);
@@ -5335,7 +5523,7 @@ class PlayArtRenderer {
         if (this.loopEnabled) {
           this._loopTimeout = setTimeout(() => {
             if (this.canvas.isConnected) {
-              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides, flipped });
+              this.renderSinglePlayLive({ mode, offFormation, offSubFormation, playFamily, defFormation, defSubFormation, coverageName, duration, visibleGroups, positionOverrides, routeOverrides, flipped, adjustments });
             }
           }, 1200);
         }

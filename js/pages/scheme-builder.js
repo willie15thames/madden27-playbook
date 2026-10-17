@@ -329,6 +329,8 @@ function updateAnimation() {
   const hasRouteEdits = Object.keys(playerRoutes).filter(k => !k.startsWith('_')).length > 0;
   const posOverrides = hasPositionEdits ? playerPositions : null;
   const routeOvr = hasRouteEdits ? playerRoutes : null;
+  const activeAdj = getActiveAdjustments();
+  const adjParam = activeAdj.length > 0 ? activeAdj : null;
 
   if (currentCoverage) {
     renderer.renderLivePlay({
@@ -342,7 +344,8 @@ function updateAnimation() {
       duration: 3500,
       positionOverrides: posOverrides,
       routeOverrides: routeOvr,
-      flipped: isFlipped
+      flipped: isFlipped,
+      adjustments: adjParam
     });
   } else {
     renderer.renderSinglePlayLive({
@@ -353,7 +356,8 @@ function updateAnimation() {
       duration: 3500,
       positionOverrides: posOverrides,
       routeOverrides: routeOvr,
-      flipped: isFlipped
+      flipped: isFlipped,
+      adjustments: adjParam
     });
   }
 }
@@ -408,7 +412,7 @@ const ROUTE_PATHS_LOCAL = {
   // Blocking
   'block': [],
   'pass_block': [[0, -0.01]],
-  'lead_block': [[0.04, -0.08]],
+  'lead_block': [[0.04, -0.08], [0.02, -0.10]],
   'stalk_block': [[0, -0.04]],
   'crack_block': [[-0.06, -0.06]],
   'zone_step_right': [[0.04, -0.04]],
@@ -439,6 +443,13 @@ const ROUTE_PATHS_LOCAL = {
   'pull_right': [[0.08, 0.0], [0.06, -0.08]],
   'ol_release_right': [[0.10, -0.02], [0.05, -0.05]],
   'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]],
+  // Double moves
+  'sluggo': [[0, -0.06], [-0.03, -0.02], [0, -0.22]],
+  'out_n_up': [[0, -0.10], [0.06, 0], [0, -0.20]],
+  'stutter_go': [[0, -0.06], [0, 0.01], [0, -0.25]],
+  'comeback_go': [[0, -0.12], [0.02, 0.03], [0, -0.21]],
+  'hitch_go': [[0, -0.07], [0, 0.02], [0, -0.25]],
+  'delay': [[0, 0.01], [0, -0.01], [0, -0.04], [0, -0.18]],
 };
 
 function renderInteractive() {
@@ -956,6 +967,11 @@ function renderOffAdj() {
 
   container.querySelectorAll('[data-adj]').forEach(btn => {
     btn.addEventListener('click', () => {
+      // Mutual exclusion: deactivate other buttons in the same group
+      const group = btn.closest('.mb-3');
+      if (!btn.classList.contains('active') && group) {
+        group.querySelectorAll('[data-adj].active').forEach(b => b.classList.remove('active'));
+      }
       btn.classList.toggle('active');
       updateDisplay();
     });
@@ -980,6 +996,11 @@ function renderDefAdj() {
 
   container.querySelectorAll('[data-adj]').forEach(btn => {
     btn.addEventListener('click', () => {
+      // Mutual exclusion: deactivate other buttons in the same group
+      const group = btn.closest('.mb-3');
+      if (!btn.classList.contains('active') && group) {
+        group.querySelectorAll('[data-adj].active').forEach(b => b.classList.remove('active'));
+      }
       btn.classList.toggle('active');
       updateDisplay();
     });
@@ -1351,7 +1372,20 @@ function getSavedSchemes() {
 }
 
 function putSavedSchemes(schemes) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(schemes));
+    return true;
+  } catch (e) {
+    console.error('Save failed:', e);
+    alert('Could not save scheme — browser storage may be full or blocked.');
+    return false;
+  }
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function saveScheme() {
@@ -1392,7 +1426,7 @@ function saveScheme() {
     savedAt: new Date().toISOString()
   };
 
-  putSavedSchemes(schemes);
+  if (!putSavedSchemes(schemes)) return;
   renderSavedSchemesList();
 
   // Brief visual feedback
@@ -1454,20 +1488,16 @@ function loadScheme(name) {
     }
   }
 
-  if (scheme.covValue) {
-    covSelect.value = scheme.covValue;
-  }
+  // Always restore coverage (clear if not saved)
+  covSelect.value = scheme.covValue || '';
+  currentCoverage = scheme.currentCoverage || covSelect.value || null;
 
-  // Restore defensive formation/subformation
-  if (scheme.defFmValue) {
-    defFmSelect.value = scheme.defFmValue;
-    currentDefFormation = scheme.defFmValue;
-    populateDefSubFormations(scheme.defFmValue);
-    if (scheme.defSfValue) {
-      defSfSelect.value = scheme.defSfValue;
-      currentDefSubFormation = scheme.defSfValue;
-    }
-  }
+  // Always restore defensive formation/subformation (clear if not saved)
+  defFmSelect.value = scheme.defFmValue || 'Nickel';
+  currentDefFormation = scheme.defFmValue || 'Nickel';
+  populateDefSubFormations(currentDefFormation);
+  defSfSelect.value = scheme.defSfValue || '';
+  currentDefSubFormation = scheme.defSfValue || '';
 
   // Restore creator panel fields
   const nameInput = document.getElementById('creatorPlayName');
@@ -1514,9 +1544,9 @@ function renderSavedSchemesList() {
   const schemes = getSavedSchemes();
   const names = Object.keys(schemes).sort();
 
-  // Populate dropdown
+  // Populate dropdown (escaped)
   dropdown.innerHTML = '<option value="">Load a saved scheme...</option>' +
-    names.map(n => `<option value="${n}">${n}</option>`).join('');
+    names.map(n => { const e = escapeHTML(n); return `<option value="${e}">${e}</option>`; }).join('');
 
   // Populate list with delete buttons
   if (names.length === 0) {
@@ -1524,14 +1554,15 @@ function renderSavedSchemesList() {
   } else {
     listContainer.innerHTML = names.map(n => {
       const scheme = schemes[n];
-      const info = [scheme.currentFormation, scheme.currentPlay].filter(Boolean).join(' / ') || 'Custom';
+      const e = escapeHTML(n);
+      const info = escapeHTML([scheme.currentFormation, scheme.currentPlay].filter(Boolean).join(' / ') || 'Custom');
       return `
         <div class="flex items-center gap-1 group">
-          <button class="flex-1 text-left text-xs text-gray-300 hover:text-white truncate" data-load-scheme="${n}" title="Load ${n}">
-            <i class="bi bi-folder2-open mr-1 text-neon-cyan"></i>${n}
+          <button class="flex-1 text-left text-xs text-gray-300 hover:text-white truncate" data-load-scheme="${e}" title="Load ${e}">
+            <i class="bi bi-folder2-open mr-1 text-neon-cyan"></i>${e}
             <span class="text-gray-500 ml-1">${info}</span>
           </button>
-          <button class="text-gray-600 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-delete-scheme="${n}" title="Delete ${n}">
+          <button class="text-gray-600 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-delete-scheme="${e}" title="Delete ${e}">
             <i class="bi bi-trash"></i>
           </button>
         </div>

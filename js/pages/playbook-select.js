@@ -1,5 +1,6 @@
 import COVERAGES from '../data/coverages.js';
 import PLAY_TYPES from '../data/plays.js';
+import OFFENSIVE_PLAYS from '../data/offensive-plays.js';
 import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
 import { analyzePlaybookTendencies } from '../data/analytics.js';
@@ -224,6 +225,7 @@ function buildFormationTree(pb, search) {
     formationTree.querySelectorAll('.play-chip-art canvas').forEach(canvas => {
       renderChipCanvas(canvas);
     });
+    reconnectChipObservers();
   }
 
   // Accordion behavior
@@ -239,9 +241,11 @@ function buildFormationTree(pb, search) {
         body.classList.add('open');
         header.classList.add('open');
         body.querySelectorAll('.play-chip-art canvas').forEach(canvas => renderChipCanvas(canvas));
+        reconnectChipObservers();
       } else {
         body.classList.remove('open');
         header.classList.remove('open');
+        reconnectChipObservers();
       }
     });
   });
@@ -363,14 +367,21 @@ function openOffenseDetail(playName, formation, subFormation) {
   const sf = subFormation || 'Spread Y-Flex';
   const pbCount = getPlaybookCount(playName);
 
+  // Look up the specific variant from the catalog for richer detail
+  const variant = OFFENSIVE_PLAYS.find(v =>
+    (v.name === playName || v.family === playName) &&
+    v.formation === fm && v.subFormation === sf
+  ) || OFFENSIVE_PLAYS.find(v => v.name === playName || v.family === playName);
+
   const playContent = play ? `
     <div class="flex gap-2 mt-1 mb-4">
       <span class="play-type-badge ${play.type === 'Run' ? 'run' : 'pass'}">${play.type}</span>
       <span class="play-type-badge ${play.type === 'Run' ? 'run' : play.subtype === 'Screen' ? 'screen' : play.subtype === 'RPO' ? 'rpo' : 'pass'}">${play.subtype}</span>
+      ${variant ? `<span class="text-xs text-gray-400">${variant.personnel}</span>` : ''}
     </div>
   ` : '';
 
-  const description = play ? play.description : 'This play is available in the selected playbook.';
+  const description = variant ? variant.description : (play ? play.description : 'This play is available in the selected playbook.');
 
   modalContent.innerHTML = `
     <div class="flex items-center justify-between mb-4">
@@ -437,9 +448,14 @@ function openOffenseDetail(playName, formation, subFormation) {
         <div class="flex flex-wrap">${(play.badVsCoverages.length > 0 ? play.badVsCoverages : ['None']).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
       </div>
     </div>
+    ${variant && variant.hotRoutes && variant.hotRoutes.length ? `
+    <div class="mb-4">
+      <span class="text-xs text-gray-500 font-semibold">HOT ROUTES:</span>
+      <div class="mt-1 flex flex-wrap">${variant.hotRoutes.map(h => `<span class="tag-yellow">${h}</span>`).join('')}</div>
+    </div>` : ''}
     <div class="p-4 bg-dark-700 rounded-lg border border-dark-600 mt-4">
       <h4 class="text-sm font-bold text-neon-cyan mb-2"><i class="bi bi-lightbulb-fill mr-1"></i> Pro Tip</h4>
-      <p class="text-sm text-gray-300">${play.tips}</p>
+      <p class="text-sm text-gray-300">${variant ? variant.tips : play.tips}</p>
     </div>
     ` : getSimilarPlaysHTML(playName)}
   `;
@@ -680,16 +696,22 @@ function findCoverage(name) {
       const bl = b.name.replace(/\s*\([^)]*\)/, '').trim().length;
       return bl - al;
     });
+    // Score by word count: prefer coverage with most matching words from remainder
+    const remWords = numPrefix[2].split(/\s+/).filter(w => w.length > 1);
+    let bestCov = null, bestScore = 0;
     for (const c of sorted) {
       const cn = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
-      if (cn === expanded || expanded.startsWith(cn + ' ') || expanded === cn) return c;
+      if (!cn.startsWith('cover ' + numPrefix[1])) continue;
+      // Prefix match
+      if (cn === expanded || expanded.startsWith(cn + ' ')) {
+        const score = 100 + cn.length; // Prefix match gets priority
+        if (score > bestScore) { bestScore = score; bestCov = c; }
+      }
+      // Word count match
+      const wordScore = remWords.filter(w => cn.includes(w)).length;
+      if (wordScore > 0 && wordScore > bestScore) { bestScore = wordScore; bestCov = c; }
     }
-    // Keyword match: check if remainder words appear in coverage name
-    const remainder = numPrefix[2];
-    for (const c of sorted) {
-      const cn = c.name.toLowerCase();
-      if (cn.includes('cover ' + numPrefix[1]) && remainder.split(/\s+/).some(w => w.length > 2 && cn.includes(w))) return c;
-    }
+    if (bestCov) return bestCov;
     // Fallback to base "Cover X"
     const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + numPrefix[1]);
     if (baseCover) return baseCover;

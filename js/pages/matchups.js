@@ -211,30 +211,35 @@ function checkMatchup() {
   verdictPanel.querySelectorAll('.matchup-grade-bar').forEach(el => el.remove());
 
   if (offPlayData && defCoverageData) {
-    const offWins = doesOffenseBeat(offPlay, offPlayData, defPlay, defCoverageData);
-    const defWins = doesDefenseBeat(defPlay, defCoverageData, offPlay, offPlayData);
     const matchupGrade = calculateMatchupGrade(offPlay, defCoverageData.name);
+    const grade = matchupGrade.grade;
 
-    if (offWins && !defWins) {
+    // Derive verdict from the analytics grade (single source of truth)
+    if (grade >= 75) {
       verdictText.textContent = `${offPlay} BEATS ${defCoverageData.name}`;
       verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
-      verdictDetail.textContent = 'The offense has the advantage in this matchup.';
+      verdictDetail.textContent = `Offensive advantage — ${matchupGrade.label} (${grade}/100)`;
       verdictPanel.style.borderColor = '#00FFFF';
-    } else if (defWins && !offWins) {
+    } else if (grade <= 35) {
       verdictText.textContent = `${defCoverageData.name} STOPS ${offPlay}`;
       verdictText.className = 'text-2xl font-black mb-2 text-[#FF1493]';
-      verdictDetail.textContent = 'The defense has the advantage in this matchup.';
+      verdictDetail.textContent = `Defensive advantage — ${matchupGrade.label} (${grade}/100)`;
       verdictPanel.style.borderColor = '#FF1493';
-    } else if (offWins && defWins) {
+    } else if (grade >= 55) {
+      verdictText.textContent = 'SLIGHT OFFENSIVE EDGE';
+      verdictText.className = 'text-2xl font-black mb-2 text-[#84cc16]';
+      verdictDetail.textContent = `${matchupGrade.label} (${grade}/100) — Execution matters.`;
+      verdictPanel.style.borderColor = '#84cc16';
+    } else if (grade >= 45) {
       verdictText.textContent = 'EVEN MATCHUP';
-      verdictText.className = 'text-2xl font-black mb-2 text-[#00FFFF]';
-      verdictDetail.textContent = 'Both sides have answers. Execution and user skill decide.';
-      verdictPanel.style.borderColor = '#8A2BE2';
+      verdictText.className = 'text-2xl font-black mb-2 text-[#eab308]';
+      verdictDetail.textContent = `${matchupGrade.label} (${grade}/100) — Read and react.`;
+      verdictPanel.style.borderColor = '#eab308';
     } else {
-      verdictText.textContent = 'NEUTRAL MATCHUP';
-      verdictText.className = 'text-2xl font-black mb-2 text-gray-400';
-      verdictDetail.textContent = 'No strong advantage. Read and react.';
-      verdictPanel.style.borderColor = '#6b7280';
+      verdictText.textContent = 'SLIGHT DEFENSIVE EDGE';
+      verdictText.className = 'text-2xl font-black mb-2 text-[#f97316]';
+      verdictDetail.textContent = `${matchupGrade.label} (${grade}/100) — Defense favored.`;
+      verdictPanel.style.borderColor = '#f97316';
     }
 
     // Analytics Grade Bar
@@ -363,25 +368,15 @@ function checkMatchup() {
         .sort((a, b) => b.length - a.length);
       cbMatch = candidates[0] || null;
     }
-    if (cbMatch) {
+    if (cbMatch && defCoverageData) {
       const cb = COVERAGE_BEATERS[cbMatch];
-      // Find the play's tags from PLAY_ROUTES by matching the offensive play name
-      let offPlayRouteData = PLAY_ROUTES[offPlay];
-      if (!offPlayRouteData) {
-        const offLower = offPlay.toLowerCase();
-        for (const key of Object.keys(PLAY_ROUTES)) {
-          if (key.toLowerCase() === offLower || offLower.includes(key.toLowerCase()) || key.toLowerCase().includes(offLower)) {
-            offPlayRouteData = PLAY_ROUTES[key];
-            break;
-          }
-        }
-      }
-      const offTags = offPlayRouteData?.tags || [];
-      const advantage = offTags.some(t => cb.beatenBy.includes(t));
-      const disadvantage = offTags.some(t => cb.beats.includes(t));
+      // Use analytics grade for consistent verdict
+      const tipGrade = calculateMatchupGrade(offPlay, defCoverageData.name);
+      const tipAdv = tipGrade.grade >= 65;
+      const tipDis = tipGrade.grade <= 40;
 
-      let tipHTML = `<div class="mt-3 p-3 rounded-lg" style="background: rgba(${advantage ? '0,255,255' : disadvantage ? '255,20,147' : '255,255,255'},0.05); border: 1px solid rgba(${advantage ? '0,255,255' : disadvantage ? '255,20,147' : '255,255,255'},0.15)">`;
-      tipHTML += `<p class="text-xs font-bold mb-1" style="color: ${advantage ? '#00FFFF' : disadvantage ? '#FF1493' : '#9ca3af'}">${advantage ? 'OFFENSIVE ADVANTAGE' : disadvantage ? 'DEFENSIVE ADVANTAGE' : 'NEUTRAL MATCHUP'}</p>`;
+      let tipHTML = `<div class="mt-3 p-3 rounded-lg" style="background: rgba(${tipAdv ? '0,255,255' : tipDis ? '255,20,147' : '255,255,255'},0.05); border: 1px solid rgba(${tipAdv ? '0,255,255' : tipDis ? '255,20,147' : '255,255,255'},0.15)">`;
+      tipHTML += `<p class="text-xs font-bold mb-1" style="color: ${tipAdv ? '#00FFFF' : tipDis ? '#FF1493' : '#9ca3af'}">${tipAdv ? 'OFFENSIVE ADVANTAGE' : tipDis ? 'DEFENSIVE ADVANTAGE' : 'NEUTRAL MATCHUP'}</p>`;
       tipHTML += `<p class="text-xs text-gray-400">${cb.tip}</p>`;
       tipHTML += `</div>`;
 
