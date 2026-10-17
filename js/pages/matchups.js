@@ -492,7 +492,11 @@ function findCoverage(name) {
     // Sort candidates by name length descending to prefer more specific matches
     // (e.g., "Cover 1 Robber" before "Cover 1", "Cover 3 Match" before "Cover 3")
     const fullMatch = [...COVERAGES]
-      .sort((a, b) => b.name.length - a.name.length)
+      .sort((a, b) => {
+        const al = a.name.replace(/\s*\([^)]*\)/, '').trim().length;
+        const bl = b.name.replace(/\s*\([^)]*\)/, '').trim().length;
+        return bl - al;
+      })
       .find(c => {
         const cl = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
         return cl === expandedFull || expandedFull.startsWith(cl);

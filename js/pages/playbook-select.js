@@ -353,7 +353,7 @@ function openPlayDetail(playName, formation, subFormation) {
   if (currentSide === 'offense') {
     openOffenseDetail(playName, formation, subFormation);
   } else {
-    openDefenseDetail(playName, formation);
+    openDefenseDetail(playName, formation, subFormation);
   }
 }
 
@@ -507,9 +507,10 @@ function openOffenseDetail(playName, formation, subFormation) {
   }
 }
 
-function openDefenseDetail(coverageName, formation) {
+function openDefenseDetail(coverageName, formation, subFormation) {
   const cov = findCoverage(coverageName);
   const fm = formation || 'Nickel';
+  const sf = subFormation || '';
   const pbCount = getPlaybookCount(coverageName);
 
   const typeContent = cov ? `
@@ -660,12 +661,53 @@ function openDefenseDetail(coverageName, formation) {
 
 function findCoverage(name) {
   if (!name) return null;
-  return COVERAGES.find(c => {
-    return c.name.toLowerCase() === name.toLowerCase() ||
-      c.name.toLowerCase().includes(name.toLowerCase()) ||
-      name.toLowerCase().includes(c.name.split('(')[0].trim().toLowerCase()) ||
-      name.toLowerCase().replace(/\s+/g, '').includes(c.id);
-  }) || null;
+  const nl = name.toLowerCase().trim();
+  // Strip formation suffixes (e.g., "- Nickel 2", "- 4-2")
+  const base = nl.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/i, '').trim();
+  // 1. Exact name match
+  const exact = COVERAGES.find(c => c.name.toLowerCase() === base);
+  if (exact) return exact;
+  // 2. Exact id match
+  const byId = COVERAGES.find(c => base.replace(/\s+/g, '') === c.id);
+  if (byId) return byId;
+  // 3. Huddle.gg leading-number format: "3 Match Buzz" → "Cover 3 Match Buzz"
+  const numPrefix = base.match(/^(\d)\s+(.*)/);
+  if (numPrefix) {
+    const expanded = 'cover ' + numPrefix[1] + ' ' + numPrefix[2];
+    // Sort by stripped name length descending to prefer specific matches
+    const sorted = [...COVERAGES].sort((a, b) => {
+      const al = a.name.replace(/\s*\([^)]*\)/, '').trim().length;
+      const bl = b.name.replace(/\s*\([^)]*\)/, '').trim().length;
+      return bl - al;
+    });
+    for (const c of sorted) {
+      const cn = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
+      if (cn === expanded || expanded.startsWith(cn + ' ') || expanded === cn) return c;
+    }
+    // Keyword match: check if remainder words appear in coverage name
+    const remainder = numPrefix[2];
+    for (const c of sorted) {
+      const cn = c.name.toLowerCase();
+      if (cn.includes('cover ' + numPrefix[1]) && remainder.split(/\s+/).some(w => w.length > 2 && cn.includes(w))) return c;
+    }
+    // Fallback to base "Cover X"
+    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + numPrefix[1]);
+    if (baseCover) return baseCover;
+  }
+  // 4. Best partial match — prefer longest coverage name that appears in the input
+  let best = null, bestLen = 0;
+  for (const c of COVERAGES) {
+    const cn = c.name.split('(')[0].trim().toLowerCase();
+    if (base.includes(cn) && cn.length > bestLen) { best = c; bestLen = cn.length; }
+  }
+  if (best) return best;
+  // 5. Special names
+  if (base.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2 zone'));
+  if (base.includes('mid blitz')) return COVERAGES.find(c => c.name.toLowerCase() === 'cover 0');
+  if (base.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
+  if (base.includes('prevent')) return COVERAGES.find(c => c.name.toLowerCase().includes('prevent'));
+  // 6. Fallback: input appears in coverage name
+  return COVERAGES.find(c => c.name.toLowerCase().includes(base)) || null;
 }
 
 function getSimilarPlaysHTML(playName) {

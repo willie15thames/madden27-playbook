@@ -1443,7 +1443,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'WR Screen': {
-    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block' },
+    routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'block', LG: 'ol_release_left', C: 'ol_release_left', RG: 'ol_release_left' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Bubble Screen': {
@@ -3533,11 +3533,19 @@ class PlayArtRenderer {
     for (const key of Object.keys(PLAY_ROUTES)) {
       if (lower === key.toLowerCase()) return PLAY_ROUTES[key];
     }
-    // Try "starts with" for PA/RPO variants
+    // Try "starts with" for PA/RPO variants — prefer longest key match
+    let bestKey = null, bestKeyLen = 0;
     for (const key of Object.keys(PLAY_ROUTES)) {
-      if (lower.startsWith(key.toLowerCase()) || key.toLowerCase().startsWith(lower)) {
-        return PLAY_ROUTES[key];
+      const kl = key.toLowerCase();
+      if ((lower.startsWith(kl) || kl.startsWith(lower)) && kl.length > bestKeyLen) {
+        bestKey = key; bestKeyLen = kl.length;
       }
+    }
+    if (bestKey) {
+      // If the play name has a directional suffix beyond the matched key, defer to inferRoutes
+      const extra = lower.slice(bestKeyLen).trim();
+      const hasDirection = /\b(lt|rt|left|right|wk|str)\b/i.test(extra);
+      if (!hasDirection) return PLAY_ROUTES[bestKey];
     }
     // Partial includes (skip if play is PA/RPO and key is a run)
     const isPA = lower.startsWith('pa ') || lower.startsWith('rpo ');
@@ -3845,7 +3853,7 @@ class PlayArtRenderer {
       if (isOL) {
         if (hasExplicitOLRoute) {
           // Explicit route — endPos already computed from path above; use waypoint animation
-          isPull = true;
+          isPull = routeName === 'pull_left' || routeName === 'pull_right';
         } else {
           const blockTarget = this._getOLBlockTarget(key, playFamily);
           endX = startPos[0] + blockTarget.dx;
@@ -4100,7 +4108,7 @@ class PlayArtRenderer {
       // === Draw route trails (the path behind moving players) ===
       if (developPhase) {
         for (const p of offPlayers) {
-          if (p.isOL && !p.isPull) continue; // Skip non-pulling OL
+          if (p.isOL && !p.isPull && p.path.length === 0) continue; // Skip OL with no explicit route or pull
           if (p.path.length === 0 && !p.isPull) continue;
           const routeColor = (isRun && !p.isQB) ? BALL_COLOR : ROUTE_COLOR;
           const alpha = isOffSide ? 0.7 : 0.3;
@@ -4127,7 +4135,7 @@ class PlayArtRenderer {
           }
           // Pull labels for OL
           if (isOffSide && p.isPull && routeT > 0.4) {
-            this._drawRouteLabel({ ...p, routeName: 'pull_left' }, routeT);
+            this._drawRouteLabel({ ...p, routeName: p.routeName }, routeT);
           }
         }
       }
@@ -4241,8 +4249,8 @@ class PlayArtRenderer {
       for (const p of offPlayers) {
         const vis = this._isVisible(p.key, visibleGroups);
         let x, y;
-        if (p.isOL && p.isPull && p.path && p.path.length > 0) {
-          // Pull routes: follow waypoints (down then across)
+        if (p.isOL && p.path && p.path.length > 0) {
+          // OL with explicit routes (pull, zone step, release): follow waypoints
           const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
           const pos = this._posAlongPath(p.startPos[0], p.startPos[1], p.path, olT);
           x = pos.x; y = pos.y;
@@ -5090,7 +5098,7 @@ class PlayArtRenderer {
         let isPull = false;
         if (isOL) {
           if (hasExplicitOLRoute) {
-            isPull = true;
+            isPull = routeName === 'pull_left' || routeName === 'pull_right';
           } else {
             const blockTarget = this._getOLBlockTarget(key, playFamily);
             endX = startPos[0] + blockTarget.dx;
@@ -5185,7 +5193,7 @@ class PlayArtRenderer {
         // Draw route trails
         if (developPhase) {
           for (const p of players) {
-            if (p.isOL && !p.isPull) continue;
+            if (p.isOL && !p.isPull && p.path.length === 0) continue;
             if (p.path.length === 0 && !p.isPull) continue;
             if (!this._isVisible(p.key, visibleGroups)) continue;
             const routeColor = (playData.isRun && !p.isQB) ? BALL_COLOR : ROUTE_COLOR;
@@ -5207,7 +5215,7 @@ class PlayArtRenderer {
               this._drawRouteLabel(p, routeT);
             }
             if (p.isPull && routeT > 0.4) {
-              this._drawRouteLabel({ ...p, routeName: 'pull_left' }, routeT);
+              this._drawRouteLabel({ ...p, routeName: p.routeName }, routeT);
             }
           }
         }
@@ -5216,7 +5224,7 @@ class PlayArtRenderer {
         for (const p of players) {
           const vis = this._isVisible(p.key, visibleGroups);
           let x, y;
-          if (p.isOL && p.isPull && p.path && p.path.length > 0) {
+          if (p.isOL && p.path && p.path.length > 0) {
             const olT = developPhase ? Math.min(moveT * 2, 1) : 0;
             const pos = this._posAlongPath(p.startPos[0], p.startPos[1], p.path, olT);
             x = pos.x; y = pos.y;
