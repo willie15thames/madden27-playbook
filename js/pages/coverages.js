@@ -25,18 +25,13 @@ function getDefPlaybooks(covName) {
   const key = covName.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
   const exact = DEF_PLAYBOOK_LOOKUP[key];
   if (exact) return [...exact].sort();
-  // Extract significant words: strip "cover"/"cov" prefix, keep number + family words
   const sigWords = key.replace(/^cover\s+/, '').split(/\s+/).filter(w => w.length > 0);
   const matches = new Set();
   for (const [k, books] of Object.entries(DEF_PLAYBOOK_LOOKUP)) {
-    // Direct substring match
     if (k.includes(key) || key.includes(k)) {
       for (const b of books) matches.add(b);
       continue;
     }
-    // Word-based: all significant words from coverage name must appear in play name
-    // This catches "Cover 3 Buzz Match" for query "Cover 3 Match" (both have "3" and "match")
-    // And "Cov 3 Buzz Match" and "3 Buzz Match Wk" (abbreviated/huddle.gg format)
     if (sigWords.length > 0 && sigWords.every(w => k.includes(w))) {
       for (const b of books) matches.add(b);
     }
@@ -44,12 +39,32 @@ function getDefPlaybooks(covName) {
   return [...matches].sort();
 }
 
+// Build aggregated formation tree from all defensive playbooks
+function buildFormationData() {
+  const tree = {};
+  for (const pb of DEFENSIVE_PLAYBOOKS) {
+    for (const [fm, subs] of Object.entries(pb.formations || {})) {
+      if (!tree[fm]) tree[fm] = {};
+      for (const [sf, plays] of Object.entries(subs)) {
+        if (!tree[fm][sf]) tree[fm][sf] = new Set();
+        for (const p of plays) tree[fm][sf].add(p);
+      }
+    }
+  }
+  for (const fm of Object.keys(tree)) {
+    for (const sf of Object.keys(tree[fm])) {
+      tree[fm][sf] = [...tree[fm][sf]].sort();
+    }
+  }
+  return tree;
+}
+
 // Mobile menu
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
   document.getElementById('mobileMenu')?.classList.toggle('hidden');
 });
 
-const grid = document.getElementById('coverageGrid');
+const treeEl = document.getElementById('coverageTree');
 const modal = document.getElementById('coverageModal');
 const modalContent = document.getElementById('coverageModalContent');
 const searchInput = document.getElementById('coverageSearch');
@@ -60,80 +75,17 @@ let activeFilter = 'all';
 let activeShell = 'all';
 let renderers = [];
 let visibleGroups = null;
-let animSpeed = 3500;
+let animSpeed = 4000;
 let liveAnimEnabled = true;
-let currentDefFormation = 'Nickel';
-let currentDefSubFormation = '';
+let cardObservers = [];
 
-const defFormationSelect = document.getElementById('defFormationSelect');
-const defSubFormationSelect = document.getElementById('defSubFormationSelect');
-
-// Populate defensive formation dropdown from all DEFENSIVE_PLAYBOOKS
-function populateDefFormations() {
-  const formationSet = new Set();
-  DEFENSIVE_PLAYBOOKS.forEach(pb => {
-    if (pb.formations) {
-      Object.keys(pb.formations).forEach(fm => formationSet.add(fm));
-    }
-  });
-  const formations = [...formationSet].sort();
-  if (defFormationSelect) {
-    defFormationSelect.innerHTML = formations.map(f =>
-      `<option value="${f}"${f === 'Nickel' ? ' selected' : ''}>${f}</option>`
-    ).join('');
-  }
-}
-
-function populateDefSubFormations(defFormation) {
-  const subSet = new Set();
-  DEFENSIVE_PLAYBOOKS.forEach(pb => {
-    if (pb.formations && pb.formations[defFormation]) {
-      Object.keys(pb.formations[defFormation]).forEach(sf => subSet.add(sf));
-    }
-  });
-  const subs = [...subSet].sort();
-  if (defSubFormationSelect) {
-    if (subs.length > 0) {
-      defSubFormationSelect.innerHTML = '<option value="">Default Look</option>' +
-        subs.map(s => `<option value="${s}">${s}</option>`).join('');
-      defSubFormationSelect.disabled = false;
-    } else {
-      defSubFormationSelect.innerHTML = '<option value="">Default Look</option>';
-      defSubFormationSelect.disabled = true;
-    }
-  }
-}
-
-populateDefFormations();
-populateDefSubFormations('Nickel');
-
-if (defFormationSelect) {
-  defFormationSelect.addEventListener('change', () => {
-    currentDefFormation = defFormationSelect.value || 'Nickel';
-    currentDefSubFormation = '';
-    populateDefSubFormations(currentDefFormation);
-    renderCards(activeFilter, searchInput.value, activeShell);
-  });
-}
-
-if (defSubFormationSelect) {
-  defSubFormationSelect.addEventListener('change', () => {
-    currentDefSubFormation = defSubFormationSelect.value || '';
-    renderCards(activeFilter, searchInput.value, activeShell);
-  });
-}
+const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
 
 function cleanup() {
   renderers.forEach(r => r.destroy());
   renderers = [];
-  // Disconnect IntersectionObservers and destroy static renderers on all cards
-  if (grid) {
-    grid.querySelectorAll('.coverage-card').forEach(card => {
-      if (card._observer) { card._observer.disconnect(); card._observer = null; }
-      if (card._staticRenderer) { card._staticRenderer.destroy(); card._staticRenderer = null; }
-      if (card._renderer) { card._renderer.destroy(); card._renderer = null; }
-    });
-  }
+  cardObservers.forEach(obs => obs.disconnect());
+  cardObservers = [];
 }
 
 function getTypeClass(type) {
@@ -143,20 +95,80 @@ function getTypeClass(type) {
   return 'hybrid';
 }
 
+function findCoverage(name) {
+  if (!name) return null;
+  const nl = name.toLowerCase().trim();
+  const base = nl.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/i, '').trim();
+  const exact = COVERAGES.find(c => c.name.toLowerCase() === base);
+  if (exact) return exact;
+  const byId = COVERAGES.find(c => base.replace(/\s+/g, '') === c.id);
+  if (byId) return byId;
+  const numPrefix = base.match(/^(\d)\s+(.*)/);
+  if (numPrefix) {
+    const expanded = 'cover ' + numPrefix[1] + ' ' + numPrefix[2];
+    const sorted = [...COVERAGES].sort((a, b) => {
+      const al = a.name.replace(/\s*\([^)]*\)/, '').trim().length;
+      const bl = b.name.replace(/\s*\([^)]*\)/, '').trim().length;
+      return bl - al;
+    });
+    const remWords = numPrefix[2].split(/\s+/).filter(w => w.length > 1);
+    let bestCov = null, bestScore = 0;
+    for (const c of sorted) {
+      const cn = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
+      if (!cn.startsWith('cover ' + numPrefix[1])) continue;
+      if (cn === expanded || expanded.startsWith(cn + ' ')) {
+        const score = 100 + cn.length;
+        if (score > bestScore) { bestScore = score; bestCov = c; }
+      }
+      const wordScore = remWords.filter(w => cn.includes(w)).length;
+      if (wordScore > 0 && wordScore > bestScore) { bestScore = wordScore; bestCov = c; }
+    }
+    if (bestCov) return bestCov;
+    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + numPrefix[1]);
+    if (baseCover) return baseCover;
+  }
+  let best = null, bestLen = 0;
+  for (const c of COVERAGES) {
+    const cn = c.name.split('(')[0].trim().toLowerCase();
+    if (base.includes(cn) && cn.length > bestLen) { best = c; bestLen = cn.length; }
+  }
+  if (best) return best;
+  if (base.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2 zone'));
+  if (base.includes('mid blitz')) return COVERAGES.find(c => c.name.toLowerCase() === 'cover 0');
+  if (base.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
+  if (base.includes('prevent')) return COVERAGES.find(c => c.name.toLowerCase().includes('prevent'));
+  return COVERAGES.find(c => c.name.toLowerCase().includes(base)) || null;
+}
+
+function renderCardCanvas(canvas) {
+  if (canvas.dataset.rendered) return;
+  canvas.dataset.rendered = '1';
+  const cardEl = canvas.closest('.play-card');
+  const fm = cardEl.dataset.formation;
+  const sf = cardEl.dataset.subformation;
+  const pn = cardEl.dataset.play;
+  const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
+  r.renderCoverageCard(fm, pn, sf || undefined);
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = 'auto';
+  renderers.push(r);
+}
+
 function activateCard(card) {
   if (!liveAnimEnabled || card._hoverActive || !card.isConnected) return;
   card._hoverActive = true;
   const canvas = card.querySelector('.play-art-canvas');
-  const idx = card.dataset.covIdx;
-  const cov = COVERAGES[parseInt(idx)];
-  if (!canvas || !cov) return;
+  const fm = card.dataset.formation;
+  const sf = card.dataset.subformation;
+  const pn = card.dataset.play;
+  if (!canvas || !pn) return;
 
-  const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
+  const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
   r.renderSinglePlayLive({
     mode: 'defense',
-    defFormation: currentDefFormation,
-    defSubFormation: currentDefSubFormation || undefined,
-    coverageName: cov.name,
+    defFormation: fm,
+    defSubFormation: sf || undefined,
+    coverageName: pn,
     duration: animSpeed,
     visibleGroups
   });
@@ -173,27 +185,169 @@ function deactivateCard(card) {
     renderers = renderers.filter(r => r !== card._renderer);
     card._renderer = null;
     const canvas = card.querySelector('.play-art-canvas');
-    const idx = card.dataset.covIdx;
-    const cov = COVERAGES[parseInt(idx)];
-    if (canvas && cov) {
-      // Destroy old static renderer before creating new one
-      if (card._staticRenderer) {
-        card._staticRenderer.destroy();
-        renderers = renderers.filter(r => r !== card._staticRenderer);
-      }
-      const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
-      r.renderCoverageCard(currentDefFormation, cov.name, currentDefSubFormation || undefined);
-      card._staticRenderer = r;
+    if (canvas) {
+      delete canvas.dataset.rendered;
+      renderCardCanvas(canvas);
     }
   }
   card.classList.remove('live-active');
 }
 
-const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+function buildTree(filter, search, shell) {
+  cleanup();
+  treeEl.innerHTML = '';
+  const data = buildFormationData();
+  const lower = (search || '').toLowerCase();
+  const isFiltered = lower || filter !== 'all' || shell !== 'all';
 
-function bindHoverEvents(card) {
-  if (isTouchDevice) {
-    // On touch/mobile, auto-play when card scrolls into view
+  Object.entries(data).sort(([a], [b]) => a.localeCompare(b)).forEach(([formation, subs]) => {
+    const filteredSubs = {};
+    for (const [subName, plays] of Object.entries(subs)) {
+      const matched = plays.filter(p => {
+        const cov = findCoverage(p);
+        // Search matches play name, formation, subformation, or coverage description
+        if (lower && !p.toLowerCase().includes(lower)
+            && !formation.toLowerCase().includes(lower)
+            && !subName.toLowerCase().includes(lower)) {
+          if (!cov || !cov.description.toLowerCase().includes(lower)) return false;
+        }
+        if (filter !== 'all') {
+          if (!cov || cov.type !== filter) return false;
+        }
+        if (shell !== 'all') {
+          if (!cov || !cov.shell || !cov.shell.includes(shell === 'Mixed' ? 'Mixed' : shell)) return false;
+        }
+        return true;
+      });
+      if (matched.length) filteredSubs[subName] = matched;
+    }
+    if (!Object.keys(filteredSubs).length) return;
+
+    const totalPlays = Object.values(filteredSubs).reduce((sum, plays) => sum + plays.length, 0);
+
+    const group = document.createElement('div');
+    group.className = 'formation-group animate-fade-in';
+
+    group.innerHTML = `
+      <div class="formation-header" data-formation="${formation}">
+        <div class="flex items-center gap-3">
+          <i class="bi bi-shield-fill text-[#FF1493]"></i>
+          <span class="font-bold">${formation}</span>
+          <span class="text-xs text-gray-500">${Object.keys(filteredSubs).length} sets &middot; ${totalPlays} plays</span>
+        </div>
+        <i class="bi bi-chevron-down chevron text-gray-500"></i>
+      </div>
+      <div class="formation-body">
+        ${Object.entries(filteredSubs).sort(([a], [b]) => a.localeCompare(b)).map(([subName, plays]) => `
+          <div class="sub-formation">
+            <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${plays.map(play => {
+                const cov = findCoverage(play);
+                return `
+                <div class="play-card" data-play="${play}" data-formation="${formation}" data-subformation="${subName}">
+                  <div class="play-art-wrapper">
+                    <canvas class="play-art-canvas" width="500" height="350"></canvas>
+                    <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
+                  </div>
+                  <div class="card-info">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-bold text-lg truncate">${play}</h3>
+                      <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                        ${cov ? `<span class="text-xs px-1.5 py-0.5 rounded bg-dark-700 text-gray-400 border border-dark-600">${cov.shell}</span>` : ''}
+                        ${cov ? `<span class="type-badge ${getTypeClass(cov.type)}">${cov.type}</span>` : ''}
+                      </div>
+                    </div>
+                    ${cov ? `<p class="text-gray-400 text-xs mb-2 line-clamp-2">${cov.description}</p>` : ''}
+                    ${cov ? `
+                    <div class="mb-2">
+                      <span class="text-xs text-gray-500 font-semibold">STOPS:</span>
+                      <div class="mt-1 flex flex-wrap">${cov.stops.slice(0, 4).map(s => `<span class="tag-green">${s}</span>`).join('')}
+                      ${cov.stops.length > 4 ? `<span class="tag-green">+${cov.stops.length - 4}</span>` : ''}</div>
+                    </div>
+                    <div>
+                      <span class="text-xs text-gray-500 font-semibold">WEAK TO:</span>
+                      <div class="mt-1 flex flex-wrap">${cov.beatenBy.slice(0, 4).map(b => `<span class="tag-red">${b}</span>`).join('')}
+                      ${cov.beatenBy.length > 4 ? `<span class="tag-red">+${cov.beatenBy.length - 4}</span>` : ''}</div>
+                    </div>` : ''}
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    treeEl.appendChild(group);
+  });
+
+  if (treeEl.children.length === 0) {
+    treeEl.innerHTML = '<div class="text-center text-gray-500 py-12">No coverages match your search.</div>';
+    return;
+  }
+
+  // If searching/filtering, auto-open all formations
+  if (isFiltered) {
+    treeEl.querySelectorAll('.formation-body').forEach(b => b.classList.add('open'));
+    treeEl.querySelectorAll('.formation-header').forEach(h => h.classList.add('open'));
+    treeEl.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
+    reconnectCardObservers();
+  }
+
+  // Accordion behavior
+  treeEl.querySelectorAll('.formation-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const body = header.nextElementSibling;
+      const wasOpen = body.classList.contains('open');
+      if (!isFiltered) {
+        treeEl.querySelectorAll('.formation-body').forEach(b => b.classList.remove('open'));
+        treeEl.querySelectorAll('.formation-header').forEach(h => h.classList.remove('open'));
+      }
+      if (!wasOpen) {
+        body.classList.add('open');
+        header.classList.add('open');
+        body.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
+        reconnectCardObservers();
+      } else {
+        body.classList.remove('open');
+        header.classList.remove('open');
+        reconnectCardObservers();
+      }
+    });
+  });
+
+  // Card click and hover/touch
+  treeEl.querySelectorAll('.play-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pn = card.dataset.play;
+      const cov = findCoverage(pn);
+      const variants = cov ? DEFENSIVE_PLAYS.filter(dp => dp.coverageFamily === cov.name.split('(')[0].trim() || dp.coverage === cov.name || dp.coverageFamily === cov.name) : [];
+      openModal(cov, variants, card.dataset.formation, card.dataset.subformation);
+    });
+
+    if (isTouchDevice) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) activateCard(card);
+          else deactivateCard(card);
+        });
+      }, { threshold: 0.5 });
+      observer.observe(card);
+      cardObservers.push(observer);
+    } else {
+      card.addEventListener('mouseenter', () => activateCard(card));
+      card.addEventListener('mouseleave', () => deactivateCard(card));
+    }
+  });
+}
+
+function reconnectCardObservers() {
+  cardObservers.forEach(obs => obs.disconnect());
+  cardObservers = [];
+  if (!isTouchDevice) return;
+  treeEl.querySelectorAll('.formation-body.open .play-card').forEach(card => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) activateCard(card);
@@ -201,84 +355,28 @@ function bindHoverEvents(card) {
       });
     }, { threshold: 0.5 });
     observer.observe(card);
-    card._observer = observer;
-  } else {
-    card.addEventListener('mouseenter', () => activateCard(card));
-    card.addEventListener('mouseleave', () => deactivateCard(card));
-  }
+    cardObservers.push(observer);
+  });
 }
 
-function renderCards(filter = 'all', search = '', shell = 'all') {
+function openModal(cov, variants, formation, subFormation) {
   cleanup();
-  grid.innerHTML = '';
-  const filtered = [...COVERAGES].sort((a, b) => a.name.localeCompare(b.name)).filter(cov => {
-    const matchFilter = filter === 'all' || cov.type === filter || (filter === 'Zone Match' && cov.type === 'Zone Match');
-    const matchSearch = !search || cov.name.toLowerCase().includes(search.toLowerCase()) ||
-      cov.description.toLowerCase().includes(search.toLowerCase());
-    const matchShell = shell === 'all' || (cov.shell && cov.shell.includes(shell === 'Mixed' ? 'Mixed' : shell));
-    return matchFilter && matchSearch && matchShell;
-  });
+  const covDefFormation = formation || 'Nickel';
+  const covDefSubFormation = subFormation || '';
 
-  filtered.forEach((cov, i) => {
-    const covIdx = COVERAGES.indexOf(cov);
-    const variants = DEFENSIVE_PLAYS.filter(dp => dp.coverageFamily === cov.name.split('(')[0].trim() || dp.coverage === cov.name || dp.coverageFamily === cov.name);
-    const card = document.createElement('div');
-    card.className = 'coverage-card animate-fade-in';
-    card.style.animationDelay = `${i * 0.05}s`;
-    // Uniform card styling - no colored left border
-    card.dataset.covIdx = covIdx;
-    card.innerHTML = `
-      <div class="play-art-wrapper">
-        <canvas class="play-art-canvas" width="500" height="350"></canvas>
-        <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
+  if (!cov) {
+    modalContent.innerHTML = `
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-black">Unknown Coverage</h2>
+        <button id="closeModal" class="text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
       </div>
-      <div class="card-info">
-        <div class="flex items-center justify-between mb-1">
-          <h3 class="font-bold text-lg truncate">${cov.name}</h3>
-          <div class="flex items-center gap-1 flex-shrink-0 ml-2">
-            <span class="text-xs px-1.5 py-0.5 rounded bg-dark-700 text-gray-400 border border-dark-600">${cov.shell}</span>
-            <span class="type-badge ${getTypeClass(cov.type)}">${cov.type}</span>
-          </div>
-        </div>
-        <p class="text-gray-400 text-xs mb-2 line-clamp-2">${cov.description}</p>
-        <div class="flex gap-3 text-xs text-gray-500 mb-2">
-          <span>${variants.length} variant${variants.length !== 1 ? 's' : ''}</span>
-        </div>
-        <div class="mb-2">
-          <span class="text-xs text-gray-500 font-semibold">STOPS:</span>
-          <div class="mt-1 flex flex-wrap">${cov.stops.slice(0, 4).map(s => `<span class="tag-green">${s}</span>`).join('')}
-          ${cov.stops.length > 4 ? `<span class="tag-green">+${cov.stops.length - 4}</span>` : ''}</div>
-        </div>
-        <div>
-          <span class="text-xs text-gray-500 font-semibold">WEAK TO:</span>
-          <div class="mt-1 flex flex-wrap">${cov.beatenBy.slice(0, 4).map(b => `<span class="tag-red">${b}</span>`).join('')}
-          ${cov.beatenBy.length > 4 ? `<span class="tag-red">+${cov.beatenBy.length - 4}</span>` : ''}</div>
-        </div>
-      </div>
+      <p class="text-gray-400">No detailed information available for this coverage.</p>
     `;
-    card.addEventListener('click', () => openModal(cov, variants));
-    bindHoverEvents(card);
-    grid.appendChild(card);
-
-    // Render static play art initially
-    const canvas = card.querySelector('.play-art-canvas');
-    if (canvas) {
-      canvas.style.maxWidth = '100%';
-      canvas.style.height = 'auto';
-      const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
-      r.renderCoverageCard(currentDefFormation, cov.name, currentDefSubFormation || undefined);
-      card._staticRenderer = r;
-    }
-  });
-
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">No coverages match your search.</div>';
+    modal.classList.add('active');
+    modalContent.querySelector('#closeModal').addEventListener('click', closeModal);
+    return;
   }
 
-}
-
-function openModal(cov, variants) {
-  cleanup();
   modalContent.innerHTML = `
     <div class="flex items-center justify-between mb-4">
       <div>
@@ -297,12 +395,6 @@ function openModal(cov, variants) {
         <button class="side-btn active" data-side="defense"><i class="bi bi-shield-fill mr-1"></i>Run Defense</button>
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-3 mb-3">
-      <select id="covFormationSelect" class="custom-select"></select>
-      <select id="covSubFormationSelect" class="custom-select">
-        <option value="">Default Look</option>
-      </select>
-    </div>
     <div class="flex justify-center mb-2">
       <canvas id="modalCovArt" width="560" height="440" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
     </div>
@@ -319,9 +411,9 @@ function openModal(cov, variants) {
         <button class="pos-toggle active def-group" data-group="LB">LB</button>
         <button class="pos-toggle active def-group" data-group="DB">DB</button>
         <span class="label ml-1"><i class="bi bi-speedometer2"></i></span>
-        <button class="speed-btn" data-speed="2000">1.5x</button>
+        <button class="speed-btn" data-speed="2667">1.5x</button>
         <button class="speed-btn active" data-speed="4000">1x</button>
-        <button class="speed-btn" data-speed="6500">0.5x</button>
+        <button class="speed-btn" data-speed="8000">0.5x</button>
       </div>
     </div>
 
@@ -445,44 +537,6 @@ function openModal(cov, variants) {
     return groups;
   };
 
-  let covDefFormation = currentDefFormation;
-  let covDefSubFormation = currentDefSubFormation;
-  const covFormSel = document.getElementById('covFormationSelect');
-  const covSubFormSel = document.getElementById('covSubFormationSelect');
-
-  // Populate modal formation dropdown dynamically
-  if (covFormSel) {
-    const fmSet = new Set();
-    DEFENSIVE_PLAYBOOKS.forEach(pb => {
-      if (pb.formations) Object.keys(pb.formations).forEach(fm => fmSet.add(fm));
-    });
-    const fmList = [...fmSet].sort();
-    covFormSel.innerHTML = fmList.map(f =>
-      `<option value="${f}"${f === covDefFormation ? ' selected' : ''}>${f}</option>`
-    ).join('');
-  }
-
-  // Populate modal subformation dropdown
-  const populateModalSubFormations = (formation) => {
-    if (!covSubFormSel) return;
-    const subSet = new Set();
-    DEFENSIVE_PLAYBOOKS.forEach(pb => {
-      if (pb.formations && pb.formations[formation]) {
-        Object.keys(pb.formations[formation]).forEach(sf => subSet.add(sf));
-      }
-    });
-    const subs = [...subSet].sort();
-    if (subs.length > 0) {
-      covSubFormSel.innerHTML = '<option value="">Default Look</option>' +
-        subs.map(s => `<option value="${s}"${s === covDefSubFormation ? ' selected' : ''}>${s}</option>`).join('');
-      covSubFormSel.disabled = false;
-    } else {
-      covSubFormSel.innerHTML = '<option value="">Default Look</option>';
-      covSubFormSel.disabled = true;
-    }
-  };
-  populateModalSubFormations(covDefFormation);
-
   const startCovAnim = () => {
     renderers.forEach(r => r.destroy()); renderers = [];
     modalVisGroups = getModalVisGroups();
@@ -499,21 +553,6 @@ function openModal(cov, variants) {
     }
   };
   startCovAnim();
-
-  if (covFormSel) {
-    covFormSel.addEventListener('change', () => {
-      covDefFormation = covFormSel.value;
-      covDefSubFormation = '';
-      populateModalSubFormations(covDefFormation);
-      startCovAnim();
-    });
-  }
-  if (covSubFormSel) {
-    covSubFormSel.addEventListener('change', () => {
-      covDefSubFormation = covSubFormSel.value || '';
-      startCovAnim();
-    });
-  }
 
   const covToggle = document.getElementById('covSideToggle');
   if (covToggle) {
@@ -576,7 +615,11 @@ function openModal(cov, variants) {
   });
 }
 
-function closeModal() { cleanup(); modal.classList.remove('active'); renderCards(activeFilter, searchInput.value, activeShell); }
+function closeModal() {
+  cleanup();
+  modal.classList.remove('active');
+  buildTree(activeFilter, searchInput.value, activeShell);
+}
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
@@ -585,18 +628,18 @@ filterBtns.forEach(btn => {
     filterBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeFilter = btn.dataset.filter;
-    renderCards(activeFilter, searchInput.value, activeShell);
+    buildTree(activeFilter, searchInput.value, activeShell);
   });
 });
 
 if (shellFilter) {
   shellFilter.addEventListener('change', () => {
     activeShell = shellFilter.value;
-    renderCards(activeFilter, searchInput.value, activeShell);
+    buildTree(activeFilter, searchInput.value, activeShell);
   });
 }
 
-searchInput.addEventListener('input', () => renderCards(activeFilter, searchInput.value, activeShell));
+searchInput.addEventListener('input', () => buildTree(activeFilter, searchInput.value, activeShell));
 
 // Position group filter toolbar
 function buildPosFilter() {
@@ -611,18 +654,17 @@ function buildPosFilter() {
       <button class="pos-toggle active def-group" data-group="LB">LB</button>
       <button class="pos-toggle active def-group" data-group="DB">DB</button>
       <span class="label ml-2"><i class="bi bi-speedometer2"></i></span>
-      <button class="speed-btn" data-speed="2000" title="Fast">1.5x</button>
-      <button class="speed-btn active" data-speed="3500" title="Normal">1x</button>
-      <button class="speed-btn" data-speed="5500" title="Slow">0.5x</button>
+      <button class="speed-btn" data-speed="2667" title="Fast">1.5x</button>
+      <button class="speed-btn active" data-speed="4000" title="Normal">1x</button>
+      <button class="speed-btn" data-speed="8000" title="Slow">0.5x</button>
     </div>
   `;
-  // Live animation toggle
   const liveBtn = container.querySelector('#liveAnimToggle');
   liveBtn.addEventListener('click', () => {
     liveAnimEnabled = !liveAnimEnabled;
     liveBtn.classList.toggle('active', liveAnimEnabled);
     if (!liveAnimEnabled) {
-      grid.querySelectorAll('.coverage-card.live-active').forEach(card => deactivateCard(card));
+      treeEl.querySelectorAll('.play-card.live-active').forEach(card => deactivateCard(card));
     }
   });
   container.querySelectorAll('.pos-toggle[data-group]').forEach(btn => {
@@ -648,7 +690,7 @@ function updateVisibleGroups() {
   const activeToggles = container.querySelectorAll('.pos-toggle.active[data-group]');
   const allToggles = container.querySelectorAll('.pos-toggle[data-group]');
   if (activeToggles.length === allToggles.length) {
-    visibleGroups = null; // All visible
+    visibleGroups = null;
   } else {
     visibleGroups = new Set();
     activeToggles.forEach(t => visibleGroups.add(t.dataset.group));
@@ -656,7 +698,7 @@ function updateVisibleGroups() {
 }
 
 function refreshActiveCards() {
-  const cards = grid.querySelectorAll('.coverage-card.live-active');
+  const cards = treeEl.querySelectorAll('.play-card.live-active');
   cards.forEach(card => {
     deactivateCard(card);
     activateCard(card);
@@ -664,4 +706,4 @@ function refreshActiveCards() {
 }
 
 buildPosFilter();
-renderCards();
+buildTree();

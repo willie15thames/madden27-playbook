@@ -23,17 +23,16 @@ let currentSide = 'offense';
 let currentPlaybooks = OFFENSIVE_PLAYBOOKS;
 let currentPb = null;
 let renderers = [];
-let currentPlayList = [];   // plays in the currently displayed sub-formation
-let currentPlayIndex = -1;  // index of the currently open play in currentPlayList
+let currentPlayList = [];
+let currentPlayIndex = -1;
 let currentPlayFormation = null;
 let currentPlaySubFormation = null;
 function cleanupRenderers() {
   renderers.forEach(r => r.destroy()); renderers = [];
-  // Disconnect any chip IntersectionObservers
-  chipObservers.forEach(obs => obs.disconnect());
-  chipObservers = [];
+  cardObservers.forEach(obs => obs.disconnect());
+  cardObservers = [];
 }
-let chipObservers = [];
+let cardObservers = [];
 const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
 
 // Build playbook lookup for "found in X playbooks"
@@ -173,7 +172,12 @@ function buildFormationTree(pb, search) {
     // Filter plays by search
     const filteredSubs = {};
     for (const [subName, plays] of Object.entries(subFormations)) {
-      const matched = lower ? plays.filter(p => p.toLowerCase().includes(lower)) : plays;
+      // Search matches play name, formation, or subformation
+      const fmMatch = lower && formationName.toLowerCase().includes(lower);
+      const sfMatch = lower && subName.toLowerCase().includes(lower);
+      const matched = lower
+        ? (fmMatch || sfMatch ? plays : plays.filter(p => p.toLowerCase().includes(lower)))
+        : plays;
       if (matched.length > 0) filteredSubs[subName] = matched;
     }
     if (Object.keys(filteredSubs).length === 0) return;
@@ -196,16 +200,29 @@ function buildFormationTree(pb, search) {
         ${Object.entries(filteredSubs).sort(([a], [b]) => a.localeCompare(b)).map(([subName, plays]) => `
           <div class="sub-formation">
             <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
-            <div class="flex flex-wrap gap-3">
-              ${[...plays].sort((a, b) => a.localeCompare(b)).map((play, pi) => {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${[...plays].sort((a, b) => a.localeCompare(b)).map((play) => {
                 const playData = currentSide === 'offense' ? PLAY_TYPES[play] : null;
+                const cov = currentSide === 'defense' ? findCoverage(play) : null;
                 const isRun = playData && playData.type === 'Run';
                 const badgeClass = !playData ? '' : isRun ? 'run' : playData.subtype === 'Screen' ? 'screen' : playData.subtype === 'RPO' ? 'rpo' : 'pass';
                 return `
-                <div class="play-chip-art" data-play="${play}" data-formation="${formationName}" data-subformation="${subName}">
-                  <canvas id="pbArt_${formationName.replace(/[^a-zA-Z0-9]/g,'_')}_${subName.replace(/[^a-zA-Z0-9]/g,'_')}_${pi}" width="160" height="128" class="rounded" style="background:#1a472a;"></canvas>
-                  <span class="play-chip-label">${play}</span>
-                  ${badgeClass ? `<span class="play-chip-badge ${badgeClass}">${playData.type}</span>` : ''}
+                <div class="play-card" data-play="${play}" data-formation="${formationName}" data-subformation="${subName}">
+                  <div class="play-art-wrapper">
+                    <canvas class="play-art-canvas" width="500" height="350"></canvas>
+                    <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
+                  </div>
+                  <div class="card-info">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-bold truncate">${play}</h3>
+                      <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                        ${badgeClass ? `<span class="play-type-badge ${badgeClass}">${playData.type}</span>` : ''}
+                        ${cov ? `<span class="type-badge ${cov.type === 'Man' ? 'man' : cov.type === 'Zone' ? 'zone' : cov.type === 'Zone Match' ? 'zone-match' : 'hybrid'}">${cov.type}</span>` : ''}
+                      </div>
+                    </div>
+                    ${playData ? `<p class="text-gray-400 text-xs line-clamp-2">${playData.description}</p>` : ''}
+                    ${cov ? `<p class="text-gray-400 text-xs line-clamp-2">${cov.description}</p>` : ''}
+                  </div>
                 </div>`;
               }).join('')}
             </div>
@@ -221,11 +238,10 @@ function buildFormationTree(pb, search) {
   if (lower) {
     formationTree.querySelectorAll('.formation-body').forEach(b => b.classList.add('open'));
     formationTree.querySelectorAll('.formation-header').forEach(h => h.classList.add('open'));
-    // Render canvases immediately for search results
-    formationTree.querySelectorAll('.play-chip-art canvas').forEach(canvas => {
-      renderChipCanvas(canvas);
+    formationTree.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => {
+      renderCardCanvas(canvas);
     });
-    reconnectChipObservers();
+    reconnectCardObservers();
   }
 
   // Accordion behavior
@@ -240,35 +256,34 @@ function buildFormationTree(pb, search) {
       if (!isOpen) {
         body.classList.add('open');
         header.classList.add('open');
-        body.querySelectorAll('.play-chip-art canvas').forEach(canvas => renderChipCanvas(canvas));
-        reconnectChipObservers();
+        body.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
+        reconnectCardObservers();
       } else {
         body.classList.remove('open');
         header.classList.remove('open');
-        reconnectChipObservers();
+        reconnectCardObservers();
       }
     });
   });
 
-  // Play chip clicks and hover/touch autoplay
-  formationTree.querySelectorAll('.play-chip-art').forEach(chip => {
-    chip.addEventListener('click', (e) => {
+  // Play card clicks and hover/touch autoplay
+  formationTree.querySelectorAll('.play-card').forEach(card => {
+    card.addEventListener('click', (e) => {
       e.stopPropagation();
-      openPlayDetail(chip.dataset.play, chip.dataset.formation, chip.dataset.subformation);
+      openPlayDetail(card.dataset.play, card.dataset.formation, card.dataset.subformation);
     });
 
     if (isTouchDevice) {
-      // On touch devices, use IntersectionObserver to auto-play when chip scrolls into view
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          const canvas = chip.querySelector('canvas');
+          const canvas = card.querySelector('.play-art-canvas');
           if (!canvas) return;
           if (entry.isIntersecting) {
             if (canvas._hoverAnim) return;
-            const pn = chip.dataset.play;
-            const fm = chip.dataset.formation;
-            const sf = chip.dataset.subformation;
-            const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+            const pn = card.dataset.play;
+            const fm = card.dataset.formation;
+            const sf = card.dataset.subformation;
+            const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
             if (currentSide === 'offense') {
               r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
             } else {
@@ -276,28 +291,29 @@ function buildFormationTree(pb, search) {
             }
             canvas._hoverAnim = r;
             renderers.push(r);
+            card.classList.add('live-active');
           } else {
             if (canvas._hoverAnim) {
               canvas._hoverAnim.destroy();
               renderers = renderers.filter(r => r !== canvas._hoverAnim);
               canvas._hoverAnim = null;
               delete canvas.dataset.rendered;
-              renderChipCanvas(canvas);
+              renderCardCanvas(canvas);
+              card.classList.remove('live-active');
             }
           }
         });
       }, { threshold: 0.5 });
-      observer.observe(chip);
-      chipObservers.push(observer);
+      observer.observe(card);
+      cardObservers.push(observer);
     } else {
-      // Desktop: hover animation on chip
-      chip.addEventListener('mouseenter', () => {
-        const canvas = chip.querySelector('canvas');
+      card.addEventListener('mouseenter', () => {
+        const canvas = card.querySelector('.play-art-canvas');
         if (!canvas || canvas._hoverAnim) return;
-        const pn = chip.dataset.play;
-        const fm = chip.dataset.formation;
-        const sf = chip.dataset.subformation;
-        const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+        const pn = card.dataset.play;
+        const fm = card.dataset.formation;
+        const sf = card.dataset.subformation;
+        const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
         if (currentSide === 'offense') {
           r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
         } else {
@@ -305,30 +321,31 @@ function buildFormationTree(pb, search) {
         }
         canvas._hoverAnim = r;
         renderers.push(r);
+        card.classList.add('live-active');
       });
-      chip.addEventListener('mouseleave', () => {
-        const canvas = chip.querySelector('canvas');
+      card.addEventListener('mouseleave', () => {
+        const canvas = card.querySelector('.play-art-canvas');
         if (canvas && canvas._hoverAnim) {
           canvas._hoverAnim.destroy();
           renderers = renderers.filter(r => r !== canvas._hoverAnim);
           canvas._hoverAnim = null;
-          // Clear rendered flag so static art re-renders
           delete canvas.dataset.rendered;
-          renderChipCanvas(canvas);
+          renderCardCanvas(canvas);
+          card.classList.remove('live-active');
         }
       });
     }
   });
 }
 
-function renderChipCanvas(canvas) {
+function renderCardCanvas(canvas) {
   if (canvas.dataset.rendered) return;
   canvas.dataset.rendered = '1';
-  const chipEl = canvas.closest('.play-chip-art');
-  const fm = chipEl.dataset.formation;
-  const sf = chipEl.dataset.subformation;
-  const pn = chipEl.dataset.play;
-  const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+  const cardEl = canvas.closest('.play-card');
+  const fm = cardEl.dataset.formation;
+  const sf = cardEl.dataset.subformation;
+  const pn = cardEl.dataset.play;
+  const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
   if (currentSide === 'offense') {
     r.renderPlayCard(fm, sf, pn);
   } else {
@@ -340,11 +357,9 @@ function renderChipCanvas(canvas) {
 }
 
 function openPlayDetail(playName, formation, subFormation) {
-  // Only destroy renderers for the modal — preserve chip IntersectionObservers
   renderers.forEach(r => r.destroy());
   renderers = [];
 
-  // Track current play list for swipe navigation
   currentPlayFormation = formation;
   currentPlaySubFormation = subFormation;
   if (currentPb && currentPb.formations && currentPb.formations[formation] && currentPb.formations[formation][subFormation]) {
@@ -367,7 +382,6 @@ function openOffenseDetail(playName, formation, subFormation) {
   const sf = subFormation || 'Spread Y-Flex';
   const pbCount = getPlaybookCount(playName);
 
-  // Look up the specific variant from the catalog for richer detail
   const variant = OFFENSIVE_PLAYS.find(v =>
     (v.name === playName || v.family === playName) &&
     v.formation === fm && v.subFormation === sf
@@ -414,9 +428,9 @@ function openOffenseDetail(playName, formation, subFormation) {
         <button class="pos-toggle active def-group" data-group="LB">LB</button>
         <button class="pos-toggle active def-group" data-group="DB">DB</button>
         <span class="label ml-1"><i class="bi bi-speedometer2"></i></span>
-        <button class="speed-btn" data-speed="2000">1.5x</button>
+        <button class="speed-btn" data-speed="2667">1.5x</button>
         <button class="speed-btn active" data-speed="4000">1x</button>
-        <button class="speed-btn" data-speed="6500">0.5x</button>
+        <button class="speed-btn" data-speed="8000">0.5x</button>
       </div>
     </div>
 
@@ -463,7 +477,6 @@ function openOffenseDetail(playName, formation, subFormation) {
   modal.classList.add('active');
   modalContent.querySelector('#closeModal').addEventListener('click', closeModal);
 
-  // Live animated play art with side toggle
   const pbModalCanvas = document.getElementById('pbModalArt');
   let modalSide = 'offense';
   let modalVisGroups = null;
@@ -567,9 +580,9 @@ function openDefenseDetail(coverageName, formation, subFormation) {
         <button class="pos-toggle active def-group" data-group="LB">LB</button>
         <button class="pos-toggle active def-group" data-group="DB">DB</button>
         <span class="label ml-1"><i class="bi bi-speedometer2"></i></span>
-        <button class="speed-btn" data-speed="2000">1.5x</button>
+        <button class="speed-btn" data-speed="2667">1.5x</button>
         <button class="speed-btn active" data-speed="4000">1x</button>
-        <button class="speed-btn" data-speed="6500">0.5x</button>
+        <button class="speed-btn" data-speed="8000">0.5x</button>
       </div>
     </div>
 
@@ -615,7 +628,6 @@ function openDefenseDetail(coverageName, formation, subFormation) {
   modal.classList.add('active');
   modalContent.querySelector('#closeModal').addEventListener('click', closeModal);
 
-  // Live animated play art
   const pbModalCanvas = document.getElementById('pbModalArt');
   let modalSide = 'defense';
   let modalVisGroups = null;
@@ -678,57 +690,45 @@ function openDefenseDetail(coverageName, formation, subFormation) {
 function findCoverage(name) {
   if (!name) return null;
   const nl = name.toLowerCase().trim();
-  // Strip formation suffixes (e.g., "- Nickel 2", "- 4-2")
   const base = nl.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/i, '').trim();
-  // 1. Exact name match
   const exact = COVERAGES.find(c => c.name.toLowerCase() === base);
   if (exact) return exact;
-  // 2. Exact id match
   const byId = COVERAGES.find(c => base.replace(/\s+/g, '') === c.id);
   if (byId) return byId;
-  // 3. Huddle.gg leading-number format: "3 Match Buzz" → "Cover 3 Match Buzz"
   const numPrefix = base.match(/^(\d)\s+(.*)/);
   if (numPrefix) {
     const expanded = 'cover ' + numPrefix[1] + ' ' + numPrefix[2];
-    // Sort by stripped name length descending to prefer specific matches
     const sorted = [...COVERAGES].sort((a, b) => {
       const al = a.name.replace(/\s*\([^)]*\)/, '').trim().length;
       const bl = b.name.replace(/\s*\([^)]*\)/, '').trim().length;
       return bl - al;
     });
-    // Score by word count: prefer coverage with most matching words from remainder
     const remWords = numPrefix[2].split(/\s+/).filter(w => w.length > 1);
     let bestCov = null, bestScore = 0;
     for (const c of sorted) {
       const cn = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
       if (!cn.startsWith('cover ' + numPrefix[1])) continue;
-      // Prefix match
       if (cn === expanded || expanded.startsWith(cn + ' ')) {
-        const score = 100 + cn.length; // Prefix match gets priority
+        const score = 100 + cn.length;
         if (score > bestScore) { bestScore = score; bestCov = c; }
       }
-      // Word count match
       const wordScore = remWords.filter(w => cn.includes(w)).length;
       if (wordScore > 0 && wordScore > bestScore) { bestScore = wordScore; bestCov = c; }
     }
     if (bestCov) return bestCov;
-    // Fallback to base "Cover X"
     const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + numPrefix[1]);
     if (baseCover) return baseCover;
   }
-  // 4. Best partial match — prefer longest coverage name that appears in the input
   let best = null, bestLen = 0;
   for (const c of COVERAGES) {
     const cn = c.name.split('(')[0].trim().toLowerCase();
     if (base.includes(cn) && cn.length > bestLen) { best = c; bestLen = cn.length; }
   }
   if (best) return best;
-  // 5. Special names
   if (base.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2 zone'));
   if (base.includes('mid blitz')) return COVERAGES.find(c => c.name.toLowerCase() === 'cover 0');
   if (base.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
   if (base.includes('prevent')) return COVERAGES.find(c => c.name.toLowerCase().includes('prevent'));
-  // 6. Fallback: input appears in coverage name
   return COVERAGES.find(c => c.name.toLowerCase().includes(base)) || null;
 }
 
@@ -760,25 +760,23 @@ function getSimilarPlaysHTML(playName) {
   `;
 }
 
-function reconnectChipObservers() {
-  // Disconnect any stale observers first
-  chipObservers.forEach(obs => obs.disconnect());
-  chipObservers = [];
+function reconnectCardObservers() {
+  cardObservers.forEach(obs => obs.disconnect());
+  cardObservers = [];
 
   if (!isTouchDevice) return;
 
-  // Re-observe all play chips inside currently open formation bodies
-  formationTree.querySelectorAll('.formation-body.open .play-chip-art').forEach(chip => {
+  formationTree.querySelectorAll('.formation-body.open .play-card').forEach(card => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        const canvas = chip.querySelector('canvas');
+        const canvas = card.querySelector('.play-art-canvas');
         if (!canvas) return;
         if (entry.isIntersecting) {
           if (canvas._hoverAnim) return;
-          const pn = chip.dataset.play;
-          const fm = chip.dataset.formation;
-          const sf = chip.dataset.subformation;
-          const r = new PlayArtRenderer(canvas, { width: 160, height: 128 });
+          const pn = card.dataset.play;
+          const fm = card.dataset.formation;
+          const sf = card.dataset.subformation;
+          const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
           if (currentSide === 'offense') {
             r.renderSinglePlayLive({ mode: 'offense', offFormation: fm, offSubFormation: sf, playFamily: pn, duration: 3000 });
           } else {
@@ -786,37 +784,36 @@ function reconnectChipObservers() {
           }
           canvas._hoverAnim = r;
           renderers.push(r);
+          card.classList.add('live-active');
         } else {
           if (canvas._hoverAnim) {
             canvas._hoverAnim.destroy();
             renderers = renderers.filter(r => r !== canvas._hoverAnim);
             canvas._hoverAnim = null;
             delete canvas.dataset.rendered;
-            renderChipCanvas(canvas);
+            renderCardCanvas(canvas);
+            card.classList.remove('live-active');
           }
         }
       });
     }, { threshold: 0.5 });
-    observer.observe(chip);
-    chipObservers.push(observer);
+    observer.observe(card);
+    cardObservers.push(observer);
   });
 }
 
 function closeModal() {
-  // Only destroy modal renderers — don't disconnect chip IntersectionObservers
   renderers.forEach(r => r.destroy());
   renderers = [];
   modal.classList.remove('active');
 
-  // Clear rendered flags on chip canvases so static art re-renders properly
-  formationTree.querySelectorAll('.formation-body.open .play-chip-art canvas').forEach(canvas => {
+  formationTree.querySelectorAll('.formation-body.open .play-card .play-art-canvas').forEach(canvas => {
     delete canvas.dataset.rendered;
     canvas._hoverAnim = null;
-    renderChipCanvas(canvas);
+    renderCardCanvas(canvas);
   });
 
-  // Reconnect IntersectionObservers for touch-device autoplay after modal close
-  reconnectChipObservers();
+  reconnectCardObservers();
 }
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
@@ -839,10 +836,8 @@ document.addEventListener('touchend', (e) => {
     if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2 && currentPlayList.length > 1) {
       let newIndex = currentPlayIndex;
       if (dx > 0) {
-        // Swipe right = previous play
         newIndex = (currentPlayIndex - 1 + currentPlayList.length) % currentPlayList.length;
       } else {
-        // Swipe left = next play
         newIndex = (currentPlayIndex + 1) % currentPlayList.length;
       }
       if (newIndex !== currentPlayIndex && currentPlayList[newIndex]) {

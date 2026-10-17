@@ -26,7 +26,6 @@ function getPlaybooks(playName) {
   const key = playName.toLowerCase();
   const exact = PLAYBOOK_LOOKUP[key];
   if (exact) return [...exact].sort();
-  // Partial match
   const matches = new Set();
   for (const [k, books] of Object.entries(PLAYBOOK_LOOKUP)) {
     if (k.includes(key) || key.includes(k)) {
@@ -36,11 +35,31 @@ function getPlaybooks(playName) {
   return [...matches].sort();
 }
 
+// Build aggregated formation tree from all offensive playbooks
+function buildFormationData() {
+  const tree = {};
+  for (const pb of OFFENSIVE_PLAYBOOKS) {
+    for (const [fm, subs] of Object.entries(pb.formations || {})) {
+      if (!tree[fm]) tree[fm] = {};
+      for (const [sf, plays] of Object.entries(subs)) {
+        if (!tree[fm][sf]) tree[fm][sf] = new Set();
+        for (const p of plays) tree[fm][sf].add(p);
+      }
+    }
+  }
+  for (const fm of Object.keys(tree)) {
+    for (const sf of Object.keys(tree[fm])) {
+      tree[fm][sf] = [...tree[fm][sf]].sort();
+    }
+  }
+  return tree;
+}
+
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
   document.getElementById('mobileMenu')?.classList.toggle('hidden');
 });
 
-const grid = document.getElementById('playsGrid');
+const treeEl = document.getElementById('offenseTree');
 const modal = document.getElementById('playModal');
 const modalContent = document.getElementById('playModalContent');
 const searchInput = document.getElementById('playSearch');
@@ -49,20 +68,17 @@ const filterBtns = document.querySelectorAll('.filter-btn');
 let activeFilter = 'all';
 let renderers = [];
 let visibleGroups = null;
-let animSpeed = 3500;
+let animSpeed = 4000;
 let liveAnimEnabled = true;
+let cardObservers = [];
+
+const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
 
 function cleanup() {
   renderers.forEach(r => r.destroy());
   renderers = [];
-  // Disconnect IntersectionObservers and destroy static renderers on all cards
-  if (grid) {
-    grid.querySelectorAll('.play-card').forEach(card => {
-      if (card._observer) { card._observer.disconnect(); card._observer = null; }
-      if (card._staticRenderer) { card._staticRenderer.destroy(); card._staticRenderer = null; }
-      if (card._renderer) { card._renderer.destroy(); card._renderer = null; }
-    });
-  }
+  cardObservers.forEach(obs => obs.disconnect());
+  cardObservers = [];
 }
 
 function getSubtypeBadgeClass(subtype) {
@@ -72,19 +88,35 @@ function getSubtypeBadgeClass(subtype) {
   return 'pass';
 }
 
+function renderCardCanvas(canvas) {
+  if (canvas.dataset.rendered) return;
+  canvas.dataset.rendered = '1';
+  const cardEl = canvas.closest('.play-card');
+  const fm = cardEl.dataset.formation;
+  const sf = cardEl.dataset.subformation;
+  const pn = cardEl.dataset.play;
+  const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
+  r.renderPlayCard(fm, sf, pn);
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = 'auto';
+  renderers.push(r);
+}
+
 function activateCard(card) {
   if (!liveAnimEnabled || card._hoverActive || !card.isConnected) return;
   card._hoverActive = true;
   const canvas = card.querySelector('.play-art-canvas');
-  const playName = card.dataset.playName;
-  if (!canvas || !playName) return;
+  const fm = card.dataset.formation;
+  const sf = card.dataset.subformation;
+  const pn = card.dataset.play;
+  if (!canvas || !pn) return;
 
-  const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
+  const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
   r.renderSinglePlayLive({
     mode: 'offense',
-    offFormation: 'Shotgun',
-    offSubFormation: 'Spread Y-Flex',
-    playFamily: playName,
+    offFormation: fm,
+    offSubFormation: sf,
+    playFamily: pn,
     duration: animSpeed,
     visibleGroups
   });
@@ -101,25 +133,166 @@ function deactivateCard(card) {
     renderers = renderers.filter(r => r !== card._renderer);
     card._renderer = null;
     const canvas = card.querySelector('.play-art-canvas');
-    const playName = card.dataset.playName;
-    if (canvas && playName) {
-      // Destroy old static renderer before creating new one
-      if (card._staticRenderer) {
-        card._staticRenderer.destroy();
-        renderers = renderers.filter(r => r !== card._staticRenderer);
-      }
-      const r = new PlayArtRenderer(canvas, { width: canvas.width, height: canvas.height });
-      r.renderPlayCard('Gun', 'Spread Y-Flex', playName);
-      card._staticRenderer = r;
+    if (canvas) {
+      delete canvas.dataset.rendered;
+      renderCardCanvas(canvas);
     }
   }
   card.classList.remove('live-active');
 }
 
-const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+function buildTree(filter, search) {
+  cleanup();
+  treeEl.innerHTML = '';
+  const data = buildFormationData();
+  const lower = (search || '').toLowerCase();
+  const isFiltered = lower || filter !== 'all';
 
-function bindHoverEvents(card) {
-  if (isTouchDevice) {
+  Object.entries(data).sort(([a], [b]) => a.localeCompare(b)).forEach(([formation, subs]) => {
+    const filteredSubs = {};
+    for (const [subName, plays] of Object.entries(subs)) {
+      const matched = plays.filter(p => {
+        const playData = PLAY_TYPES[p];
+        // Search matches play name, formation, subformation, or play type description
+        if (lower && !p.toLowerCase().includes(lower)
+            && !formation.toLowerCase().includes(lower)
+            && !subName.toLowerCase().includes(lower)) {
+          if (!playData || (!playData.description.toLowerCase().includes(lower) && !playData.subtype.toLowerCase().includes(lower))) return false;
+        }
+        if (filter !== 'all') {
+          if (!playData || playData.type !== filter) return false;
+        }
+        return true;
+      });
+      if (matched.length) filteredSubs[subName] = matched;
+    }
+    if (!Object.keys(filteredSubs).length) return;
+
+    const totalPlays = Object.values(filteredSubs).reduce((sum, plays) => sum + plays.length, 0);
+
+    const group = document.createElement('div');
+    group.className = 'formation-group animate-fade-in';
+
+    group.innerHTML = `
+      <div class="formation-header" data-formation="${formation}">
+        <div class="flex items-center gap-3">
+          <i class="bi bi-lightning-fill text-[#00FFFF]"></i>
+          <span class="font-bold">${formation}</span>
+          <span class="text-xs text-gray-500">${Object.keys(filteredSubs).length} sets &middot; ${totalPlays} plays</span>
+        </div>
+        <i class="bi bi-chevron-down chevron text-gray-500"></i>
+      </div>
+      <div class="formation-body">
+        ${Object.entries(filteredSubs).sort(([a], [b]) => a.localeCompare(b)).map(([subName, plays]) => `
+          <div class="sub-formation">
+            <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${plays.map(play => {
+                const playData = PLAY_TYPES[play];
+                const isRun = playData && playData.type === 'Run';
+                const badgeClass = !playData ? '' : isRun ? 'run' : playData.subtype === 'Screen' ? 'screen' : playData.subtype === 'RPO' ? 'rpo' : 'pass';
+                return `
+                <div class="play-card" data-play="${play}" data-formation="${formation}" data-subformation="${subName}">
+                  <div class="play-art-wrapper">
+                    <canvas class="play-art-canvas" width="500" height="350"></canvas>
+                    <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
+                  </div>
+                  <div class="card-info">
+                    <div class="flex items-center justify-between mb-1">
+                      <h3 class="font-bold truncate">${play}</h3>
+                    </div>
+                    ${playData ? `
+                    <div class="flex gap-1 mb-1">
+                      <span class="play-type-badge ${playData.type === 'Run' ? 'run' : 'pass'}">${playData.type}</span>
+                      <span class="play-type-badge ${getSubtypeBadgeClass(playData.subtype)}">${playData.subtype}</span>
+                    </div>
+                    <p class="text-gray-400 text-xs line-clamp-2">${playData.description}</p>
+                    <div class="mb-1 mt-2">
+                      <span class="text-xs text-gray-500 font-semibold">BEATS:</span>
+                      <div class="mt-1 flex flex-wrap">${playData.goodVsCoverages.slice(0, 3).map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
+                    </div>
+                    <div>
+                      <span class="text-xs text-gray-500 font-semibold">STOPPED BY:</span>
+                      <div class="mt-1 flex flex-wrap">${playData.badVsCoverages.slice(0, 3).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
+                    </div>` : ''}
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    treeEl.appendChild(group);
+  });
+
+  if (treeEl.children.length === 0) {
+    treeEl.innerHTML = '<div class="text-center text-gray-500 py-12">No plays match your search.</div>';
+    return;
+  }
+
+  // If searching/filtering, auto-open all formations
+  if (isFiltered) {
+    treeEl.querySelectorAll('.formation-body').forEach(b => b.classList.add('open'));
+    treeEl.querySelectorAll('.formation-header').forEach(h => h.classList.add('open'));
+    treeEl.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
+    reconnectCardObservers();
+  }
+
+  // Accordion behavior
+  treeEl.querySelectorAll('.formation-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const body = header.nextElementSibling;
+      const wasOpen = body.classList.contains('open');
+      if (!isFiltered) {
+        treeEl.querySelectorAll('.formation-body').forEach(b => b.classList.remove('open'));
+        treeEl.querySelectorAll('.formation-header').forEach(h => h.classList.remove('open'));
+      }
+      if (!wasOpen) {
+        body.classList.add('open');
+        header.classList.add('open');
+        body.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
+        reconnectCardObservers();
+      } else {
+        body.classList.remove('open');
+        header.classList.remove('open');
+        reconnectCardObservers();
+      }
+    });
+  });
+
+  // Card click and hover/touch
+  treeEl.querySelectorAll('.play-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pn = card.dataset.play;
+      const playData = PLAY_TYPES[pn];
+      const variants = OFFENSIVE_PLAYS.filter(op => op.family === pn || op.name === pn);
+      openModal(pn, playData, variants, card.dataset.formation, card.dataset.subformation);
+    });
+
+    if (isTouchDevice) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) activateCard(card);
+          else deactivateCard(card);
+        });
+      }, { threshold: 0.5 });
+      observer.observe(card);
+      cardObservers.push(observer);
+    } else {
+      card.addEventListener('mouseenter', () => activateCard(card));
+      card.addEventListener('mouseleave', () => deactivateCard(card));
+    }
+  });
+}
+
+function reconnectCardObservers() {
+  cardObservers.forEach(obs => obs.disconnect());
+  cardObservers = [];
+  if (!isTouchDevice) return;
+  treeEl.querySelectorAll('.formation-body.open .play-card').forEach(card => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) activateCard(card);
@@ -127,78 +300,41 @@ function bindHoverEvents(card) {
       });
     }, { threshold: 0.5 });
     observer.observe(card);
-    card._observer = observer;
-  } else {
-    card.addEventListener('mouseenter', () => activateCard(card));
-    card.addEventListener('mouseleave', () => deactivateCard(card));
-  }
+    cardObservers.push(observer);
+  });
 }
 
-function renderCards(filter = 'all', search = '') {
+function openModal(name, play, variants, formation, subFormation) {
   cleanup();
-  grid.innerHTML = '';
-  const entries = Object.entries(PLAY_TYPES).sort(([a], [b]) => a.localeCompare(b));
-  const filtered = entries.filter(([name, play]) => {
-    const matchFilter = filter === 'all' || play.type === filter;
-    const matchSearch = !search || name.toLowerCase().includes(search.toLowerCase()) ||
-      play.description.toLowerCase().includes(search.toLowerCase()) ||
-      play.subtype.toLowerCase().includes(search.toLowerCase());
-    return matchFilter && matchSearch;
-  });
+  const fm = formation || 'Gun';
+  const sf = subFormation || 'Spread Y-Flex';
 
-  filtered.forEach(([name, play], i) => {
-    const variants = OFFENSIVE_PLAYS.filter(op => op.family === name || op.name === name);
-    const card = document.createElement('div');
-    card.className = 'play-card animate-fade-in';
-    card.style.animationDelay = `${i * 0.04}s`;
-    card.dataset.playName = name;
-    card.innerHTML = `
-      <div class="play-art-wrapper">
-        <canvas class="play-art-canvas" width="500" height="350"></canvas>
-        <div class="play-art-live-badge"><i class="bi bi-broadcast"></i> LIVE</div>
+  if (!play) {
+    modalContent.innerHTML = `
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-black">${name}</h2>
+        <button id="closeModal" class="text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
       </div>
-      <div class="card-info">
-        <div class="flex items-center justify-between mb-1">
-          <h3 class="font-bold truncate">${name}</h3>
-        </div>
-        <div class="flex gap-1 mb-1">
-          <span class="play-type-badge ${play.type === 'Run' ? 'run' : 'pass'}">${play.type}</span>
-          <span class="play-type-badge ${getSubtypeBadgeClass(play.subtype)}">${play.subtype}</span>
-        </div>
-        <p class="text-gray-400 text-xs line-clamp-2">${play.description}</p>
-        <div class="text-xs text-gray-500 mt-1">${variants.length} variant${variants.length !== 1 ? 's' : ''} &middot; ${getPlaybooks(name).length} playbook${getPlaybooks(name).length !== 1 ? 's' : ''}</div>
-        <div class="mb-1 mt-2">
-          <span class="text-xs text-gray-500 font-semibold">BEATS:</span>
-          <div class="mt-1 flex flex-wrap">${play.goodVsCoverages.slice(0, 3).map(c => `<span class="tag-green">${c}</span>`).join('')}</div>
-        </div>
-        <div>
-          <span class="text-xs text-gray-500 font-semibold">STOPPED BY:</span>
-          <div class="mt-1 flex flex-wrap">${play.badVsCoverages.slice(0, 3).map(c => `<span class="tag-red">${c}</span>`).join('')}</div>
-        </div>
+      <div class="flex justify-center mb-2">
+        <canvas id="modalOffArt" width="560" height="440" class="rounded-lg" style="background:#1a472a;max-width:100%;"></canvas>
       </div>
+      <p class="text-gray-400">No detailed play type information available. Formation: ${fm} / ${sf}</p>
     `;
-    card.addEventListener('click', () => openModal(name, play, variants));
-    bindHoverEvents(card);
-    grid.appendChild(card);
-
-    // Static play art
-    const canvas = card.querySelector('.play-art-canvas');
-    if (canvas) {
-      canvas.style.maxWidth = '100%';
-      canvas.style.height = 'auto';
-      const r = new PlayArtRenderer(canvas, { width: 500, height: 350 });
-      r.renderPlayCard('Gun', 'Spread Y-Flex', name);
-      card._staticRenderer = r;
+    modal.classList.add('active');
+    modalContent.querySelector('#closeModal').addEventListener('click', closeModal);
+    const mainCanvas = document.getElementById('modalOffArt');
+    if (mainCanvas) {
+      const r = new PlayArtRenderer(mainCanvas, { width: 560, height: 440 });
+      r.renderLivePlay({
+        side: 'offense', offFormation: fm, offSubFormation: sf,
+        playFamily: name, defFormation: 'Nickel', coverageName: 'Cover 3',
+        duration: 4000
+      });
+      renderers.push(r);
     }
-  });
-
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-12">No plays match your search.</div>';
+    return;
   }
-}
 
-function openModal(name, play, variants) {
-  cleanup();
   modalContent.innerHTML = `
     <div class="flex items-center justify-between mb-4">
       <div>
@@ -233,13 +369,14 @@ function openModal(name, play, variants) {
         <button class="pos-toggle active def-group" data-group="LB">LB</button>
         <button class="pos-toggle active def-group" data-group="DB">DB</button>
         <span class="label ml-1"><i class="bi bi-speedometer2"></i></span>
-        <button class="speed-btn" data-speed="2000">1.5x</button>
+        <button class="speed-btn" data-speed="2667">1.5x</button>
         <button class="speed-btn active" data-speed="4000">1x</button>
-        <button class="speed-btn" data-speed="6500">0.5x</button>
+        <button class="speed-btn" data-speed="8000">0.5x</button>
       </div>
     </div>
 
     <p class="text-gray-300 mb-4">${play.description}</p>
+    <p class="text-xs text-gray-500 mb-4">Formation: ${fm} / ${sf}</p>
 
     <div class="results-section mb-4">
       <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getPlaybooks(name).length})</h4>
@@ -376,7 +513,7 @@ function openModal(name, play, variants) {
     if (mainCanvas) {
       const r = new PlayArtRenderer(mainCanvas, { width: 560, height: 440 });
       r.renderLivePlay({
-        side: offModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
+        side: offModalSide, offFormation: fm, offSubFormation: sf,
         playFamily: name, defFormation: 'Nickel', coverageName: 'Cover 3',
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });
@@ -444,7 +581,11 @@ function openModal(name, play, variants) {
   });
 }
 
-function closeModal() { cleanup(); modal.classList.remove('active'); renderCards(activeFilter, searchInput.value); }
+function closeModal() {
+  cleanup();
+  modal.classList.remove('active');
+  buildTree(activeFilter, searchInput.value);
+}
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
@@ -453,11 +594,11 @@ filterBtns.forEach(btn => {
     filterBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeFilter = btn.dataset.filter;
-    renderCards(activeFilter, searchInput.value);
+    buildTree(activeFilter, searchInput.value);
   });
 });
 
-searchInput.addEventListener('input', () => renderCards(activeFilter, searchInput.value));
+searchInput.addEventListener('input', () => buildTree(activeFilter, searchInput.value));
 
 // Position group filter toolbar
 function buildPosFilter() {
@@ -474,18 +615,17 @@ function buildPosFilter() {
       <button class="pos-toggle active off-group" data-group="TE">TE</button>
       <button class="pos-toggle active off-group" data-group="RB">RB</button>
       <span class="label ml-2"><i class="bi bi-speedometer2"></i></span>
-      <button class="speed-btn" data-speed="2000" title="Fast">1.5x</button>
-      <button class="speed-btn active" data-speed="3500" title="Normal">1x</button>
-      <button class="speed-btn" data-speed="5500" title="Slow">0.5x</button>
+      <button class="speed-btn" data-speed="2667" title="Fast">1.5x</button>
+      <button class="speed-btn active" data-speed="4000" title="Normal">1x</button>
+      <button class="speed-btn" data-speed="8000" title="Slow">0.5x</button>
     </div>
   `;
-  // Live animation toggle
   const liveBtn = container.querySelector('#liveAnimToggle');
   liveBtn.addEventListener('click', () => {
     liveAnimEnabled = !liveAnimEnabled;
     liveBtn.classList.toggle('active', liveAnimEnabled);
     if (!liveAnimEnabled) {
-      grid.querySelectorAll('.play-card.live-active').forEach(card => deactivateCard(card));
+      treeEl.querySelectorAll('.play-card.live-active').forEach(card => deactivateCard(card));
     }
   });
   container.querySelectorAll('.pos-toggle[data-group]').forEach(btn => {
@@ -519,7 +659,7 @@ function updateVisibleGroups() {
 }
 
 function refreshActiveCards() {
-  const cards = grid.querySelectorAll('.play-card.live-active');
+  const cards = treeEl.querySelectorAll('.play-card.live-active');
   cards.forEach(card => {
     deactivateCard(card);
     activateCard(card);
@@ -527,4 +667,4 @@ function refreshActiveCards() {
 }
 
 buildPosFilter();
-renderCards();
+buildTree();

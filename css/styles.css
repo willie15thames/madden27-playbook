@@ -60,25 +60,8 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
 }
 
 /* Coverage Cards */
-.coverage-card {
-  background: #1a0033;
-  border: 1px solid rgba(47,79,79,0.3);
-  border-radius: 0.75rem;
-  padding: 0;
-  overflow: hidden;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-}
-.coverage-card:hover {
-  border-color: rgba(0,255,255,0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.coverage-card.live-active {
-  border-color: #00FFFF;
-  box-shadow: 0 0 20px rgba(0,255,255,0.15);
-}
-.coverage-card .type-badge {
+/* Type badges (used in both offense and defense cards) */
+.type-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -92,7 +75,7 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
 .type-badge.zone-match { background: rgba(0,255,255,0.2); color: #00FFFF; }
 .type-badge.hybrid { background: rgba(75,0,130,0.3); color: #B45CFF; }
 
-/* Play Cards */
+/* Play Cards (unified card style for all tabs) */
 .play-card {
   background: #1a0033;
   border: 1px solid rgba(47,79,79,0.3);
@@ -373,7 +356,7 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
   transition: max-height 0.4s ease;
 }
 .formation-body.open {
-  max-height: 2000px;
+  max-height: 99999px;
 }
 .sub-formation {
   padding: 0.75rem 1rem 0.75rem 1.5rem;
@@ -729,7 +712,7 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
   }
 
   /* Cards grid */
-  .coverage-card, .play-card { margin-bottom: 0.5rem; }
+  .play-card { margin-bottom: 0.5rem; }
 
   /* VS badge */
   .vs-badge { width: 36px; height: 36px; font-size: 0.7rem; }
@@ -769,7 +752,7 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
 @media (max-width: 480px) {
   .hero-card { padding: 1rem; }
   .stat-card { padding: 0.75rem; }
-  .coverage-card, .play-card { border-radius: 0.5rem; }
+  .play-card { border-radius: 0.5rem; }
 
   .nav-link { padding: 0.35rem 0.5rem; font-size: 0.7rem; white-space: nowrap; }
 

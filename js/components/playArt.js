@@ -781,12 +781,16 @@ function applyAdjustmentPositions(positions, adjustments, side) {
 // Routes that auto-mirror X toward the nearest sideline based on player position
 const SIDELINE_ROUTES = new Set([
   'out', 'deep_out', 'speed_out', 'corner', 'deep_corner',
-  'comeback', 'fade', 'flat', 'swing', 'wheel'
+  'comeback', 'fade', 'flat', 'swing', 'wheel', 'check_down'
 ]);
 
 // Routes that should be drawn with rounded bends instead of sharp cuts
+// Routes that cross toward field center — auto-mirror for right-side receivers
+const INSIDE_ROUTES = new Set(['shallow_cross']);
+
 const CURVED_ROUTES = new Set([
   'wheel', 'swing', 'swing_left', 'texas', 'angle', 'check_down',
+  'arrow', 'arrow_left', 'delayed_flat', 'delayed_flat_left',
   'sluggo', 'out_n_up', 'stutter_go', 'comeback_go', 'hitch_go',
   'post_corner', 'whip', 'screen', 'screen_left', 'screen_right'
 ]);
@@ -823,16 +827,21 @@ const ROUTE_PATHS = {
   'comeback': [[0, -0.14], [0.03, 0.04]],
   'hitch': [[0, -0.07], [0, 0.02]],
   // Flat / Swing / Check-down
-  'flat': [[0.10, -0.03]],
-  'flat_left': [[-0.10, -0.03]],
-  'swing': [[0.06, 0.02], [0.08, -0.04]],
-  'swing_left': [[-0.06, 0.02], [-0.08, -0.04]],
-  'check_down': [[0.04, 0.01], [0.06, -0.03]],
-  'texas': [[0.06, 0.02], [0.04, -0.14]],
+  // RB starts at ~0.72-0.78; flat target is near LOS (0.60) and wide toward sideline
+  'flat': [[0.08, -0.06], [0.06, -0.04]],
+  'flat_left': [[-0.08, -0.06], [-0.06, -0.04]],
+  'arrow': [[0.04, -0.06], [0.10, -0.02]],         // immediate outside release to flat
+  'arrow_left': [[-0.04, -0.06], [-0.10, -0.02]],
+  'delayed_flat': [[0, 0.01], [0, -0.02], [0.10, -0.06]],  // chip then release to flat
+  'delayed_flat_left': [[0, 0.01], [0, -0.02], [-0.10, -0.06]],
+  'swing': [[0.04, 0.02], [0.06, -0.02], [0.06, -0.06]],
+  'swing_left': [[-0.04, 0.02], [-0.06, -0.02], [-0.06, -0.06]],
+  'check_down': [[0.04, 0.01], [0.06, -0.05]],
+  'texas': [[0.08, -0.02], [-0.04, -0.12]],  // outside release to flat, then angle cut inside
   // Wheel / Whip / Angle
   'wheel': [[0.06, -0.02], [0.04, -0.26]],
   'whip': [[0, -0.06], [0.05, 0.03], [0.06, -0.04]],
-  'angle': [[0.03, 0.03], [0.10, -0.10]],
+  'angle': [[0.06, -0.01], [-0.06, -0.10]],  // outside release, then angle cut inside
   // Double moves
   'sluggo': [[0, -0.06], [-0.03, -0.02], [0, -0.22]],  // slant fake → go
   'out_n_up': [[0, -0.10], [0.06, 0], [0, -0.20]],     // out fake → streak
@@ -1275,7 +1284,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'HB Screen': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen_left' },
+    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen_left', LG: 'ol_release_left', C: 'ol_release_left', RG: 'ol_release_left' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'HB Wheel': {
@@ -1548,10 +1557,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'skinny_post', WR2: 'dig', WR3: 'corner', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
-  'Bench': {
-    routes: { WR1: 'curl', WR2: 'speed_out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR2'
-  },
   'Sail': {
     routes: { WR1: 'streak', WR2: 'deep_corner', WR3: 'out', WR4: 'flat', TE: 'seam', RB: 'flat_left' },
     qb: 'qb_drop', ball_target: 'WR2'
@@ -1606,10 +1611,6 @@ const PLAY_ROUTES = {
   },
   'RPO Bubble': {
     routes: { WR1: 'screen', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
-  'RPO Peek': {
-    routes: { WR1: 'slant', WR2: 'block', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Orbit': {
@@ -1776,6 +1777,11 @@ const PLAY_ROUTES = {
     routes: { WR1: 'streak', WR2: 'run_stretch', WR3: 'slant', WR4: 'curl', TE: 'drag', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
+  'Jet Pull Shallow': {
+    routes: { WR1: 'post', WR2: 'shallow_cross', WR3: 'dig', TE: 'block', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2',
+    motion: { player: 'WR2', path: [[-0.18, 0]] }
+  },
   'Motion Crossers': {
     routes: { WR1: 'in', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'in', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
@@ -1815,12 +1821,8 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR2'
   },
   'Mesh Spot': {
-    routes: { WR1: 'streak', WR2: 'drag', WR3: 'drag_left', WR4: 'curl', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR4'
-  },
-  'Texas': {
-    routes: { WR1: 'go', WR2: 'curl', WR3: 'go', WR4: 'go', TE: 'flat', RB: 'texas' },
-    qb: 'qb_drop', ball_target: 'RB'
+    routes: { WR1: 'streak', WR2: 'drag', WR3: 'drag_left', TE: 'curl', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'TE'
   },
   'Whip': {
     routes: { WR1: 'whip', WR2: 'slant', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'block' },
@@ -1833,10 +1835,6 @@ const PLAY_ROUTES = {
   'Scissors': {
     routes: { WR1: 'deep_post', WR2: 'deep_corner', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
-  },
-  'Y Stick': {
-    routes: { WR1: 'streak', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'out', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'TE'
   },
   'Hoss Y Juke': {
     routes: { WR1: 'streak', WR2: 'curl', WR3: 'flat', WR4: 'streak', TE: 'hitch', RB: 'flat_left' },
@@ -2397,8 +2395,13 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true, motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
   'MTN Mesh Spot': {
-    routes: { WR1: 'drag', WR2: 'drag_left', WR3: 'curl', WR4: 'streak', TE: 'flat', RB: 'flat' },
+    routes: { WR1: 'drag', WR2: 'drag_left', WR3: 'curl', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
+  },
+  'MTN Jet Pull Shallow': {
+    routes: { WR1: 'post', WR2: 'shallow_cross', WR3: 'dig', TE: 'block', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR2',
+    motion: { player: 'WR2', path: [[-0.18, 0]] }
   },
   'MTN Out H-Angle': {
     routes: { WR1: 'out', WR2: 'streak', WR3: 'angle', WR4: 'streak', TE: 'seam', RB: 'flat' },
@@ -2550,7 +2553,7 @@ const PLAY_ROUTES = {
     routes: { WR1: 'slant', WR2: 'hitch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'RB'
   },
-  'Orbit Screen': {
+  'Orbit Screen Alt': {
     routes: { WR1: 'streak', WR2: 'block', WR3: 'screen', WR4: 'streak', TE: 'block', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
@@ -2572,10 +2575,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', TE: 'in', RB: 'block', FB: 'block' },
     qb: 'qb_boot_left', ball_target: 'WR2'
   },
-  'PA Boot Over': {
-    routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
-    qb: 'qb_boot_right', ball_target: 'WR2'
-  },
   'PA Boot Shot': {
     routes: { WR1: 'post', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'drag', RB: 'block' },
     qb: 'qb_boot_right', ball_target: 'WR1'
@@ -2588,10 +2587,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'streak', WR2: 'post', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
-  'PA Cross': {
-    routes: { WR1: 'deep_in', WR2: 'drag', WR3: 'skinny_post', WR4: 'streak', TE: 'drag', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR3', motion: { player: 'TE', path: [[0.10, 0]] }
-  },
   'PA Draw Shot': {
     routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
@@ -2603,14 +2598,6 @@ const PLAY_ROUTES = {
   'PA Jet Sweep': {
     routes: { WR1: 'drag', WR2: 'corner', WR3: 'flat', WR4: 'streak', TE: 'in', RB: 'block' },
     qb: 'qb_boot_right', ball_target: 'WR2'
-  },
-  'PA Power O': {
-    routes: { WR1: 'streak', WR2: 'post', WR3: 'drag', WR4: 'streak', TE: 'in', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR2'
-  },
-  'PA Seams': {
-    routes: { WR1: 'go', WR2: 'seam', WR3: 'seam', WR4: 'streak', TE: 'seam', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR2'
   },
   'PA Shot Portland': {
     routes: { WR1: 'post', WR2: 'streak', WR3: 'drag', WR4: 'corner', TE: 'seam', RB: 'block' },
@@ -2642,10 +2629,6 @@ const PLAY_ROUTES = {
   },
 
   // RPO (Run-Pass Option) Variants
-  'RPO Alert': {
-    routes: { WR1: 'slant', WR2: 'hitch', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
   'RPO Alert Bubble': {
     routes: { WR1: 'slant', WR2: 'flat', WR3: 'block', WR4: 'block', TE: 'block', RB: 'run_inside' },
     qb: 'qb_drop', ball_target: 'WR2'
@@ -2692,10 +2675,6 @@ const PLAY_ROUTES = {
   },
 
   // Specific Madden Play Concepts
-  'Curl Combo': {
-    routes: { WR1: 'curl', WR2: 'flat', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
   'Curl Flats': {
     routes: { WR1: 'curl', WR2: 'flat', WR3: 'curl', WR4: 'flat', TE: 'seam', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
@@ -2712,10 +2691,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'in', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
-  'Dagger': {
-    routes: { WR1: 'deep_post', WR2: 'streak', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
   'Dagger Deep Curl': {
     routes: { WR1: 'deep_post', WR2: 'curl', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
@@ -2728,20 +2703,12 @@ const PLAY_ROUTES = {
     routes: { WR1: 'deep_in', WR2: 'streak', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
-  'Dig Under': {
-    routes: { WR1: 'dig', WR2: 'shallow_cross', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'check_down' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
   'Divide Wheel': {
     routes: { WR1: 'streak', WR2: 'out', WR3: 'wheel', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
   'Double Ins': {
     routes: { WR1: 'in', WR2: 'in', WR3: 'streak', WR4: 'streak', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
-  'Drive': {
-    routes: { WR1: 'in', WR2: 'flat', WR3: 'drag', WR4: 'curl', TE: 'in', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
   'Drive Post': {
@@ -2840,10 +2807,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'slant', WR2: 'slant', WR3: 'slant', WR4: 'slant', TE: 'slant', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR1'
   },
-  'Comeback': {
-    routes: { WR1: 'comeback', WR2: 'comeback', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR1'
-  },
 
   // HB Run Variants
   'HB Base': {
@@ -2887,7 +2850,7 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'RB'
   },
   'HB Cross Screen': {
-    routes: { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'screen' },
+    routes: { WR1: 'streak', WR2: 'block', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'screen_right', LG: 'ol_release_right', C: 'ol_release_right', RG: 'ol_release_right' },
     qb: 'qb_drop', ball_target: 'RB'
   },
   'HB Sweep': {
@@ -2911,14 +2874,6 @@ const PLAY_ROUTES = {
     qb: 'qb_handoff', isRun: true
   },
   'Stretch Alert X Smoke': {
-    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
-    qb: 'qb_handoff', isRun: true
-  },
-  'Delayed Draw': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'run_inside' },
-    qb: 'qb_drop', isRun: true
-  },
-  'Pin Pull Sweep': {
     routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_stretch' },
     qb: 'qb_handoff', isRun: true
   },
@@ -2960,7 +2915,7 @@ const PLAY_ROUTES = {
     routes: { WR1: 'drag', WR2: 'run_stretch', WR3: 'in', WR4: 'streak', TE: 'block', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR3'
   },
-  'Jet Touch Pass': {
+  'Jet Touch Pass Run': {
     routes: { WR1: 'stalk_block', WR2: 'run_stretch', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'block' },
     qb: 'qb_handoff', isRun: true
   },
@@ -2996,18 +2951,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'block' },
     qb: 'qb_drop', ball_target: 'WR2'
   },
-  'Middle Screen': {
-    routes: { WR1: 'streak', WR2: 'streak', WR3: 'streak', WR4: 'streak', TE: 'block', RB: 'screen' },
-    qb: 'qb_drop', ball_target: 'RB'
-  },
-  'Tunnel Screen': {
-    routes: { WR1: 'streak', WR2: 'screen', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR2'
-  },
-  'Bubble Screen': {
-    routes: { WR1: 'streak', WR2: 'screen_right', WR3: 'block', WR4: 'streak', TE: 'block', RB: 'block' },
-    qb: 'qb_drop', ball_target: 'WR2'
-  },
   'Stick Slot Option': {
     routes: { WR1: 'streak', WR2: 'out', WR3: 'flat', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'WR2'
@@ -3016,10 +2959,6 @@ const PLAY_ROUTES = {
     routes: { WR1: 'go', WR2: 'curl', WR3: 'dig', WR4: 'streak', TE: 'seam', RB: 'texas' },
     qb: 'qb_drop', ball_target: 'RB'
   },
-  'RE': {
-    routes: { WR1: 'streak', WR2: 'in', WR3: 'curl', WR4: 'streak', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR2'
-  },
   'TE Attack': {
     routes: { WR1: 'streak', WR2: 'curl', WR3: 'drag', WR4: 'streak', TE: 'seam', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'TE'
@@ -3027,10 +2966,6 @@ const PLAY_ROUTES = {
   'Y Stick': {
     routes: { WR1: 'streak', WR2: 'out', WR3: 'flat', WR4: 'streak', TE: 'hitch', RB: 'flat' },
     qb: 'qb_drop', ball_target: 'TE'
-  },
-  'Mesh Traffic': {
-    routes: { WR1: 'streak', WR2: 'shallow_cross', WR3: 'shallow_cross', WR4: 'streak', TE: 'dig', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR2'
   },
   'Mesh HB Sneak': {
     routes: { WR1: 'streak', WR2: 'drag', WR3: 'drag_left', WR4: 'streak', TE: 'seam', RB: 'angle' },
@@ -3670,11 +3605,38 @@ class PlayArtRenderer {
     const y = zoneData.y * this.height;
     const w = zoneData.w * this.width;
     const h = zoneData.h * this.height;
-    ctx.fillStyle = `rgba(248,113,113,${alpha})`;
+    ctx.fillStyle = `rgba(248,113,113,${alpha * 0.7})`;
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = ZONE_BORDER;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 0.8;
     ctx.strokeRect(x, y, w, h);
+  }
+
+  // Map formation position key to route assignment key
+  // Handles TE1→TE, TE2→TE (secondary), WR5→WR4, FB→RB fallback
+  _resolveRouteKey(posKey, routes) {
+    if (routes[posKey] !== undefined) return posKey;
+    // Numbered variants → base key (TE1 → TE, TE2 → TE)
+    const base = posKey.replace(/\d+$/, '');
+    if (base !== posKey && routes[base] !== undefined) return base;
+    // FB → RB fallback (fullback runs RB route if no FB-specific route)
+    if (posKey === 'FB' && routes['RB'] !== undefined) return 'RB';
+    // WR5 → WR4 fallback
+    if (posKey === 'WR5' && routes['WR4'] !== undefined) return 'WR4';
+    return posKey; // no mapping found, will default to 'block'
+  }
+
+  // Resolve ball_target to actual formation position key
+  // If ball_target is 'TE' but formation has 'TE1', returns 'TE1'
+  _resolveBallTarget(target, positions) {
+    if (!target) return target;
+    if (positions[target]) return target;
+    // Try numbered variant (TE → TE1)
+    if (positions[target + '1']) return target + '1';
+    // Try base without number (TE1 → TE)
+    const base = target.replace(/\d+$/, '');
+    if (base !== target && positions[base]) return base;
+    return target;
   }
 
   // Dynamic formation position resolution
@@ -3688,35 +3650,77 @@ class PlayArtRenderer {
 
   getPlayRoutes(playFamily) {
     if (!playFamily) return DEFAULT_PASS_ROUTES;
-    if (PLAY_ROUTES[playFamily]) return PLAY_ROUTES[playFamily];
     const lower = playFamily.toLowerCase();
-    // Exact prefix match first (avoids "PA Power O" matching "Power O")
-    for (const key of Object.keys(PLAY_ROUTES)) {
-      if (lower === key.toLowerCase()) return PLAY_ROUTES[key];
-    }
-    // Try "starts with" for PA/RPO variants — prefer longest key match
-    let bestKey = null, bestKeyLen = 0;
-    for (const key of Object.keys(PLAY_ROUTES)) {
-      const kl = key.toLowerCase();
-      if ((lower.startsWith(kl) || kl.startsWith(lower)) && kl.length > bestKeyLen) {
-        bestKey = key; bestKeyLen = kl.length;
+
+    // Direct lookup
+    let result = PLAY_ROUTES[playFamily];
+
+    if (!result) {
+      // Exact case-insensitive match
+      for (const key of Object.keys(PLAY_ROUTES)) {
+        if (lower === key.toLowerCase()) { result = PLAY_ROUTES[key]; break; }
       }
     }
-    if (bestKey) {
-      // If the play name has a directional suffix beyond the matched key, defer to inferRoutes
-      const extra = lower.slice(bestKeyLen).trim();
-      const hasDirection = /\b(lt|rt|left|right|wk|str)\b/i.test(extra);
-      if (!hasDirection) return PLAY_ROUTES[bestKey];
+
+    if (!result) {
+      // Try "starts with" for PA/RPO variants — prefer longest key match
+      let bestKey = null, bestKeyLen = 0;
+      for (const key of Object.keys(PLAY_ROUTES)) {
+        const kl = key.toLowerCase();
+        // Skip short keys (< 3 chars) to avoid false matches like "RE" matching "Read Option"
+        if (kl.length < 3) continue;
+        if ((lower.startsWith(kl) || kl.startsWith(lower)) && kl.length > bestKeyLen) {
+          bestKey = key; bestKeyLen = kl.length;
+        }
+      }
+      if (bestKey) {
+        const extra = lower.slice(bestKeyLen).trim();
+        const hasDirection = /\b(lt|rt|left|right|wk|str)\b/i.test(extra);
+        if (!hasDirection) result = PLAY_ROUTES[bestKey];
+      }
     }
-    // Partial includes (skip if play is PA/RPO and key is a run)
-    const isPA = lower.startsWith('pa ') || lower.startsWith('rpo ');
-    for (const key of Object.keys(PLAY_ROUTES)) {
-      const kl = key.toLowerCase();
-      if (isPA && PLAY_ROUTES[key].isRun) continue;
-      if (lower.includes(kl) || kl.includes(lower)) return PLAY_ROUTES[key];
+
+    if (!result) {
+      // Partial includes — require whole-word match for short keys, prefer longest match
+      const isPA = lower.startsWith('pa ') || lower.startsWith('rpo ');
+      let partialBest = null, partialBestLen = 0;
+      for (const key of Object.keys(PLAY_ROUTES)) {
+        const kl = key.toLowerCase();
+        if (isPA && PLAY_ROUTES[key].isRun) continue;
+        if (kl.length < 3) continue;
+        let matched = false;
+        if (lower.includes(kl)) {
+          const regex = new RegExp('(?:^|\\s)' + kl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:\\s|$)');
+          matched = regex.test(lower);
+        } else if (kl.includes(lower) && lower.length >= 3) {
+          const regex = new RegExp('(?:^|\\s)' + lower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:\\s|$)');
+          matched = regex.test(kl);
+        }
+        if (matched && kl.length > partialBestLen) {
+          partialBest = key;
+          partialBestLen = kl.length;
+        }
+      }
+      if (partialBest) result = PLAY_ROUTES[partialBest];
     }
-    // Infer routes from play name keywords
-    return inferRoutes(playFamily);
+
+    if (!result) {
+      result = inferRoutes(playFamily);
+    }
+
+    // Auto-add motion for MTN/Jet plays that resolved without motion data
+    if (!result.motion) {
+      const isMTN = lower.startsWith('mtn ');
+      const isJet = lower.startsWith('jet ') || lower.includes(' jet ');
+      if (isMTN || isJet) {
+        // Clone to avoid mutating the shared definition
+        result = { ...result, routes: { ...result.routes } };
+        // Default motion: slot receiver (WR2) motions left across formation
+        result.motion = { player: 'WR2', path: [[-0.18, 0]] };
+      }
+    }
+
+    return result;
   }
 
   getCoverageZones(coverageName) {
@@ -3781,12 +3785,26 @@ class PlayArtRenderer {
 
     // Draw routes then players
     const skillPositions = Object.keys(positions).filter(k => !['LT', 'LG', 'C', 'RG', 'RT'].includes(k));
+    // Routes that already have directional variants — their waypoints are correct as-is
+    const DIRECTIONAL_ROUTES = new Set([
+      'drag', 'drag_left', 'flat_left', 'swing_left',
+      'arrow', 'arrow_left', 'delayed_flat', 'delayed_flat_left',
+      'screen_left', 'screen_right', 'pull_left', 'pull_right',
+      'zone_step_left', 'zone_step_right', 'run_left', 'run_right',
+      'run_stretch', 'run_stretch_left', 'run_outside', 'run_outside_left',
+      'run_power', 'run_power_left', 'ol_release_left', 'ol_release_right',
+      'qb_boot_left', 'qb_boot_right'
+    ]);
     for (const key of skillPositions) {
       const pos = positions[key];
-      const routeName = key === 'QB' ? playData.qb : (routes[key] || 'block');
+      const routeName = key === 'QB' ? playData.qb : (routes[this._resolveRouteKey(key, routes)] || 'block');
       let path = ROUTE_PATHS[routeName] || [];
       // Auto-mirror sideline-seeking routes for left-side receivers
-      if (SIDELINE_ROUTES.has(routeName) && pos[0] < 0.5 && path.length > 0) {
+      if (!DIRECTIONAL_ROUTES.has(routeName) && SIDELINE_ROUTES.has(routeName) && pos[0] < 0.5 && path.length > 0) {
+        path = path.map(([dx, dy]) => [-dx, dy]);
+      }
+      // Auto-mirror inside routes for right-side receivers (cross toward center)
+      if (INSIDE_ROUTES.has(routeName) && pos[0] >= 0.5 && path.length > 0) {
         path = path.map(([dx, dy]) => [-dx, dy]);
       }
       if (path.length > 0) {
@@ -3809,15 +3827,62 @@ class PlayArtRenderer {
   renderDefense(formation, coverageName, subFormation) {
     const positions = this.getDefensePositions(formation, subFormation);
     const coverageData = this.getCoverageZones(coverageName);
+    const dlKeys = ['DT1', 'DT2', 'DE1', 'DE2', 'DT', 'NT', 'LE', 'RE', 'LOLB', 'ROLB'];
+    const lbKeys = ['MLB', 'MLB1', 'MLB2', 'LOLB', 'ROLB', 'SLB', 'WLB'];
 
     // Draw zones
     if (coverageData.type === 'zone') {
       for (const zone of coverageData.zones) {
-        this.drawZone(zone, 0.12);
+        this.drawZone(zone, 0.10);
+      }
+      this._drawZoneLabels(coverageData.zones, 0.7);
+    }
+
+    // Draw assignment arrows (static preview)
+    if (coverageName) {
+      for (const [key, pos] of Object.entries(positions)) {
+        const isDL = dlKeys.includes(key);
+        if (isDL) continue;
+        const defAssignment = getDefAssignment(coverageName, key);
+        if (!defAssignment) continue;
+        const isLB = lbKeys.includes(key);
+        const isDB = !isDL && !isLB;
+        const isBlitz = isBlitzAssignment(defAssignment);
+        let endX = pos[0], endY = pos[1];
+
+        if (isBlitz) {
+          const blitzPath = ROUTE_PATHS[defAssignment] || [];
+          if (blitzPath.length > 0) {
+            const isLeftSide = pos[0] < 0.45;
+            for (const [dx, dy] of blitzPath) { endX += (isLeftSide ? -dx : dx); endY += dy; }
+          } else {
+            endX = pos[0] + (0.50 - pos[0]) * 0.3;
+            endY = Math.max(pos[1], 0.62);
+          }
+        } else if (coverageData.type === 'zone') {
+          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, pos);
+          if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+        }
+
+        if (Math.abs(endX - pos[0]) > 0.01 || Math.abs(endY - pos[1]) > 0.01) {
+          const sx = pos[0] * this.width, sy = pos[1] * this.height;
+          const ex = endX * this.width, ey = endY * this.height;
+          this.ctx.globalAlpha = 0.5;
+          this.ctx.strokeStyle = isBlitz ? '#ff4444' : DEF_COLOR;
+          this.ctx.lineWidth = 1.5;
+          if (isBlitz) this.ctx.setLineDash([4, 3]);
+          this.ctx.beginPath();
+          this.ctx.moveTo(sx, sy);
+          this.ctx.lineTo(ex, ey);
+          this.ctx.stroke();
+          this.ctx.setLineDash([]);
+          this.drawArrowHead(sx, sy, ex, ey, isBlitz ? '#ff4444' : DEF_COLOR);
+          this.ctx.globalAlpha = 1;
+        }
       }
     }
 
-    // Draw defenders
+    // Draw defenders on top
     for (const [key, pos] of Object.entries(positions)) {
       const label = this._getDefLabel(key);
       this.drawPlayer(pos[0], pos[1], DEF_COLOR, label, 8);
@@ -3834,8 +3899,14 @@ class PlayArtRenderer {
   renderCoverageCard(defFormation, coverageName, defSubFormation) {
     this._currentCoverage = coverageName || null;
     this.ctx.clearRect(0, 0, this.width, this.height);
+    // Shift viewport down so defensive formation fills the canvas better
+    // Defense sits above LOS (y=0.60), so shift down by ~15% of height
+    const yShift = this.height * 0.12;
+    this.ctx.save();
+    this.ctx.translate(0, yShift);
     this.drawField();
     this.renderDefense(defFormation, coverageName, defSubFormation);
+    this.ctx.restore();
   }
 
   // ANIMATED VS matchup
@@ -3888,11 +3959,23 @@ class PlayArtRenderer {
       const skillPositions = Object.keys(offPositions).filter(k => !['LT', 'LG', 'C', 'RG', 'RT'].includes(k));
       const routeProgress = Math.max(0, (progress - 0.15) / 0.7); // Routes start at 15% and finish at 85%
 
+      const DIRECTIONAL_ROUTES_ANIM = new Set([
+        'drag', 'drag_left', 'flat_left', 'swing_left',
+        'arrow', 'arrow_left', 'delayed_flat', 'delayed_flat_left',
+        'screen_left', 'screen_right', 'pull_left', 'pull_right',
+        'zone_step_left', 'zone_step_right', 'run_left', 'run_right',
+        'run_stretch', 'run_stretch_left', 'run_outside', 'run_outside_left',
+        'run_power', 'run_power_left', 'ol_release_left', 'ol_release_right',
+        'qb_boot_left', 'qb_boot_right'
+      ]);
       for (const key of skillPositions) {
         const pos = offPositions[key];
-        const routeName = key === 'QB' ? playData.qb : (routes[key] || 'block');
+        const routeName = key === 'QB' ? playData.qb : (routes[this._resolveRouteKey(key, routes)] || 'block');
         let path = ROUTE_PATHS[routeName] || [];
-        if (SIDELINE_ROUTES.has(routeName) && pos[0] < 0.5 && path.length > 0) {
+        if (!DIRECTIONAL_ROUTES_ANIM.has(routeName) && SIDELINE_ROUTES.has(routeName) && pos[0] < 0.5 && path.length > 0) {
+          path = path.map(([dx, dy]) => [-dx, dy]);
+        }
+        if (INSIDE_ROUTES.has(routeName) && pos[0] >= 0.5 && path.length > 0) {
           path = path.map(([dx, dy]) => [-dx, dy]);
         }
         if (path.length > 0) {
@@ -3911,7 +3994,7 @@ class PlayArtRenderer {
 
       // Ball flight (pass plays at ~75% progress)
       if (!playData.isRun && playData.ball_target && progress > 0.65 && progress < 0.95) {
-        const targetPos = offPositions[playData.ball_target];
+        const targetPos = offPositions[this._resolveBallTarget(playData.ball_target, offPositions)];
         if (targetPos) {
           const ballProg = (progress - 0.65) / 0.30;
           const qbPos = offPositions['QB'] || [0.5, 0.72];
@@ -3998,7 +4081,8 @@ class PlayArtRenderer {
 
     // Routes that already have directional variants — their waypoints are correct as-is when flipped
     const DIRECTIONAL_ROUTES = new Set([
-      'drag', 'drag_left', 'flat', 'flat_left', 'swing', 'swing_left',
+      'drag', 'drag_left', 'flat_left', 'swing_left',
+      'arrow', 'arrow_left', 'delayed_flat', 'delayed_flat_left',
       'screen_left', 'screen_right', 'pull_left', 'pull_right',
       'zone_step_left', 'zone_step_right', 'run_left', 'run_right',
       'run_stretch', 'run_stretch_left', 'run_outside', 'run_outside_left',
@@ -4012,7 +4096,7 @@ class PlayArtRenderer {
       // Use explicit OL route from PLAY_ROUTES when available (zone_step, pull, etc.)
       const explicitRoute = isOL ? (routes[key] || null) : null;
       const hasExplicitOLRoute = explicitRoute && explicitRoute !== 'block' && explicitRoute !== 'pass_block' && ROUTE_PATHS[explicitRoute];
-      const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[key] || 'block'));
+      const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[this._resolveRouteKey(key, routes)] || 'block'));
       let path = ROUTE_PATHS[routeName] || [];
       // When flipped, negate x-component of non-directional routes so animation matches editor
       if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
@@ -4020,6 +4104,10 @@ class PlayArtRenderer {
       }
       // Auto-mirror sideline-seeking routes for left-side receivers (break toward nearest sideline)
       if (!DIRECTIONAL_ROUTES.has(routeName) && SIDELINE_ROUTES.has(routeName) && startPos[0] < 0.5 && path.length > 0) {
+        path = path.map(([dx, dy]) => [-dx, dy]);
+      }
+      // Auto-mirror inside routes for right-side receivers (cross toward center)
+      if (INSIDE_ROUTES.has(routeName) && startPos[0] >= 0.5 && path.length > 0) {
         path = path.map(([dx, dy]) => [-dx, dy]);
       }
 
@@ -4054,10 +4142,11 @@ class PlayArtRenderer {
 
     // Adjust motion player's startPos to post-motion endpoint so routes originate from there
     if (playData.motion) {
-      const motionPlayer = offPlayers.find(p => p.key === playData.motion.player);
+      const motionPlayer = offPlayers.find(p => p.key === playData.motion.player) || offPlayers.find(p => p.key === playData.motion.player + '1');
       if (motionPlayer) {
         let mx = motionPlayer.startPos[0], my = motionPlayer.startPos[1];
-        for (const [dx, dy] of playData.motion.path) { mx += dx; my += dy; }
+        // Mirror motion direction when play is flipped
+        for (const [dx, dy] of playData.motion.path) { mx += (flipped ? -dx : dx); my += dy; }
         const motionEndPos = [mx, my];
         // Recompute endPos relative to the motion endpoint
         let endX = mx, endY = my;
@@ -4130,8 +4219,15 @@ class PlayArtRenderer {
       let endX = startPos[0], endY = startPos[1];
 
       if (isDL) {
-        // DL rushes to LOS then gets blocked
-        endY = 0.60;
+        // DL rushes toward LOS through assigned gap
+        const dlAssignment = getDefAssignment(coverageName, key);
+        const dlPath = dlAssignment ? (ROUTE_PATHS[dlAssignment] || []) : [];
+        if (dlPath.length > 0) {
+          const isLeftSide = startPos[0] < 0.45;
+          for (const [dx, dy] of dlPath) { endX += (isLeftSide ? -dx : dx); endY += dy; }
+        } else {
+          endY = 0.60;
+        }
       } else if (coverageData.type === 'zone') {
         // Zone: move toward assigned zone center
         const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos);
@@ -4146,6 +4242,20 @@ class PlayArtRenderer {
       const defAssignment = getDefAssignment(coverageName, key);
       const assignmentPath = (defAssignment && defAssignment !== 'man_trail') ? (ROUTE_PATHS[defAssignment] || []) : [];
       const isBlitz = isBlitzAssignment(defAssignment);
+
+      // Blitzing non-DL: override endPos to rush toward backfield (QB area)
+      if (isBlitz && !isDL) {
+        const blitzPath = ROUTE_PATHS[defAssignment] || [];
+        if (blitzPath.length > 0) {
+          const isLeftSide = startPos[0] < 0.45;
+          endX = startPos[0]; endY = startPos[1];
+          for (const [dx, dy] of blitzPath) { endX += (isLeftSide ? -dx : dx); endY += dy; }
+        } else {
+          // Default: rush toward QB at center, y=0.65
+          endX = startPos[0] + (0.50 - startPos[0]) * 0.3;
+          endY = Math.max(startPos[1], 0.62);
+        }
+      }
 
       const manData = manAssignments[key] || null;
       defPlayers.push({
@@ -4197,7 +4307,7 @@ class PlayArtRenderer {
           const sx = origPos[0] * this.width;
           const sy = origPos[1] * this.height;
           let ex = origPos[0], ey = origPos[1];
-          for (const [dx, dy] of motionData.path) { ex += dx; ey += dy; }
+          for (const [dx, dy] of motionData.path) { ex += (flipped ? -dx : dx); ey += dy; }
           const endPx = ex * this.width;
           const endPy = ey * this.height;
           // Dashed yellow motion path
@@ -4322,6 +4432,7 @@ class PlayArtRenderer {
       }
 
       // === Draw defensive assignment trails ===
+      // Use the same destination model for both arrow trail and player movement
       if (developPhase && coverageName) {
         for (const p of defPlayers) {
           if (p.isDL) continue; // DL handled by block engagements
@@ -4330,11 +4441,23 @@ class PlayArtRenderer {
           if (!vis) continue;
           const alpha = isOffSide ? 0.3 : 0.65;
           this.ctx.globalAlpha = alpha;
+
           if (p.isBlitz) {
-            // Blitz routes: red dashed lines rushing toward QB
-            if (p.assignmentPath.length > 0) {
-              this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, '#ff4444', routeT, 2, true);
-            }
+            // Blitz: draw arrow toward backfield (QB area) through assigned gap
+            const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+            const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+            const trailT = Math.min(routeT, 1);
+            const cx = sx + (ex - sx) * trailT;
+            const cy = sy + (ey - sy) * trailT;
+            this.ctx.strokeStyle = '#ff4444';
+            this.ctx.lineWidth = 2;
+            this.ctx.setLineDash([4, 3]);
+            this.ctx.beginPath();
+            this.ctx.moveTo(sx, sy);
+            this.ctx.lineTo(cx, cy);
+            this.ctx.stroke();
+            this.ctx.setLineDash([]);
+            if (trailT > 0.1) this.drawArrowHead(sx, sy, cx, cy, '#ff4444');
           } else if (p.assignment === 'man_trail') {
             // Man trail: draw dashed line toward matched receiver end position
             const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
@@ -4350,9 +4473,20 @@ class PlayArtRenderer {
             this.ctx.lineTo(cx, cy);
             this.ctx.stroke();
             this.ctx.setLineDash([]);
-          } else if (p.assignmentPath.length > 0) {
-            // Zone drops: draw route path in defensive color
-            this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, DEF_COLOR, routeT, 1.5, false);
+          } else {
+            // Zone drops: draw arrow from start toward endPos (same as movement target)
+            const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+            const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+            const trailT = Math.min(routeT, 1);
+            const cx = sx + (ex - sx) * trailT;
+            const cy = sy + (ey - sy) * trailT;
+            this.ctx.strokeStyle = DEF_COLOR;
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(sx, sy);
+            this.ctx.lineTo(cx, cy);
+            this.ctx.stroke();
+            if (trailT > 0.1) this.drawArrowHead(sx, sy, cx, cy, DEF_COLOR);
           }
           this.ctx.globalAlpha = 1;
         }
@@ -4378,7 +4512,7 @@ class PlayArtRenderer {
           }
           // Compute full lateral shift from motion path
           let totalDx = 0;
-          for (const [dx] of playData.motion.path) { totalDx += dx; }
+          for (const [dx] of playData.motion.path) { totalDx += (flipped ? -dx : dx); }
           motionShiftDx = totalDx;
         }
       }
@@ -4456,7 +4590,7 @@ class PlayArtRenderer {
 
       // === Ball flight for pass plays ===
       if (!isRun && playData.ball_target && lateT > 0 && lateT < 1) {
-        const targetPlayer = offPlayers.find(p => p.key === playData.ball_target);
+        const targetPlayer = offPlayers.find(p => p.key === playData.ball_target) || offPlayers.find(p => p.key === playData.ball_target + '1') || offPlayers.find(p => p.key.replace(/\d+$/, '') === playData.ball_target);
         const qbPlayer = offPlayers.find(p => p.isQB);
         if (targetPlayer && qbPlayer) {
           const qx = qbPlayer.endPos[0], qy = qbPlayer.endPos[1];
@@ -5122,7 +5256,8 @@ class PlayArtRenderer {
     const midX = (player.startPos[0] + player.endPos[0]) / 2;
     const midY = (player.startPos[1] + player.endPos[1]) / 2;
     const px = midX * this.width;
-    const py = midY * this.height - 10;
+    // Offset label above the route path, clear of player circles (radius ~8px)
+    const py = midY * this.height - 14;
     const ROUTE_DISPLAY = {
       'streak': 'Streak', 'go': 'Go', 'fade': 'Fade', 'seam': 'Seam',
       'post': 'Post', 'deep_post': 'Deep Post', 'skinny_post': 'Skinny Post',
@@ -5177,16 +5312,19 @@ class PlayArtRenderer {
       const z = ZONE_SHAPES[zoneName];
       if (!z) continue;
       const px = (z.x + z.w / 2) * this.width;
-      const py = (z.y + z.h / 2) * this.height;
+      // Place label at very top of zone, well clear of player circles
+      const py = z.y * this.height + 8;
       const label = zoneName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).replace('Deep ', 'D.').replace('Half ', 'H.').replace('Quarter ', 'Q.').replace('Curl ', 'C/');
       const shortLabel = label.length > 12 ? label.substring(0, 11) + '.' : label;
-      ctx.font = 'bold 7px system-ui';
-      const tw = ctx.measureText(shortLabel).width + 6;
-      ctx.fillStyle = 'rgba(248,113,113,0.2)';
+      const fontSize = Math.max(7, Math.min(8, this.width * 0.015));
+      ctx.font = `bold ${fontSize}px system-ui`;
+      const tw = ctx.measureText(shortLabel).width + 8;
+      // High-contrast background pill
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
       ctx.beginPath();
-      ctx.roundRect(px - tw / 2, py - 6, tw, 12, 3);
+      ctx.roundRect(px - tw / 2, py - 6, tw, 13, 3);
       ctx.fill();
-      ctx.fillStyle = '#FF1493';
+      ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(shortLabel, px, py);
@@ -5255,7 +5393,8 @@ class PlayArtRenderer {
 
     // Directional routes whose waypoints are already correct when flipped
     const DIRECTIONAL_ROUTES = new Set([
-      'drag', 'drag_left', 'flat', 'flat_left', 'swing', 'swing_left',
+      'drag', 'drag_left', 'flat_left', 'swing_left',
+      'arrow', 'arrow_left', 'delayed_flat', 'delayed_flat_left',
       'screen_left', 'screen_right', 'pull_left', 'pull_right',
       'zone_step_left', 'zone_step_right', 'run_left', 'run_right',
       'run_stretch', 'run_stretch_left', 'run_outside', 'run_outside_left',
@@ -5270,13 +5409,17 @@ class PlayArtRenderer {
         const isQB = key === 'QB';
         const explicitRoute = isOL ? (routes[key] || null) : null;
         const hasExplicitOLRoute = explicitRoute && explicitRoute !== 'block' && explicitRoute !== 'pass_block' && ROUTE_PATHS[explicitRoute];
-        const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[key] || 'block'));
+        const routeName = isOL ? (hasExplicitOLRoute ? explicitRoute : 'block') : (isQB ? playData.qb : (routes[this._resolveRouteKey(key, routes)] || 'block'));
         let path = ROUTE_PATHS[routeName] || [];
         if (flipped && !DIRECTIONAL_ROUTES.has(routeName) && path.length > 0) {
           path = path.map(([dx, dy]) => [-dx, dy]);
         }
         // Auto-mirror sideline-seeking routes for left-side receivers
         if (!DIRECTIONAL_ROUTES.has(routeName) && SIDELINE_ROUTES.has(routeName) && startPos[0] < 0.5 && path.length > 0) {
+          path = path.map(([dx, dy]) => [-dx, dy]);
+        }
+        // Auto-mirror inside routes for right-side receivers (cross toward center)
+        if (INSIDE_ROUTES.has(routeName) && startPos[0] >= 0.5 && path.length > 0) {
           path = path.map(([dx, dy]) => [-dx, dy]);
         }
         let endX = startPos[0], endY = startPos[1];
@@ -5344,6 +5487,19 @@ class PlayArtRenderer {
         const defAssignment = getDefAssignment(coverageName, key);
         const assignmentPath = (defAssignment && defAssignment !== 'man_trail') ? (ROUTE_PATHS[defAssignment] || []) : [];
         const isBlitz = isBlitzAssignment(defAssignment);
+
+        // Blitzing non-DL: override endPos to rush toward backfield
+        if (isBlitz && !isDL) {
+          const blitzPath = ROUTE_PATHS[defAssignment] || [];
+          if (blitzPath.length > 0) {
+            const isLeftSide = startPos[0] < 0.45;
+            endX = startPos[0]; endY = startPos[1];
+            for (const [dx, dy] of blitzPath) { endX += (isLeftSide ? -dx : dx); endY += dy; }
+          } else {
+            endX = startPos[0] + (0.50 - startPos[0]) * 0.3;
+            endY = Math.max(startPos[1], 0.62);
+          }
+        }
 
         players.push({
           key, startPos: [...startPos], endPos: [endX, endY],
@@ -5435,7 +5591,7 @@ class PlayArtRenderer {
 
         // Ball flight
         if (!playData.isRun && playData.ball_target && lateT > 0 && lateT < 1) {
-          const targetPlayer = players.find(p => p.key === playData.ball_target);
+          const targetPlayer = players.find(p => p.key === playData.ball_target) || players.find(p => p.key === playData.ball_target + '1') || players.find(p => p.key.replace(/\d+$/, '') === playData.ball_target);
           const qbPlayer = players.find(p => p.isQB);
           if (targetPlayer && qbPlayer) {
             const qx = qbPlayer.endPos[0], qy = qbPlayer.endPos[1];
@@ -5458,7 +5614,7 @@ class PlayArtRenderer {
           }
           if (zoneFade > 0.5) this._drawZoneLabels(coverageData.zones, zoneFade);
         }
-        // Draw defensive assignment trails
+        // Draw defensive assignment trails (unified: arrow direction = movement direction)
         if (developPhase && coverageName) {
           for (const p of players) {
             if (p.isDL) continue;
@@ -5466,16 +5622,24 @@ class PlayArtRenderer {
             const vis = this._isVisible(p.key, visibleGroups);
             if (!vis) continue;
             this.ctx.globalAlpha = 0.65;
+
+            const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
+            const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
+            const trailT = Math.min(routeT, 1);
+            const cx = sx + (ex - sx) * trailT;
+            const cy = sy + (ey - sy) * trailT;
+
             if (p.isBlitz) {
-              if (p.assignmentPath.length > 0) {
-                this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, '#ff4444', routeT, 2, true);
-              }
+              this.ctx.strokeStyle = '#ff4444';
+              this.ctx.lineWidth = 2;
+              this.ctx.setLineDash([4, 3]);
+              this.ctx.beginPath();
+              this.ctx.moveTo(sx, sy);
+              this.ctx.lineTo(cx, cy);
+              this.ctx.stroke();
+              this.ctx.setLineDash([]);
+              if (trailT > 0.1) this.drawArrowHead(sx, sy, cx, cy, '#ff4444');
             } else if (p.assignment === 'man_trail') {
-              const sx = p.startPos[0] * this.width, sy = p.startPos[1] * this.height;
-              const ex = p.endPos[0] * this.width, ey = p.endPos[1] * this.height;
-              const trailT = Math.min(routeT, 1);
-              const cx = sx + (ex - sx) * trailT;
-              const cy = sy + (ey - sy) * trailT;
               this.ctx.strokeStyle = DEF_COLOR;
               this.ctx.lineWidth = 1.5;
               this.ctx.setLineDash([3, 3]);
@@ -5484,8 +5648,14 @@ class PlayArtRenderer {
               this.ctx.lineTo(cx, cy);
               this.ctx.stroke();
               this.ctx.setLineDash([]);
-            } else if (p.assignmentPath.length > 0) {
-              this.drawRoute(p.startPos[0], p.startPos[1], p.assignmentPath, DEF_COLOR, routeT, 1.5, false);
+            } else {
+              this.ctx.strokeStyle = DEF_COLOR;
+              this.ctx.lineWidth = 1.5;
+              this.ctx.beginPath();
+              this.ctx.moveTo(sx, sy);
+              this.ctx.lineTo(cx, cy);
+              this.ctx.stroke();
+              if (trailT > 0.1) this.drawArrowHead(sx, sy, cx, cy, DEF_COLOR);
             }
             this.ctx.globalAlpha = 1;
           }
@@ -5505,16 +5675,8 @@ class PlayArtRenderer {
 
       // Play name label
       const ctx = this.ctx;
-      const label = isOff ? (playFamily || '') : (coverageName || '');
-      if (label && t > 0.05) {
-        ctx.globalAlpha = Math.min((t - 0.05) * 5, 0.8);
-        ctx.fillStyle = isOff ? OFF_COLOR : DEF_COLOR;
-        ctx.font = `bold ${Math.max(10, this.width * 0.04)}px system-ui, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText(label, this.width / 2, 6);
-        ctx.globalAlpha = 1;
-      }
+      // Play/coverage name now shown in card info panel — removed from canvas to avoid
+      // overlapping with defensive assignment arrows and zone labels
 
       if (t < 1) {
         this.animFrame = requestAnimationFrame(animate);
