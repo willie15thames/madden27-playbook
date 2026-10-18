@@ -212,7 +212,7 @@ function initSelects() {
     const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === pbSelect.value);
     plSelect.innerHTML = '<option value="">Play...</option>';
     plSelect.disabled = true;
-    currentSubFormation = sfSelect.value || 'Spread Y-Flex';
+    currentSubFormation = sfSelect.value;
     currentPlay = null;
     playerRoutes = {};
     selectedPlayer = null;
@@ -1470,9 +1470,9 @@ function loadScheme(name) {
   const scheme = schemes[name];
   if (!scheme) return;
 
-  // Restore state variables
-  currentFormation = scheme.currentFormation || 'Gun';
-  currentSubFormation = scheme.currentSubFormation || 'Spread Y-Flex';
+  // Restore state variables — use explicit undefined checks to preserve intentional empty strings
+  currentFormation = scheme.currentFormation != null ? scheme.currentFormation : 'Gun';
+  currentSubFormation = scheme.currentSubFormation != null ? scheme.currentSubFormation : '';
   currentPlay = scheme.currentPlay || null;
   currentCoverage = scheme.currentCoverage || null;
   isFlipped = scheme.isFlipped || false;
@@ -1492,7 +1492,12 @@ function loadScheme(name) {
   playerRoutes = {};
   if (scheme.playerRoutes) {
     for (const [k, v] of Object.entries(scheme.playerRoutes)) {
-      if (k.startsWith('_') || validKeys.has(k)) playerRoutes[k] = v;
+      if (k === '_ball_target') {
+        // Validate ball target points to an existing player
+        if (v && validKeys.has(v)) playerRoutes[k] = v;
+      } else if (k.startsWith('_') || validKeys.has(k)) {
+        playerRoutes[k] = v;
+      }
     }
   }
   selectedPlayer = null;

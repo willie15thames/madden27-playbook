@@ -754,9 +754,7 @@ function buildDefensePositions(formation, subFormation) {
       const isWide = full.includes('wide');
       const isOdd = full.includes('odd');
       const isSingleMug = full.includes('single mug');
-      const isLoadMug = full.includes('load mug') || full.includes('load dbl mug');
       const isDblMug24 = isDblMug || full.includes('dbl mug');
-      const isLoad = full.includes('load') && !isLoadMug;
       if (isDblMug24) {
         return {
           DE1: [0.35, 0.56], DE2: [0.65, 0.56],
@@ -1223,9 +1221,9 @@ const ZONE_SHAPES = {
 // Coverage zone assignments per coverage type
 const COVERAGE_ZONES = {
   'Cover 0': { zones: [], type: 'man' },
-  'Cover 1': { zones: ['deep_middle'], type: 'man' },
-  'Cover 1 Robber': { zones: ['deep_middle', 'mid_hole'], type: 'man' },
-  'Cover 1 Hole': { zones: ['deep_middle', 'mid_hole'], type: 'man' },
+  'Cover 1': { zones: ['deep_middle', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
+  'Cover 1 Robber': { zones: ['deep_middle', 'mid_hole', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
+  'Cover 1 Hole': { zones: ['deep_middle', 'mid_hole', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
   'Cover 2 Zone': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 2 Man': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
   'Cover 2 Invert': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
@@ -1241,12 +1239,17 @@ const COVERAGE_ZONES = {
   'Cover 4': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 4 Palms': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'hook_left', 'hook_right'], type: 'zone' },
   'Cover 4 Drop': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
-  'Cover 6': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_half_right', 'hook_left', 'hook_right', 'flat_right'], type: 'zone' },
+  'Cover 6': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_half_right', 'hook_left', 'hook_right', 'flat_right', 'curl_flat_left'], type: 'zone' },
   'Cover 9': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
   'Tampa 2': { zones: ['deep_half_left', 'deep_half_right', 'tampa_mlb_deep', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
   'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle'], type: 'zone' },
   'Mid Blitz': { zones: [], type: 'man' },
-  'Edge Blitz': { zones: [], type: 'man' },
+  'Edge Blitz': { zones: ['deep_middle', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
+  'Edge Blitz 0': { zones: [], type: 'man' },
+  'Edge Blitz 2': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
+  'Edge Blitz 3': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'curl_flat_left', 'curl_flat_right', 'hook_left', 'hook_right'], type: 'zone' },
+  'Pinch Blitz 0': { zones: [], type: 'man' },
+  'Pinch Blitz 3': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'curl_flat_left', 'hook_left', 'hook_right'], type: 'zone' },
   'Inverted Cover 2': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'flat_left', 'flat_right'], type: 'zone' }
 };
 
@@ -1361,7 +1364,7 @@ const DEF_ASSIGNMENTS = {
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'deep_third', FS: 'deep_third_mid',
     LB1: 'deep_third', LB2: 'hook_zone', LB3: 'hook_zone',
-    LOLB: 'deep_third', ROLB: 'curl_flat',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'deep_third', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 3 Buzz': {
@@ -1441,7 +1444,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'man_trail', FS: 'man_trail',
-    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
+    LB: 'blitz_a', LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
   },
@@ -1449,7 +1452,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'blitz_edge', FS: 'deep_middle',
-    LB1: 'hook_zone', LB2: 'blitz_edge', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'blitz_edge', LB3: 'hook_zone',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1457,7 +1460,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'blitz_edge', FS: 'man_trail',
-    LB1: 'blitz_a', LB2: 'blitz_edge', LB3: 'blitz_b',
+    LB: 'blitz_a', LB1: 'blitz_a', LB2: 'blitz_edge', LB3: 'blitz_b',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
   },
@@ -1465,15 +1468,15 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'blitz_edge', LB2: 'blitz_edge', LB3: 'hook_zone',
+    LB: 'blitz_edge', LB1: 'blitz_edge', LB2: 'blitz_edge', LB3: 'hook_zone',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Edge Blitz 3': {
     CB1: 'deep_third', CB2: 'deep_third', CB3: 'man_trail', CB4: 'man_trail',
-    NCB: 'man_trail', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'curl_flat', FS: 'deep_third_mid',
-    LB1: 'blitz_edge', LB2: 'blitz_edge', LB3: 'hook_zone',
+    LB: 'blitz_edge', LB1: 'blitz_edge', LB2: 'blitz_edge', LB3: 'hook_zone',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1481,7 +1484,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'man_trail', FS: 'man_trail',
-    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
+    LB: 'blitz_a', LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
   },
@@ -1489,7 +1492,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_third', CB2: 'deep_third', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'curl_flat', FS: 'deep_third_mid',
-    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'hook_zone',
+    LB: 'blitz_a', LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'hook_zone',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'blitz_a', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -4096,7 +4099,14 @@ class PlayArtRenderer {
     // Special names
     if (lower.includes('tampa')) return COVERAGE_ZONES['Tampa 2'] || COVERAGE_ZONES['Cover 2 Zone'];
     if (lower.includes('fire zone')) return COVERAGE_ZONES['Cover 2 Zone'] || COVERAGE_ZONES['Cover 2 Man'];
-    if (lower.includes('blitz')) return COVERAGE_ZONES['Cover 0'] || COVERAGE_ZONES['Cover 1'];
+    if (lower.includes('blitz')) {
+      // Check specific blitz keys (longest first) before generic fallback
+      const blitzKeys = Object.keys(COVERAGE_ZONES).filter(k => k.toLowerCase().includes('blitz')).sort((a, b) => b.length - a.length);
+      for (const bk of blitzKeys) {
+        if (lower.includes(bk.toLowerCase())) return COVERAGE_ZONES[bk];
+      }
+      return COVERAGE_ZONES['Cover 0'] || COVERAGE_ZONES['Cover 1'];
+    }
     if (lower.includes('prevent')) return COVERAGE_ZONES['Prevent'] || COVERAGE_ZONES['Cover 4'];
     if (lower.includes('46')) return COVERAGE_ZONES['Cover 2 Man'] || COVERAGE_ZONES['Cover 2 Zone'];
     // Try longest key match

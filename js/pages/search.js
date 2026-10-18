@@ -245,8 +245,9 @@ function render() {
         r.renderPlayCard(fm, sf, pn);
       } else {
         const fm = item.formation || 'Nickel';
+        const sf = item.subFormation || '';
         const cn = item.data.variant?.coverage || item.data.cov?.name || item.name;
-        r.renderCoverageCard(fm, cn);
+        r.renderCoverageCard(fm, cn, sf);
       }
       renderers.push(r);
     }
@@ -354,12 +355,13 @@ function startLiveAnimation(item) {
   const offSubFormation = item.offSubFormation || 'Spread Y-Flex';
   const playFamily = item.playFamily || 'Inside Zone';
   const defFormation = item.defFormation || 'Nickel';
+  const defSubFormation = item.defSubFormation || '';
   const coverageName = item.coverageName || 'Cover 3';
 
   r.renderLivePlay({
     side: currentSide,
     offFormation, offSubFormation, playFamily,
-    defFormation, coverageName,
+    defFormation, defSubFormation, coverageName,
     duration: 4000
   });
   renderers.push(r);
@@ -385,7 +387,7 @@ function openDetail(item) {
   } else if (item.data.kind === 'defenseVariant') {
     currentSide = 'defense';
     const v = item.data.variant;
-    animItem = { offFormation: 'Gun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: v.formation, coverageName: v.coverage };
+    animItem = { offFormation: 'Gun', offSubFormation: 'Spread Y-Flex', playFamily: 'PA Crossers', defFormation: v.formation, defSubFormation: v.subFormation, coverageName: v.coverage };
     openDefenseVariantDetail(v);
   }
   currentModalItem = animItem;
