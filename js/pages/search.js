@@ -119,8 +119,8 @@ function getPersonnelOptions() {
 
 function getPlaybookOptions() {
   const opts = [];
-  OFFENSIVE_PLAYBOOKS.forEach(pb => opts.push({ value: pb.name, label: `OFF: ${pb.name}` }));
-  DEFENSIVE_PLAYBOOKS.forEach(pb => opts.push({ value: pb.name, label: `DEF: ${pb.name}` }));
+  OFFENSIVE_PLAYBOOKS.forEach(pb => opts.push({ value: `OFF:${pb.name}`, label: `OFF: ${pb.name}` }));
+  DEFENSIVE_PLAYBOOKS.forEach(pb => opts.push({ value: `DEF:${pb.name}`, label: `DEF: ${pb.name}` }));
   return opts.sort((a, b) => a.label.localeCompare(b.label));
 }
 
@@ -141,7 +141,14 @@ function filterItems(search, filter, subFilter) {
     if (subFilter) {
       if (filter === 'formation' && item.formation !== subFilter) return false;
       if (filter === 'personnel' && !item.personnel?.includes(subFilter)) return false;
-      if (filter === 'playbook' && !item.playbooks?.some(pb => pb === subFilter)) return false;
+      if (filter === 'playbook') {
+        const isOffBook = subFilter.startsWith('OFF:');
+        const isDefBook = subFilter.startsWith('DEF:');
+        const bookName = subFilter.replace(/^(OFF|DEF):/, '');
+        if (isOffBook && item.category !== 'offense') return false;
+        if (isDefBook && item.category !== 'defense') return false;
+        if (!item.playbooks?.some(pb => pb === bookName)) return false;
+      }
     }
 
     // Text search

@@ -78,7 +78,26 @@ if (cheatSheet) {
       // If a tag was clicked, navigate to offenses instead
       if (e.target.classList.contains('cheat-tag')) {
         e.stopPropagation();
-        const concept = e.target.dataset.concept;
+        // Normalize concept tags to match play names in the offenses catalog
+        // Strip common suffixes: "Post routes" → "Post", "Flood concepts" → "Flood"
+        const CONCEPT_MAP = {
+          'flat routes': 'flat', 'shallow crosses': 'shallow cross', 'shallow crossers': 'shallow cross',
+          'double moves': 'post corner', 'wheel routes': 'wheel', 'hot routes': 'hot route',
+          'quick game': 'quick', 'curl routes': 'curl', 'post routes': 'post',
+          'corner routes': 'corner', 'out routes': 'out', 'deep crossers': 'deep crossers',
+          'deep outs': 'deep outs', 'seam routes': 'seam', 'drag routes': 'drag',
+          'sideline fades': 'fade', 'sideline throws': 'out', 'streak': 'verticals',
+          'streaks': 'verticals', 'quick crosses': 'mesh', 'middle reads': 'levels',
+          'stick concepts': 'stick', 'mesh concepts': 'mesh', 'levels concepts': 'levels',
+          'flood concepts': 'flood', 'smash concepts': 'smash', 'bunch formations': 'bunch',
+          'hb screens': 'hb screen', 'hb swings': 'swing', 'check downs': 'check down',
+          'delayed handoffs': 'draw', 'curls': 'curl', 'comebacks': 'comeback',
+          'slants': 'slant', 'drags': 'drag', 'screens': 'screen'
+        };
+        let concept = e.target.dataset.concept;
+        const lower = concept.toLowerCase();
+        if (CONCEPT_MAP[lower]) concept = CONCEPT_MAP[lower];
+        else concept = concept.replace(/\s+(routes?|concepts?|formations?|throws?)$/i, '').trim();
         window.location.href = `pages/offenses.html?search=${encodeURIComponent(concept)}`;
         return;
       }

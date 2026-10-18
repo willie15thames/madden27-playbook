@@ -165,7 +165,10 @@ function buildTree(filter, search) {
         if (lower && !p.toLowerCase().includes(lower)
             && !formation.toLowerCase().includes(lower)
             && !subName.toLowerCase().includes(lower)) {
-          if (!playData || (!playData.description.toLowerCase().includes(lower) && !playData.subtype.toLowerCase().includes(lower))) return false;
+          if (!playData) return false;
+          const searchable = [playData.description, playData.subtype, ...(playData.beats || []), ...(playData.goodVsCoverages || [])]
+            .join(' ').toLowerCase();
+          if (!searchable.includes(lower)) return false;
         }
         if (filter !== 'all') {
           if (!playData || playData.type !== filter) return false;

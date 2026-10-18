@@ -324,7 +324,7 @@ function updateDisplay() {
 
 function updateAnimation() {
   if (activeRenderer) activeRenderer.destroy();
-  if (!currentPlay && !fmSelect.value) {
+  if (!currentPlay && !fmSelect.value && !currentFormation) {
     const renderer = new PlayArtRenderer(liveCanvas, { width: 640, height: 480 });
     activeRenderer = renderer;
     renderer.drawField();

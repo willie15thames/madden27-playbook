@@ -748,6 +748,40 @@ function buildDefensePositions(formation, subFormation) {
     const isSwapDblMug = full.includes('swap dbl mug') || full.includes('swap double mug');
     const is33 = full.includes('3-3') && !full.includes('3-3-5');
 
+    // Nickel 2-4 fronts (2 DL, 4 LB, 5 DB) — check BEFORE 3-3 and 4-DL variants
+    const is24 = full.includes('2-4') && !full.includes('2-4-5');
+    if (is24) {
+      const isWide = full.includes('wide');
+      const isOdd = full.includes('odd');
+      const isSingleMug = full.includes('single mug');
+      const isLoadMug = full.includes('load mug') || full.includes('load dbl mug');
+      const isDblMug24 = isDblMug || full.includes('dbl mug');
+      const isLoad = full.includes('load') && !isLoadMug;
+      if (isDblMug24) {
+        return {
+          DE1: [0.35, 0.56], DE2: [0.65, 0.56],
+          LOLB: [0.28, 0.57], LB1: [0.42, 0.57], LB2: [0.58, 0.57], ROLB: [0.72, 0.57],
+          CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
+          SS: [0.65, 0.30], FS: [0.50, 0.20]
+        };
+      }
+      if (isSingleMug) {
+        return {
+          DE1: [0.35, 0.56], DE2: [0.65, 0.56],
+          LOLB: [0.22, 0.52], LB1: [0.42, 0.57], LB2: [0.62, 0.48], ROLB: [0.78, 0.52],
+          CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
+          SS: [0.65, 0.30], FS: [0.50, 0.20]
+        };
+      }
+      // Default Nickel 2-4 (includes Wide, Odd, Load, base)
+      return {
+        DE1: [0.35, 0.56], DE2: [0.65, 0.56],
+        LOLB: [isWide ? 0.15 : 0.22, 0.52], LB1: [0.38, 0.48], LB2: [0.62, 0.48], ROLB: [isWide ? 0.85 : 0.78, 0.52],
+        CB1: [0.06, 0.42], NCB: [isOdd ? 0.28 : 0.25, 0.42], CB2: [0.94, 0.42],
+        SS: [0.65, 0.30], FS: [0.50, 0.20]
+      };
+    }
+
     // Check 3-3 fronts BEFORE Double Mug to prevent 3-3 Dbl Mug hitting generic 4-DL Mug
     if (is33) {
       const isCub = full.includes('cub');
@@ -1262,9 +1296,9 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
     LOLB: 'man_trail', ROLB: 'man_trail',
-    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+    ILB1: 'man_trail', ILB2: 'man_trail', MLB: 'man_trail'
   },
   'Cover 2 Invert': {
     CB1: 'flat_zone', CB2: 'flat_zone',
@@ -1286,9 +1320,9 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
     LOLB: 'man_trail', ROLB: 'man_trail',
-    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+    ILB1: 'man_trail', ILB2: 'man_trail', MLB: 'man_trail'
   },
   'Cover 2 Hard Flat': {
     CB1: 'flat_zone', CB2: 'flat_zone',
@@ -1327,8 +1361,8 @@ const DEF_ASSIGNMENTS = {
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'deep_third', FS: 'deep_third_mid',
     LB1: 'deep_third', LB2: 'hook_zone', LB3: 'hook_zone',
-    LOLB: 'curl_flat', ROLB: 'curl_flat',
-    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+    LOLB: 'deep_third', ROLB: 'curl_flat',
+    ILB1: 'deep_third', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 3 Buzz': {
     CB1: 'deep_third', CB2: 'deep_third',
@@ -1419,6 +1453,46 @@ const DEF_ASSIGNMENTS = {
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
+  'Edge Blitz 0': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'blitz_edge', FS: 'man_trail',
+    LB1: 'blitz_a', LB2: 'blitz_edge', LB3: 'blitz_b',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
+  },
+  'Edge Blitz 2': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'deep_half', FS: 'deep_half',
+    LB1: 'blitz_edge', LB2: 'blitz_edge', LB3: 'hook_zone',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Edge Blitz 3': {
+    CB1: 'deep_third', CB2: 'deep_third', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'curl_flat', FS: 'deep_third_mid',
+    LB1: 'blitz_edge', LB2: 'blitz_edge', LB3: 'hook_zone',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Pinch Blitz 0': {
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    SS: 'man_trail', FS: 'man_trail',
+    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
+  },
+  'Pinch Blitz 3': {
+    CB1: 'deep_third', CB2: 'deep_third', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
+    SS: 'curl_flat', FS: 'deep_third_mid',
+    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'hook_zone',
+    LOLB: 'blitz_edge', ROLB: 'blitz_edge',
+    ILB1: 'blitz_a', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
   'Inverted Cover 2': {
     CB1: 'deep_half', CB2: 'deep_half',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
@@ -1462,7 +1536,17 @@ function getDefAssignment(coverageName, defKey) {
   if (lower.includes('fire zone')) {
     return (DEF_ASSIGNMENTS['Cover 2 Zone'] || {})[defKey] || null;
   }
+  // Named blitz variants: check specific blitz keys before generic fallback
   if (lower.includes('blitz')) {
+    // Try "Edge Blitz 0", "Pinch Blitz 3", etc. by matching against DEF_ASSIGNMENTS keys
+    const blitzKeys = Object.keys(DEF_ASSIGNMENTS).filter(k => k.toLowerCase().includes('blitz'));
+    // Sort longest first so "Edge Blitz 0" beats "Edge Blitz"
+    blitzKeys.sort((a, b) => b.length - a.length);
+    for (const bk of blitzKeys) {
+      if (lower.includes(bk.toLowerCase())) {
+        return DEF_ASSIGNMENTS[bk][defKey] || null;
+      }
+    }
     return (DEF_ASSIGNMENTS['Mid Blitz'] || {})[defKey] || null;
   }
   if (lower.includes('tampa')) return (DEF_ASSIGNMENTS['Tampa 2'] || {})[defKey] || null;
@@ -4121,6 +4205,7 @@ class PlayArtRenderer {
         } else {
           // For zone coverages: all non-DL get zone targets
           // For man coverages: only non-man-pool defenders (deep/robber/spy) get zone arrows
+          // Hook/curl LBs in man coverages pattern-match (show man drop, not zone)
           const NON_MAN_STATIC = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'deep_quarter', 'robber', 'spy', 'contain']);
           const showZone = coverageData.type === 'zone' || (coverageData.type !== 'zone' && NON_MAN_STATIC.has(defAssignment));
           if (showZone) {
@@ -4499,6 +4584,37 @@ class PlayArtRenderer {
             followFactor: followFactor,
             offset: [def.isDB ? 0.02 : 0, 0.02]
           };
+        }
+      }
+
+      // Second pass: if uncovered receivers remain, let hook_zone/curl_flat defenders
+      // pick them up (models NFL pattern-matching where LBs cover releasing RBs/TEs)
+      const FLEX_MAN_ROLES = new Set(['hook_zone', 'curl_flat', 'hook_curl', 'seam_flat', 'mid_read']);
+      const uncoveredReceivers = receivers.filter(r => !assignedReceivers.has(r));
+      if (uncoveredReceivers.length > 0) {
+        const flexDefenders = manDefenders
+          .filter(d => d.declaredAssignment && FLEX_MAN_ROLES.has(d.declaredAssignment) && !manAssignments[d.key]);
+        // Sort by proximity to nearest uncovered receiver
+        for (const r of uncoveredReceivers) {
+          let bestDef = null, bestDist = Infinity;
+          for (const def of flexDefenders) {
+            if (manAssignments[def.key]) continue;
+            const d = Math.hypot(r.startPos[0] - def.pos[0], r.startPos[1] - def.pos[1]);
+            if (d < bestDist) { bestDist = d; bestDef = def; }
+          }
+          if (bestDef) {
+            assignedReceivers.add(r);
+            const followFactor = 0.5;
+            manAssignments[bestDef.key] = {
+              endPos: [
+                r.startPos[0] + (r.endPos[0] - r.startPos[0]) * followFactor,
+                r.startPos[1] + (r.endPos[1] - r.startPos[1]) * followFactor + 0.02
+              ],
+              receiver: r,
+              followFactor: followFactor,
+              offset: [0, 0.02]
+            };
+          }
         }
       }
     }
@@ -5829,11 +5945,14 @@ class PlayArtRenderer {
       // Use same assignment-aware logic as the full renderer (renderLivePlay)
       const NON_MAN_ROLES_LOCAL = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'deep_quarter', 'robber', 'spy', 'contain',
         'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
+      // Flex roles: zone LBs that can pick up man in man coverages (pattern matching)
+      const FLEX_MAN_ROLES_LOCAL = new Set(['hook_zone', 'curl_flat', 'hook_curl', 'seam_flat', 'mid_read']);
       const manDropTargets = {};
       if (coverageData && coverageData.type !== 'zone') {
         // Man-eligible defenders get positional drop targets
         const defEntries = Object.entries(defPositions);
         const manEligible = [];
+        const flexEligible = [];
         for (const [key, pos] of defEntries) {
           const isDL = dlKeys.includes(key);
           if (isDL) continue;
@@ -5842,7 +5961,11 @@ class PlayArtRenderer {
           if (!isDB && !isLB) continue;
           const declAssign = coverageName ? getDefAssignment(coverageName, key) : null;
           if (declAssign && NON_MAN_ROLES_LOCAL.has(declAssign)) continue;
-          manEligible.push({ key, pos, isDB, isLB });
+          if (declAssign && FLEX_MAN_ROLES_LOCAL.has(declAssign)) {
+            flexEligible.push({ key, pos, isDB, isLB });
+          } else {
+            manEligible.push({ key, pos, isDB, isLB });
+          }
         }
         // Assign man drop targets: DBs drop back, LBs step up
         for (const def of manEligible) {
@@ -5853,6 +5976,10 @@ class PlayArtRenderer {
           } else {
             manDropTargets[def.key] = [def.pos[0], def.pos[1] + 0.04];
           }
+        }
+        // Flex defenders also get man drop targets (they pattern-match in man shells)
+        for (const def of flexEligible) {
+          manDropTargets[def.key] = [def.pos[0], def.pos[1] + 0.04];
         }
       }
 
