@@ -193,6 +193,7 @@ function initSelects() {
     plSelect.innerHTML = '<option value="">Play...</option>';
     sfSelect.disabled = true; plSelect.disabled = true;
     currentFormation = fmSelect.value || 'Gun';
+    currentSubFormation = '';
     currentPlay = null;
     playerRoutes = {};
     selectedPlayer = null;
@@ -1261,11 +1262,18 @@ function initCreatorControls() {
   if (creatorFormation) {
     creatorFormation.addEventListener('change', () => {
       currentFormation = creatorFormation.value || 'Gun';
+      currentSubFormation = '';
+      currentPlay = null;
+      playerRoutes = {};
+      selectedPlayer = null;
       // Sync main formation select if it has this value
       if (fmSelect) {
         const matchOpt = [...fmSelect.options].find(o => o.value === currentFormation);
         if (matchOpt) fmSelect.value = currentFormation;
       }
+      // Reset dependent dropdowns
+      if (sfSelect) { sfSelect.innerHTML = '<option value="">Sub-formation...</option>'; sfSelect.disabled = true; }
+      if (plSelect) { plSelect.innerHTML = '<option value="">Play...</option>'; plSelect.disabled = true; }
       clearSchemeBuilderState();
       resetInteractivePositions();
       if (currentPlay) loadPlayRoutes();

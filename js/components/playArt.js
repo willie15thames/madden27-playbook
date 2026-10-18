@@ -343,7 +343,7 @@ function buildOffensePositions(formation, subFormation) {
   const hasSplit = sub.includes('split');
   const hasAce = sub.includes('ace');
   const hasWing = sub.includes('wing');
-  const hasTE = sub.includes(' te') || sub.includes('tight') || sub.includes('y off') || sub.includes('y-flex') || sub.includes('deuce') || sub.includes('ace');
+  const hasTE = sub.includes(' te') || sub.includes('tight') || /(?:^|\s)y[\s-]off/.test(sub) || sub.includes('y-flex') || sub.includes('deuce') || sub.includes('ace');
   const hasNormal = sub.includes('normal') || sub.includes('off ') || sub === '';
 
   // Wing formation adds a wing TE
@@ -478,7 +478,7 @@ function buildOffensePositions(formation, subFormation) {
 
   // Doubles (2x2)
   if (hasDoubles) {
-    if (sub.includes('y off') || sub.includes('y-flex')) {
+    if (/(?:^|\s)y[\s-]off/.test(sub) || sub.includes('y-flex')) {
       pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.58]; pos.WR3 = [0.92, 0.58];
     } else if (sub.includes('flex')) {
       pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.24, 0.58]; pos.WR3 = [0.76, 0.58]; pos.WR4 = [0.92, 0.58];
@@ -572,7 +572,7 @@ function buildOffensePositions(formation, subFormation) {
 
   // === GUN/SHOTGUN - main formation ===
   // Normal / Y Off / Default
-  if (sub.includes('normal') || sub.includes('y off') || sub.includes('y-flex') || sub.includes('y-option')) {
+  if (sub.includes('normal') || /(?:^|\s)y[\s-]off/.test(sub) || sub.includes('y-flex') || sub.includes('y-option')) {
     pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.25, 0.58]; pos.TE = [0.72, 0.58]; pos.WR3 = [0.92, 0.58];
     return pos;
   }
@@ -1276,11 +1276,11 @@ const DEF_ASSIGNMENTS = {
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 2 Press': {
-    CB1: 'flat_zone', CB2: 'flat_zone',
-    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
+    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
-    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    LOLB: 'man_trail', ROLB: 'man_trail',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 2 Hard Flat': {
@@ -1302,7 +1302,7 @@ const DEF_ASSIGNMENTS = {
   'Cover 3': {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
-    SS: 'curl_flat', FS: 'deep_third',
+    SS: 'curl_flat', FS: 'deep_third_mid',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
@@ -1310,7 +1310,7 @@ const DEF_ASSIGNMENTS = {
   'Cover 3 Sky': {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
-    SS: 'flat_zone', FS: 'deep_third',
+    SS: 'flat_zone', FS: 'deep_third_mid',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
@@ -1318,7 +1318,7 @@ const DEF_ASSIGNMENTS = {
   'Cover 3 Cloud': {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
-    SS: 'deep_third', FS: 'deep_third',
+    SS: 'deep_third', FS: 'deep_third_mid',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'deep_third',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
@@ -1326,7 +1326,7 @@ const DEF_ASSIGNMENTS = {
   'Cover 3 Buzz': {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
-    SS: 'hook_zone', FS: 'deep_third',
+    SS: 'hook_zone', FS: 'deep_third_mid',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
@@ -1334,7 +1334,7 @@ const DEF_ASSIGNMENTS = {
   'Cover 3 Match': {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
-    SS: 'curl_flat', FS: 'deep_third',
+    SS: 'curl_flat', FS: 'deep_third_mid',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
@@ -1383,7 +1383,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'deep_middle', LB3: 'hook_zone',
+    LB1: 'hook_zone', LB2: 'deep_middle', LB3: 'hook_zone', LB4: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'deep_middle', MLB: 'deep_middle',
     LB: 'deep_middle'
@@ -4111,9 +4111,15 @@ class PlayArtRenderer {
             endX = pos[0] + (0.50 - pos[0]) * 0.3;
             endY = Math.max(pos[1], 0.62);
           }
-        } else if (coverageData.type === 'zone') {
-          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, pos, coverageName);
-          if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+        } else {
+          // For zone coverages: all non-DL get zone targets
+          // For man coverages: only non-man-pool defenders (deep/robber/spy) get zone arrows
+          const NON_MAN_STATIC = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'robber', 'spy', 'contain']);
+          const showZone = coverageData.type === 'zone' || (coverageData.type !== 'zone' && NON_MAN_STATIC.has(defAssignment));
+          if (showZone) {
+            const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, pos, coverageName);
+            if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+          }
         }
 
         if (Math.abs(endX - pos[0]) > 0.01 || Math.abs(endY - pos[1]) > 0.01) {
@@ -4423,7 +4429,7 @@ class PlayArtRenderer {
     // Respect declared assignments: defenders with deep, robber, spy, or blitz roles
     // should NOT enter the man coverage pool.
     const manAssignments = {};
-    const NON_MAN_ROLES = new Set(['deep_half', 'deep_middle', 'deep_third', 'robber', 'spy', 'contain',
+    const NON_MAN_ROLES = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'robber', 'spy', 'contain',
       'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
     if (coverageData.type !== 'zone') {
       const blockingRoutes = new Set(['block', 'pass_block', 'stalk_block', 'crack_block', 'lead_block']);
@@ -5106,14 +5112,21 @@ class PlayArtRenderer {
 
     // Use declared assignment to determine zone target
     const assignment = coverageName ? getDefAssignment(coverageName, key) : null;
-    // Determine side: for deep safeties, use role convention (FS=left, SS=right) rather than
-    // position alone, since FS at exactly 0.50 would otherwise go to the wrong half.
-    // For other players, use alignment.
+
+    // Determine side using explicit ownership rules:
+    // 1. For safeties: FS owns left half, SS owns right half (by NFL convention).
+    //    This prevents FS at x=0.50 from going right, and SS from duplicating FS's half.
+    // 2. For CBs: CB1 is always left, CB2 is always right.
+    // 3. For LBs: LOLB/ILB1/LB1 left, ROLB/ILB2/LB2 right, MLB/LB center.
+    // 4. For NCBs: NCB1 left, NCB2 right, NCB uses position.
+    // 5. Fallback: use alignment for any other key.
     let isLeftSide;
-    if (key === 'FS') {
-      isLeftSide = startPos[0] <= 0.5;
-    } else if (key === 'SS') {
-      isLeftSide = startPos[0] < 0.45; // SS is typically right-side
+    const leftKeys = new Set(['FS', 'CB1', 'LOLB', 'ILB1', 'LB1', 'NCB1']);
+    const rightKeys = new Set(['SS', 'CB2', 'ROLB', 'ILB2', 'LB2', 'NCB2']);
+    if (leftKeys.has(key)) {
+      isLeftSide = true;
+    } else if (rightKeys.has(key)) {
+      isLeftSide = false;
     } else {
       isLeftSide = startPos[0] < 0.5;
     }
@@ -5122,16 +5135,17 @@ class PlayArtRenderer {
       // Map assignment type to specific zone shapes based on player side
       const assignmentZoneMap = {
         'deep_half': isLeftSide ? ['deep_half_left'] : ['deep_half_right'],
-        'deep_middle': ['deep_middle'],
-        'deep_third': isLeftSide ? ['deep_third_left'] : ['deep_third_right'],
+        'deep_middle': ['deep_middle', 'tampa_mlb_deep'],
+        'deep_third_mid': ['deep_third_mid', 'deep_middle'],
+        'deep_third': isLeftSide ? ['deep_third_left', 'deep_third_mid'] : ['deep_third_right', 'deep_third_mid'],
         'flat_zone': isLeftSide ? ['flat_left', 'curl_flat_left'] : ['flat_right', 'curl_flat_right'],
-        'hard_flat': isLeftSide ? ['flat_left', 'hard_flat_left'] : ['flat_right', 'hard_flat_right'],
+        'hard_flat': isLeftSide ? ['flat_left', 'curl_flat_left'] : ['flat_right', 'curl_flat_right'],
         'curl_flat': isLeftSide ? ['curl_flat_left'] : ['curl_flat_right'],
         'hook_zone': isLeftSide ? ['hook_left', 'mid_hole'] : ['hook_right', 'mid_hole'],
         'hook_curl': isLeftSide ? ['hook_left', 'curl_flat_left'] : ['hook_right', 'curl_flat_right'],
         'mid_read': ['mid_hole'],
-        'seam_flat': isLeftSide ? ['seam_flat_left', 'curl_flat_left'] : ['seam_flat_right', 'curl_flat_right'],
-        'cloud_flat': isLeftSide ? ['flat_left', 'cloud_flat_left'] : ['flat_right', 'cloud_flat_right'],
+        'seam_flat': isLeftSide ? ['curl_flat_left'] : ['curl_flat_right'],
+        'cloud_flat': isLeftSide ? ['flat_left', 'curl_flat_left'] : ['flat_right', 'curl_flat_right'],
         'robber': ['mid_hole', 'hook_left', 'hook_right'],
         'spy': [],
         'contain': []
@@ -5140,6 +5154,14 @@ class PlayArtRenderer {
       if (candidates) {
         for (const zName of candidates) {
           if (coverageData.zones.includes(zName)) {
+            const z = ZONE_SHAPES[zName];
+            if (z) return [z.x + z.w / 2, z.y + z.h / 2];
+          }
+        }
+        // If declared zone not in coverage's zone list, use ZONE_SHAPES directly
+        // This handles Tampa deep_middle when the coverage has tampa_mlb_deep
+        if (candidates.length > 0) {
+          for (const zName of candidates) {
             const z = ZONE_SHAPES[zName];
             if (z) return [z.x + z.w / 2, z.y + z.h / 2];
           }
@@ -5785,26 +5807,33 @@ class PlayArtRenderer {
       const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3', 'LB4'];
       const dbKeysLocal = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
 
-      // For man coverage, compute drop targets — but respect declared assignments
-      // Defenders with deep/robber/blitz roles should NOT follow man drops
-      const manDropTargets = {};
-      const NON_MAN_ROLES_LOCAL = new Set(['deep_half', 'deep_middle', 'deep_third', 'robber', 'spy', 'contain',
+      // Use same assignment-aware logic as the full renderer (renderLivePlay)
+      const NON_MAN_ROLES_LOCAL = new Set(['deep_half', 'deep_middle', 'deep_middle_mid', 'deep_third', 'deep_third_mid', 'robber', 'spy', 'contain',
         'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
-      if (coverageData && coverageData.type === 'man') {
+      const manDropTargets = {};
+      if (coverageData && coverageData.type !== 'zone') {
+        // Man-eligible defenders get positional drop targets
         const defEntries = Object.entries(defPositions);
-        const dbDefs = defEntries.filter(([k]) => dbKeysLocal.includes(k));
-        const lbDefs = defEntries.filter(([k]) => lbKeys.includes(k));
-        for (const [key, pos] of dbDefs) {
-          const declAssign = coverageName ? getDefAssignment(coverageName, key) : null;
-          if (declAssign && NON_MAN_ROLES_LOCAL.has(declAssign)) continue; // use zone target instead
-          if (key === 'CB1') manDropTargets[key] = [pos[0] + 0.02, pos[1] - 0.12];
-          else if (key === 'CB2') manDropTargets[key] = [pos[0] - 0.02, pos[1] - 0.12];
-          else manDropTargets[key] = [pos[0], pos[1] - 0.08];
-        }
-        for (const [key, pos] of lbDefs) {
+        const manEligible = [];
+        for (const [key, pos] of defEntries) {
+          const isDL = dlKeys.includes(key);
+          if (isDL) continue;
+          const isDB = dbKeysLocal.includes(key);
+          const isLB = lbKeys.includes(key);
+          if (!isDB && !isLB) continue;
           const declAssign = coverageName ? getDefAssignment(coverageName, key) : null;
           if (declAssign && NON_MAN_ROLES_LOCAL.has(declAssign)) continue;
-          manDropTargets[key] = [pos[0], pos[1] + 0.04];
+          manEligible.push({ key, pos, isDB, isLB });
+        }
+        // Assign man drop targets: DBs drop back, LBs step up
+        for (const def of manEligible) {
+          if (def.isDB) {
+            if (def.key === 'CB1') manDropTargets[def.key] = [def.pos[0] + 0.02, def.pos[1] - 0.12];
+            else if (def.key === 'CB2') manDropTargets[def.key] = [def.pos[0] - 0.02, def.pos[1] - 0.12];
+            else manDropTargets[def.key] = [def.pos[0], def.pos[1] - 0.08];
+          } else {
+            manDropTargets[def.key] = [def.pos[0], def.pos[1] + 0.04];
+          }
         }
       }
 
@@ -5817,12 +5846,12 @@ class PlayArtRenderer {
         else if (coverageData && coverageData.type === 'zone') {
           const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos, coverageName);
           if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
-        } else if (coverageData && coverageData.type === 'man') {
+        } else if (coverageData && coverageData.type !== 'zone') {
           if (manDropTargets[key]) {
             endX = manDropTargets[key][0];
             endY = manDropTargets[key][1];
           } else {
-            // Defender not in man pool (deep helper, robber) — use zone destination
+            // Defender not in man pool (deep helper, robber, spy) — use zone destination
             const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos, coverageName);
             if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
           }

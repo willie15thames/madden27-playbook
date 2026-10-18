@@ -182,11 +182,22 @@ function findCoverage(name) {
   }
   if (best) return best;
 
-  // 6. Special defense names
-  if (base.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2 zone'));
-  if (base.includes('mid blitz')) return COVERAGES.find(c => c.name.toLowerCase() === 'cover 0');
-  if (base.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
-  if (base.includes('prevent')) return COVERAGES.find(c => c.name.toLowerCase().includes('prevent'));
+  // 6. Special defense names and keyword mapping
+  const specialMap = {
+    'fire zone': 'cover 2 zone', 'mid blitz': 'cover 0', 'tampa': 'tampa',
+    'prevent': 'prevent', 'bracket': 'cover 2 man', 'double': 'cover 2 man',
+    'blitz': 'cover 0', 'zero blitz': 'cover 0', 'edge blitz': 'cover 1',
+    'pinch': 'cover 1', 'overload': 'cover 1', 'storm': 'cover 1',
+    'inverted': 'cover 2 invert', 'spy': 'cover 1', 'qb spy': 'cover 1',
+    'quarters': 'cover 4', 'palms': 'cover 4 palms', 'max': 'cover 0',
+    'sugar': 'cover 0'
+  };
+  for (const [kw, target] of Object.entries(specialMap)) {
+    if (base.includes(kw)) {
+      const match = COVERAGES.find(c => c.name.toLowerCase().includes(target));
+      if (match) return match;
+    }
+  }
   return COVERAGES.find(c => c.name.toLowerCase().includes(base)) || null;
 }
 
@@ -444,10 +455,10 @@ function openModal(cov, variants, formation, subFormation, exactPlayName) {
   if (!cov) {
     modalContent.innerHTML = `
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-black">Unknown Coverage</h2>
+        <h2 class="text-2xl font-black">${exactPlayName || 'Unknown Coverage'}</h2>
         <button id="closeModal" class="text-gray-400 hover:text-white text-2xl"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-gray-400">No detailed information available for this coverage.</p>
+      <p class="text-gray-400">No detailed coverage data available. This may be a blitz package or specialized call.</p>
     `;
     modal.classList.add('active');
     modalContent.querySelector('#closeModal').addEventListener('click', closeModal);
