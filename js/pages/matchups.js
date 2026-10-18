@@ -4,10 +4,6 @@ import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer, PLAY_ROUTES, COVERAGE_BEATERS } from '../components/playArt.js';
 import { calculateMatchupGrade, recommendPlays, recommendCoverages, getConceptKey, CONCEPT_LABELS } from '../data/analytics.js';
 
-document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-  document.getElementById('mobileMenu')?.classList.toggle('hidden');
-});
-
 const offPlaybookSelect = document.getElementById('offPlaybookSelect');
 const offFormationSelect = document.getElementById('offFormationSelect');
 const offSubFormationSelect = document.getElementById('offSubFormationSelect');

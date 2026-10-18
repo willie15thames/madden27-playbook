@@ -6,11 +6,6 @@ import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PERSONNEL_OFFENSE, PERSONNEL_DEFENSE, FORMATIONS_OFFENSE, FORMATIONS_DEFENSE } from '../data/personnel.js';
 import { PlayArtRenderer } from '../components/playArt.js';
 
-// Mobile menu
-document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-  document.getElementById('mobileMenu')?.classList.toggle('hidden');
-});
-
 const searchInput = document.getElementById('universalSearch');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const subFilters = document.getElementById('subFilters');

@@ -1,8 +1,9 @@
 // Madden 27 Play Art Engine - Canvas-based animated X's and O's
 // Renders offensive and defensive play art with animated routes/zones
 
-const FIELD_GREEN = '#1a472a';
-const FIELD_LINE = 'rgba(255,255,255,0.15)';
+const FIELD_GREEN = '#2d7a45';
+const FIELD_GREEN_DARK = '#256b3a';
+const FIELD_LINE = 'rgba(255,255,255,0.22)';
 const YARD_LINE = 'rgba(255,255,255,0.25)';
 const OFF_COLOR = '#00FFFF';
 const DEF_COLOR = '#FF1493';
@@ -10,7 +11,162 @@ const ROUTE_COLOR = '#00FFFF';
 const ZONE_COLOR = 'rgba(255,20,147,0.18)';
 const ZONE_BORDER = 'rgba(255,20,147,0.5)';
 const BALL_COLOR = '#8A2BE2';
-const LOS_COLOR = 'rgba(255,255,255,0.5)';
+const LOS_COLOR = '#4488ff';
+const FIRST_DOWN_COLOR = '#cccc00';
+
+// NFL field geometry (normalized 0-1 coordinate system)
+// Canvas shows ~30 yards of field centered on LOS at y=0.60
+// y=0.0 = ~15 yards downfield (defense deep), y=1.0 = ~15 yards behind LOS (offense backfield)
+// Each 0.033 in y ≈ 1 yard
+const YARD_SCALE = 1 / 30; // fraction of canvas per yard
+const LOS_Y = 0.60;        // line of scrimmage position
+// NFL hash marks: 70'9" from sideline = 23.58 yards from sideline on 53.33-yard field
+// That's 44.2% from each side
+const HASH_LEFT = 0.442;
+const HASH_RIGHT = 0.558;
+
+// Cached field backgrounds (keyed by "width x height")
+const _fieldCache = {};
+
+function _buildFieldCanvas(w, h) {
+  const key = `${w}x${h}`;
+  if (_fieldCache[key]) return _fieldCache[key];
+
+  const offscreen = document.createElement('canvas');
+  offscreen.width = w;
+  offscreen.height = h;
+  const ctx = offscreen.getContext('2d');
+
+  // Base grass color
+  ctx.fillStyle = FIELD_GREEN;
+  ctx.fillRect(0, 0, w, h);
+
+  // Mowing stripes (alternating light/dark bands, ~5 yard width each)
+  const stripeHeight = h * YARD_SCALE * 5; // 5 yards per stripe
+  const numStripes = Math.ceil(h / stripeHeight) + 1;
+  for (let i = 0; i < numStripes; i++) {
+    if (i % 2 === 0) {
+      ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    }
+    ctx.fillRect(0, i * stripeHeight, w, stripeHeight);
+  }
+
+  // Subtle grass texture overlay (noise pattern)
+  ctx.save();
+  ctx.globalAlpha = 0.03;
+  for (let y = 0; y < h; y += 4) {
+    for (let x = 0; x < w; x += 4) {
+      if (Math.random() > 0.5) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(x, y, 2, 2);
+      }
+    }
+  }
+  ctx.restore();
+
+  // Yard lines every 5 yards
+  // LOS is at y=0.60, each yard = YARD_SCALE of canvas height
+  // Show lines from -15 to +15 yards relative to LOS
+  const losPixel = LOS_Y * h;
+  for (let yd = -15; yd <= 15; yd += 5) {
+    if (yd === 0) continue; // LOS drawn separately
+    const lineY = losPixel - yd * YARD_SCALE * h;
+    if (lineY < 0 || lineY > h) continue;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = Math.max(1, w / 400);
+    ctx.beginPath();
+    ctx.moveTo(w * 0.04, lineY);
+    ctx.lineTo(w * 0.96, lineY);
+    ctx.stroke();
+  }
+
+  // Minor yard lines (every 1 yard, very subtle)
+  for (let yd = -15; yd <= 15; yd++) {
+    if (yd % 5 === 0) continue; // skip major lines
+    const lineY = losPixel - yd * YARD_SCALE * h;
+    if (lineY < 0 || lineY > h) continue;
+
+    // Small tick marks at sidelines and hashes
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 0.5;
+    const tickLen = w * 0.012;
+    // Left sideline ticks
+    ctx.beginPath(); ctx.moveTo(w * 0.04, lineY); ctx.lineTo(w * 0.04 + tickLen, lineY); ctx.stroke();
+    // Right sideline ticks
+    ctx.beginPath(); ctx.moveTo(w * 0.96, lineY); ctx.lineTo(w * 0.96 - tickLen, lineY); ctx.stroke();
+    // Left hash ticks
+    ctx.beginPath(); ctx.moveTo(w * HASH_LEFT - tickLen/2, lineY); ctx.lineTo(w * HASH_LEFT + tickLen/2, lineY); ctx.stroke();
+    // Right hash ticks
+    ctx.beginPath(); ctx.moveTo(w * HASH_RIGHT - tickLen/2, lineY); ctx.lineTo(w * HASH_RIGHT + tickLen/2, lineY); ctx.stroke();
+  }
+
+  // Yard numbers (every 10 yards from LOS)
+  // The "yard number" shown depends on field position; default to ~35 yard line
+  const losYardLine = 35; // offense at their own 35
+  ctx.save();
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const numSize = Math.max(10, Math.min(20, w / 25));
+  ctx.font = `bold ${numSize}px "Georgia", serif`;
+
+  for (let yd = -15; yd <= 15; yd += 5) {
+    const absYard = losYardLine + yd;
+    // NFL numbers: show 10, 20, 30, 40, 50, 40, 30, 20, 10
+    let displayNum;
+    if (absYard <= 50) displayNum = absYard;
+    else displayNum = 100 - absYard;
+    if (displayNum % 10 !== 0 || displayNum <= 0 || displayNum > 50) continue;
+
+    const lineY = losPixel - yd * YARD_SCALE * h;
+    if (lineY < numSize || lineY > h - numSize) continue;
+
+    // Left number (between sideline and left hash)
+    ctx.save();
+    ctx.translate(w * 0.16, lineY);
+    ctx.fillText(displayNum.toString(), 0, 0);
+    ctx.restore();
+
+    // Right number (between right hash and sideline) - mirrored
+    ctx.save();
+    ctx.translate(w * 0.84, lineY);
+    ctx.scale(-1, 1);
+    ctx.fillText(displayNum.toString(), 0, 0);
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // Hash marks at major yard lines (larger than tick marks)
+  for (let yd = -15; yd <= 15; yd += 5) {
+    if (yd === 0) continue;
+    const lineY = losPixel - yd * YARD_SCALE * h;
+    if (lineY < 0 || lineY > h) continue;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1;
+    const hashLen = w * 0.015;
+    // Left hash
+    ctx.beginPath(); ctx.moveTo(w * HASH_LEFT, lineY - hashLen); ctx.lineTo(w * HASH_LEFT, lineY + hashLen); ctx.stroke();
+    // Right hash
+    ctx.beginPath(); ctx.moveTo(w * HASH_RIGHT, lineY - hashLen); ctx.lineTo(w * HASH_RIGHT, lineY + hashLen); ctx.stroke();
+  }
+
+  // Sideline borders (subtle white lines at field edges)
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(w * 0.03, 0); ctx.lineTo(w * 0.03, h);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(w * 0.97, 0); ctx.lineTo(w * 0.97, h);
+  ctx.stroke();
+
+  _fieldCache[key] = offscreen;
+  return offscreen;
+}
 
 // ===== DYNAMIC FORMATION POSITION GENERATOR =====
 // Builds player positions from formation + sub-formation names using NFL logic
@@ -502,8 +658,31 @@ function buildDefensePositions(formation, subFormation) {
     };
   }
 
-  // Dime formations
-  if (form.includes('dime') || form.includes('2-4-5') || form.includes('2-5')) {
+  // 2-4-5 formation (2 DL, 4 LB, 5 DB) - check BEFORE Dime to prevent '2-5' substring match
+  if (form.includes('2-4-5')) {
+    const isWide = full.includes('wide');
+    const isOver = full.includes('over');
+    return {
+      DE1: [0.35, 0.56], DE2: [0.65, 0.56],
+      LOLB: [isWide ? 0.15 : 0.22, 0.52], LB1: [0.38, 0.48], LB2: [0.62, 0.48], ROLB: [isWide ? 0.85 : 0.78, 0.52],
+      CB1: [0.06, 0.42], NCB: [isOver ? 0.28 : 0.25, 0.42], CB2: [0.94, 0.42],
+      SS: [0.65, 0.30], FS: [0.50, 0.20]
+    };
+  }
+
+  // 3-3-5 formation (3 DL, 3 LB, 5 DB) - check BEFORE Nickel to prevent wrong DL count
+  if (form.includes('3-3-5')) {
+    const isWide = full.includes('wide');
+    return {
+      DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
+      LB1: [0.30, 0.48], LB2: [0.50, 0.48], LB3: [0.70, 0.48],
+      CB1: [0.06, isWide ? 0.38 : 0.42], NCB: [0.25, 0.42], CB2: [0.94, isWide ? 0.38 : 0.42],
+      SS: [0.65, 0.30], FS: [0.50, 0.20]
+    };
+  }
+
+  // Dime formations (4 DL, 1 LB, 6 DB)
+  if (form.includes('dime') || form.includes('2-5')) {
     const isDblMug = full.includes('dbl mug') || full.includes('double mug');
     const isSingleMug = full.includes('single mug');
 
@@ -541,8 +720,8 @@ function buildDefensePositions(formation, subFormation) {
     };
   }
 
-  // Nickel formations (4 DL, 2 LB, 5 DB) or 3-3-5
-  if (form.includes('nickel') || form.includes('3-3-5') || form.includes('4-2-5')) {
+  // Nickel formations (4 DL, 2 LB, 5 DB) or 4-2-5
+  if (form.includes('nickel') || form.includes('4-2-5')) {
     const isDblMug = full.includes('dbl mug') || full.includes('double mug');
     const isSwapDblMug = full.includes('swap dbl mug') || full.includes('swap double mug');
 
@@ -887,11 +1066,11 @@ const ROUTE_PATHS = {
   'pull_right': [[0.08, 0.0], [0.06, -0.08]],
   'ol_release_right': [[0.10, -0.02], [0.05, -0.05]],
   'ol_release_left': [[-0.10, -0.02], [-0.05, -0.05]],
-  // Defensive route paths
-  'rush_a_gap': [[0, -0.08]],
-  'rush_b_gap': [[0.04, -0.08]],
-  'rush_c_gap': [[0.06, -0.06]],
-  'rush_contain': [[0.08, -0.04]],
+  // Defensive route paths — positive dy = toward LOS/backfield, negative dy = toward deep field
+  'rush_a_gap': [[0, 0.08]],
+  'rush_b_gap': [[0.04, 0.08]],
+  'rush_c_gap': [[0.06, 0.06]],
+  'rush_contain': [[0.08, 0.04]],
   'zone_hook': [[0, -0.06]],
   'zone_curl_flat': [[0.08, -0.04]],
   'zone_mid': [[0, -0.08]],
@@ -899,14 +1078,14 @@ const ROUTE_PATHS = {
   'zone_deep_third': [[0, -0.16]],
   'zone_deep_half': [[0, -0.18]],
   'zone_deep_middle': [[0, -0.20]],
-  'press_man': [[0, -0.04]],
-  'man_cover': [[0, -0.06]],
-  'blitz_a': [[0, -0.12]],
-  'blitz_b': [[0.04, -0.12]],
-  'blitz_edge': [[0.08, -0.10]],
+  'press_man': [[0, 0.02]],
+  'man_cover': [[0, 0.02]],
+  'blitz_a': [[0, 0.12]],
+  'blitz_b': [[0.04, 0.12]],
+  'blitz_edge': [[0.08, 0.08]],
   // Defensive assignment paths
   'man_trail': [],
-  'spy': [[0, -0.04]],
+  'spy': [[0, -0.02]],
   'deep_middle': [[0, -0.18]],
   'deep_third': [[0, -0.16], [0.06, -0.04]],
   'deep_half': [[0, -0.16], [0.08, 0]],
@@ -1035,11 +1214,11 @@ const DEF_ASSIGNMENTS = {
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 2 Press': {
-    CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
-    NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
-    LOLB: 'man_trail', ROLB: 'man_trail',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 2 Hard Flat': {
@@ -1313,6 +1492,10 @@ const PLAY_ROUTES = {
   },
   'Outside Zone': {
     routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside', LT: 'zone_step_right', LG: 'zone_step_right', C: 'zone_step_right', RG: 'zone_step_right', RT: 'zone_step_right' },
+    qb: 'qb_handoff', isRun: true
+  },
+  'Outside Zone Lt': {
+    routes: { WR1: 'stalk_block', WR2: 'stalk_block', WR3: 'stalk_block', WR4: 'stalk_block', TE: 'block', RB: 'run_outside_left', LT: 'zone_step_left', LG: 'zone_step_left', C: 'zone_step_left', RG: 'zone_step_left', RT: 'zone_step_left' },
     qb: 'qb_handoff', isRun: true
   },
   'HB Stretch': {
@@ -2792,8 +2975,16 @@ const PLAY_ROUTES = {
     qb: 'qb_drop', ball_target: 'WR4'
   },
   'Spot N Go': {
-    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'post', TE: 'seam', RB: 'flat' },
-    qb: 'qb_drop', ball_target: 'WR4'
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'hitch_go', TE: 'seam', RB: 'flat' },
+    qb: 'qb_drop', ball_target: 'WR3'
+  },
+  'Spot Wheel': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', TE: 'seam', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'RB'
+  },
+  'Snag HB Wheel': {
+    routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', TE: 'flat', RB: 'wheel' },
+    qb: 'qb_drop', ball_target: 'RB'
   },
   'L Spot': {
     routes: { WR1: 'streak', WR2: 'corner', WR3: 'curl', WR4: 'flat', TE: 'seam', RB: 'flat' },
@@ -3426,55 +3617,45 @@ class PlayArtRenderer {
     this._initTouchHandlers();
   }
 
-  // Draw field background with subtle gradient and realistic turf
+  // Draw realistic NFL field with grass, markings, and overlays
   drawField() {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
-    // Field gradient for depth
-    const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, '#1e5c30');
-    grad.addColorStop(0.5, FIELD_GREEN);
-    grad.addColorStop(1, '#153d1f');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-    // Subtle turf stripes (alternating darker/lighter bands)
-    for (let i = 0; i < 8; i++) {
-      if (i % 2 === 0) {
-        ctx.fillStyle = 'rgba(0,0,0,0.04)';
-        ctx.fillRect(0, h * i / 8, w, h / 8);
-      }
-    }
-    // Yard lines
-    for (let i = 1; i < 8; i++) {
-      ctx.strokeStyle = FIELD_LINE;
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.moveTo(0, h * i / 8);
-      ctx.lineTo(w, h * i / 8);
-      ctx.stroke();
-    }
-    // Hash marks
-    for (let i = 1; i < 8; i++) {
-      ctx.strokeStyle = FIELD_LINE;
-      ctx.lineWidth = 0.8;
-      const y = h * i / 8;
-      ctx.beginPath(); ctx.moveTo(w * 0.38, y - 3); ctx.lineTo(w * 0.38, y + 3); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(w * 0.62, y - 3); ctx.lineTo(w * 0.62, y + 3); ctx.stroke();
-    }
-    // Line of scrimmage with subtle glow
+
+    // Blit cached field background (grass, yard lines, numbers, hashes)
+    const fieldBg = _buildFieldCanvas(w, h);
+    ctx.drawImage(fieldBg, 0, 0);
+
+    // Line of scrimmage (blue)
+    const losY = LOS_Y * h;
     ctx.save();
     ctx.shadowColor = LOS_COLOR;
-    ctx.shadowBlur = 4;
+    ctx.shadowBlur = 6;
     ctx.strokeStyle = LOS_COLOR;
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = 0.8;
     ctx.beginPath();
-    ctx.moveTo(0, h * 0.60);
-    ctx.lineTo(w, h * 0.60);
+    ctx.moveTo(w * 0.03, losY);
+    ctx.lineTo(w * 0.97, losY);
     ctx.stroke();
-    ctx.setLineDash([]);
     ctx.restore();
+
+    // First-down line (yellow, 10 yards upfield)
+    const fdY = losY - 10 * YARD_SCALE * h;
+    if (fdY > 0) {
+      ctx.save();
+      ctx.shadowColor = FIRST_DOWN_COLOR;
+      ctx.shadowBlur = 4;
+      ctx.strokeStyle = FIRST_DOWN_COLOR;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.03, fdY);
+      ctx.lineTo(w * 0.97, fdY);
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   // Draw a player dot with subtle shadow and cleaner label
@@ -3662,14 +3843,17 @@ class PlayArtRenderer {
       }
     }
 
-    if (!result) {
+    if (!result && lower.length >= 3) {
       // Try "starts with" for PA/RPO variants — prefer longest key match
+      // Require both incoming name and template key to be at least 3 chars
       let bestKey = null, bestKeyLen = 0;
       for (const key of Object.keys(PLAY_ROUTES)) {
         const kl = key.toLowerCase();
-        // Skip short keys (< 3 chars) to avoid false matches like "RE" matching "Read Option"
         if (kl.length < 3) continue;
-        if ((lower.startsWith(kl) || kl.startsWith(lower)) && kl.length > bestKeyLen) {
+        // Only match if the incoming name starts with the template key
+        // Do NOT allow reverse matching (template starts with short input)
+        // to prevent "Re" matching "Read Option"
+        if (lower.startsWith(kl) && kl.length > bestKeyLen) {
           bestKey = key; bestKeyLen = kl.length;
         }
       }
@@ -3680,9 +3864,12 @@ class PlayArtRenderer {
       }
     }
 
-    if (!result) {
-      // Partial includes — require whole-word match for short keys, prefer longest match
+    if (!result && lower.length >= 4) {
+      // Partial includes — require whole-word match, prefer longest match
+      // Require incoming name to be at least 4 chars to prevent substring collisions
       const isPA = lower.startsWith('pa ') || lower.startsWith('rpo ');
+      // Check if the incoming name has directional modifiers
+      const hasDirectionMod = /\b(lt|rt|left|right|wk|str)\b/i.test(lower);
       let partialBest = null, partialBestLen = 0;
       for (const key of Object.keys(PLAY_ROUTES)) {
         const kl = key.toLowerCase();
@@ -3692,11 +3879,13 @@ class PlayArtRenderer {
         if (lower.includes(kl)) {
           const regex = new RegExp('(?:^|\\s)' + kl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:\\s|$)');
           matched = regex.test(lower);
-        } else if (kl.includes(lower) && lower.length >= 3) {
-          const regex = new RegExp('(?:^|\\s)' + lower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:\\s|$)');
-          matched = regex.test(kl);
         }
         if (matched && kl.length > partialBestLen) {
+          // If the play name has a direction modifier that the template doesn't have,
+          // skip this match (e.g. "Outside Zone Lt" should not match "Outside Zone")
+          if (hasDirectionMod && !(/\b(lt|rt|left|right|wk|str)\b/i.test(kl))) {
+            continue;
+          }
           partialBest = key;
           partialBestLen = kl.length;
         }
@@ -3860,7 +4049,7 @@ class PlayArtRenderer {
             endY = Math.max(pos[1], 0.62);
           }
         } else if (coverageData.type === 'zone') {
-          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, pos);
+          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, pos, coverageName);
           if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
         }
 
@@ -4230,7 +4419,7 @@ class PlayArtRenderer {
         }
       } else if (coverageData.type === 'zone') {
         // Zone: move toward assigned zone center
-        const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos);
+        const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos, coverageName);
         if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
       } else {
         // Man: use pre-computed 1-to-1 assignment
@@ -4819,16 +5008,49 @@ class PlayArtRenderer {
     return target.dx / 0.03;
   }
 
-  _getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos) {
+  _getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos, coverageName) {
     if (isRun && isLB) {
-      // LBs fill gaps on run plays
       return [startPos[0], startPos[1] + 0.06];
     }
-    // Map defender keys to likely zone assignments
+
+    // Use declared assignment to determine zone target
+    const assignment = coverageName ? getDefAssignment(coverageName, key) : null;
+    const isLeftSide = startPos[0] < 0.5;
+
+    if (assignment) {
+      // Map assignment type to specific zone shapes based on player side
+      const assignmentZoneMap = {
+        'deep_half': isLeftSide ? ['deep_half_left'] : ['deep_half_right'],
+        'deep_middle': ['deep_middle'],
+        'deep_third': isLeftSide ? ['deep_third_left'] : ['deep_third_right'],
+        'flat_zone': isLeftSide ? ['flat_left', 'curl_flat_left'] : ['flat_right', 'curl_flat_right'],
+        'hard_flat': isLeftSide ? ['flat_left', 'hard_flat_left'] : ['flat_right', 'hard_flat_right'],
+        'curl_flat': isLeftSide ? ['curl_flat_left'] : ['curl_flat_right'],
+        'hook_zone': isLeftSide ? ['hook_left', 'mid_hole'] : ['hook_right', 'mid_hole'],
+        'hook_curl': isLeftSide ? ['hook_left', 'curl_flat_left'] : ['hook_right', 'curl_flat_right'],
+        'mid_read': ['mid_hole'],
+        'seam_flat': isLeftSide ? ['seam_flat_left', 'curl_flat_left'] : ['seam_flat_right', 'curl_flat_right'],
+        'cloud_flat': isLeftSide ? ['flat_left', 'cloud_flat_left'] : ['flat_right', 'cloud_flat_right'],
+        'robber': ['mid_hole', 'hook_left', 'hook_right'],
+        'spy': [],
+        'contain': []
+      };
+      const candidates = assignmentZoneMap[assignment];
+      if (candidates) {
+        for (const zName of candidates) {
+          if (coverageData.zones.includes(zName)) {
+            const z = ZONE_SHAPES[zName];
+            if (z) return [z.x + z.w / 2, z.y + z.h / 2];
+          }
+        }
+      }
+    }
+
+    // Fallback: position-based zone guessing
     const zoneMap = {
-      'CB1': ['deep_third_left', 'deep_quarter_1', 'deep_half_left', 'curl_flat_left'],
-      'CB2': ['deep_third_right', 'deep_quarter_4', 'deep_half_right', 'curl_flat_right'],
-      'NCB': ['hook_left', 'curl_flat_left', 'mid_hole'],
+      'CB1': ['deep_third_left', 'deep_quarter_1', 'deep_half_left', 'curl_flat_left', 'flat_left'],
+      'CB2': ['deep_third_right', 'deep_quarter_4', 'deep_half_right', 'curl_flat_right', 'flat_right'],
+      'NCB': isLeftSide ? ['hook_left', 'curl_flat_left'] : ['hook_right', 'curl_flat_right'],
       'NCB1': ['hook_left', 'curl_flat_left', 'deep_quarter_2'],
       'NCB2': ['hook_right', 'curl_flat_right', 'deep_quarter_3'],
       'NCB3': ['mid_hole', 'deep_quarter_3'],
@@ -5307,24 +5529,36 @@ class PlayArtRenderer {
 
   _drawZoneLabels(zones, fade) {
     const ctx = this.ctx;
-    ctx.globalAlpha = fade * 0.7;
+    ctx.globalAlpha = fade * 0.55;
+    const abbreviations = {
+      'deep_third': 'Deep 1/3', 'deep_half': 'Deep 1/2', 'deep_quarter': 'Deep 1/4',
+      'hook_curl_left': 'Hook/Curl', 'hook_curl_right': 'Hook/Curl',
+      'curl_flat_left': 'Curl/Flat', 'curl_flat_right': 'Curl/Flat',
+      'hard_flat_left': 'Hard Flat', 'hard_flat_right': 'Hard Flat',
+      'flat_left': 'Flat', 'flat_right': 'Flat',
+      'hook_left': 'Hook', 'hook_right': 'Hook',
+      'mid_read': 'Mid Read', 'middle_read': 'Mid Read',
+      'seam_flat_left': 'Seam/Flat', 'seam_flat_right': 'Seam/Flat',
+      'cloud_flat_left': 'Cloud', 'cloud_flat_right': 'Cloud',
+      'deep_middle': 'Deep Mid'
+    };
     for (const zoneName of zones) {
       const z = ZONE_SHAPES[zoneName];
       if (!z) continue;
       const px = (z.x + z.w / 2) * this.width;
-      // Place label at very top of zone, well clear of player circles
-      const py = z.y * this.height + 8;
-      const label = zoneName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).replace('Deep ', 'D.').replace('Half ', 'H.').replace('Quarter ', 'Q.').replace('Curl ', 'C/');
-      const shortLabel = label.length > 12 ? label.substring(0, 11) + '.' : label;
-      const fontSize = Math.max(7, Math.min(8, this.width * 0.015));
-      ctx.font = `bold ${fontSize}px system-ui`;
-      const tw = ctx.measureText(shortLabel).width + 8;
-      // High-contrast background pill
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      // Place label near top of zone with margin to avoid player circles
+      const py = z.y * this.height + 12;
+      const shortLabel = abbreviations[zoneName] || zoneName.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const fontSize = Math.max(7, Math.min(9, this.width * 0.016));
+      ctx.font = `600 ${fontSize}px system-ui`;
+      const tw = ctx.measureText(shortLabel).width + 10;
+      const pillH = fontSize + 4;
+      // Semi-transparent background pill
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
       ctx.beginPath();
-      ctx.roundRect(px - tw / 2, py - 6, tw, 13, 3);
+      ctx.roundRect(px - tw / 2, py - pillH / 2, tw, pillH, 3);
       ctx.fill();
-      ctx.fillStyle = '#FFFFFF';
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(shortLabel, px, py);

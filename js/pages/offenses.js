@@ -55,10 +55,6 @@ function buildFormationData() {
   return tree;
 }
 
-document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-  document.getElementById('mobileMenu')?.classList.toggle('hidden');
-});
-
 const treeEl = document.getElementById('offenseTree');
 const modal = document.getElementById('playModal');
 const modalContent = document.getElementById('playModalContent');
@@ -185,7 +181,11 @@ function buildTree(filter, search) {
       <div class="formation-body">
         ${Object.entries(filteredSubs).sort(([a], [b]) => a.localeCompare(b)).map(([subName, plays]) => `
           <div class="sub-formation">
-            <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
+            <div class="sub-formation-header" data-sub="${subName}">
+              <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
+              <i class="bi bi-chevron-down chevron text-gray-500"></i>
+            </div>
+            <div class="sub-formation-body">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               ${plays.map(play => {
                 const playData = PLAY_TYPES[play];
@@ -219,6 +219,7 @@ function buildTree(filter, search) {
                 </div>`;
               }).join('')}
             </div>
+            </div>
           </div>
         `).join('')}
       </div>
@@ -232,15 +233,17 @@ function buildTree(filter, search) {
     return;
   }
 
-  // If searching/filtering, auto-open all formations
+  // If searching/filtering, auto-open all formations and sub-formations
   if (isFiltered) {
     treeEl.querySelectorAll('.formation-body').forEach(b => b.classList.add('open'));
     treeEl.querySelectorAll('.formation-header').forEach(h => h.classList.add('open'));
+    treeEl.querySelectorAll('.sub-formation-body').forEach(b => b.classList.add('open'));
+    treeEl.querySelectorAll('.sub-formation-header').forEach(h => h.classList.add('open'));
     treeEl.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
     reconnectCardObservers();
   }
 
-  // Accordion behavior
+  // Formation accordion behavior
   treeEl.querySelectorAll('.formation-header').forEach(header => {
     header.addEventListener('click', () => {
       const body = header.nextElementSibling;
@@ -248,7 +251,26 @@ function buildTree(filter, search) {
       if (!isFiltered) {
         treeEl.querySelectorAll('.formation-body').forEach(b => b.classList.remove('open'));
         treeEl.querySelectorAll('.formation-header').forEach(h => h.classList.remove('open'));
+        treeEl.querySelectorAll('.sub-formation-body').forEach(b => b.classList.remove('open'));
+        treeEl.querySelectorAll('.sub-formation-header').forEach(h => h.classList.remove('open'));
       }
+      if (!wasOpen) {
+        body.classList.add('open');
+        header.classList.add('open');
+      } else {
+        body.classList.remove('open');
+        header.classList.remove('open');
+      }
+      reconnectCardObservers();
+    });
+  });
+
+  // Sub-formation accordion behavior
+  treeEl.querySelectorAll('.sub-formation-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const body = header.nextElementSibling;
+      const wasOpen = body.classList.contains('open');
       if (!wasOpen) {
         body.classList.add('open');
         header.classList.add('open');

@@ -359,14 +359,41 @@ button, select, .filter-btn, .side-btn, .shell-select, .custom-select, .nav-link
   max-height: 99999px;
 }
 .sub-formation {
-  padding: 0.75rem 1rem 0.75rem 1.5rem;
+  padding: 0 1rem 0 1.5rem;
   border-top: 1px solid rgba(47,79,79,0.5);
+}
+.sub-formation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  cursor: pointer;
+  user-select: none;
+}
+.sub-formation-header:hover {
+  background: rgba(138,43,226,0.06);
+}
+.sub-formation-header .chevron {
+  transition: transform 0.2s ease;
+  font-size: 0.7rem;
+}
+.sub-formation-header.open .chevron {
+  transform: rotate(180deg);
 }
 .sub-formation-name {
   font-size: 0.85rem;
   font-weight: 600;
   color: #8A2BE2;
-  margin-bottom: 0.75rem;
+}
+.sub-formation-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-bottom: 0;
+}
+.sub-formation-body.open {
+  max-height: 99999px;
+  padding-bottom: 0.75rem;
 }
 .play-chip {
   display: inline-block;

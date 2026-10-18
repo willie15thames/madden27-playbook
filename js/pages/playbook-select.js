@@ -5,11 +5,6 @@ import { OFFENSIVE_PLAYBOOKS, DEFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
 import { analyzePlaybookTendencies } from '../data/analytics.js';
 
-// Mobile menu
-document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-  document.getElementById('mobileMenu')?.classList.toggle('hidden');
-});
-
 const offenseTabBtn = document.getElementById('offenseTabBtn');
 const defenseTabBtn = document.getElementById('defenseTabBtn');
 const playbookSelector = document.getElementById('playbookSelector');
@@ -199,7 +194,11 @@ function buildFormationTree(pb, search) {
       <div class="formation-body">
         ${Object.entries(filteredSubs).sort(([a], [b]) => a.localeCompare(b)).map(([subName, plays]) => `
           <div class="sub-formation">
-            <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
+            <div class="sub-formation-header" data-sub="${subName}">
+              <div class="sub-formation-name">${subName} <span class="text-gray-600 text-xs">(${plays.length})</span></div>
+              <i class="bi bi-chevron-down chevron text-gray-500"></i>
+            </div>
+            <div class="sub-formation-body">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               ${[...plays].sort((a, b) => a.localeCompare(b)).map((play) => {
                 const playData = currentSide === 'offense' ? PLAY_TYPES[play] : null;
@@ -226,6 +225,7 @@ function buildFormationTree(pb, search) {
                 </div>`;
               }).join('')}
             </div>
+            </div>
           </div>
         `).join('')}
       </div>
@@ -234,17 +234,19 @@ function buildFormationTree(pb, search) {
     formationTree.appendChild(group);
   });
 
-  // If searching, auto-open all formations
+  // If searching, auto-open all formations and sub-formations
   if (lower) {
     formationTree.querySelectorAll('.formation-body').forEach(b => b.classList.add('open'));
     formationTree.querySelectorAll('.formation-header').forEach(h => h.classList.add('open'));
+    formationTree.querySelectorAll('.sub-formation-body').forEach(b => b.classList.add('open'));
+    formationTree.querySelectorAll('.sub-formation-header').forEach(h => h.classList.add('open'));
     formationTree.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => {
       renderCardCanvas(canvas);
     });
     reconnectCardObservers();
   }
 
-  // Accordion behavior
+  // Formation accordion behavior
   formationTree.querySelectorAll('.formation-header').forEach(header => {
     header.addEventListener('click', () => {
       const body = header.nextElementSibling;
@@ -252,8 +254,27 @@ function buildFormationTree(pb, search) {
       if (!lower) {
         formationTree.querySelectorAll('.formation-body').forEach(b => b.classList.remove('open'));
         formationTree.querySelectorAll('.formation-header').forEach(h => h.classList.remove('open'));
+        formationTree.querySelectorAll('.sub-formation-body').forEach(b => b.classList.remove('open'));
+        formationTree.querySelectorAll('.sub-formation-header').forEach(h => h.classList.remove('open'));
       }
       if (!isOpen) {
+        body.classList.add('open');
+        header.classList.add('open');
+      } else {
+        body.classList.remove('open');
+        header.classList.remove('open');
+      }
+      reconnectCardObservers();
+    });
+  });
+
+  // Sub-formation accordion behavior
+  formationTree.querySelectorAll('.sub-formation-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const body = header.nextElementSibling;
+      const wasOpen = body.classList.contains('open');
+      if (!wasOpen) {
         body.classList.add('open');
         header.classList.add('open');
         body.querySelectorAll('.play-card .play-art-canvas').forEach(canvas => renderCardCanvas(canvas));
