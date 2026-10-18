@@ -234,7 +234,7 @@ function render() {
       if (item.category === 'offense') {
         const fm = item.formation || 'Shotgun';
         const sf = item.subFormation || 'Spread Y-Flex';
-        const pn = item.data.variant?.family || item.data.variant?.name || item.name;
+        const pn = item.data.variant?.name || item.name;
         r.renderPlayCard(fm, sf, pn);
       } else {
         const fm = item.formation || 'Nickel';
@@ -373,7 +373,7 @@ function openDetail(item) {
   } else if (item.data.kind === 'offenseVariant') {
     currentSide = 'offense';
     const v = item.data.variant;
-    animItem = { offFormation: v.formation, offSubFormation: v.subFormation, playFamily: v.family || v.name, defFormation: 'Nickel', coverageName: 'Cover 3' };
+    animItem = { offFormation: v.formation, offSubFormation: v.subFormation, playFamily: v.name, defFormation: 'Nickel', coverageName: 'Cover 3' };
     openOffenseVariantDetail(v);
   } else if (item.data.kind === 'defenseVariant') {
     currentSide = 'defense';

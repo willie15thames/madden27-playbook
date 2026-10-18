@@ -68,8 +68,11 @@ if (cheatSheet) {
     `;
 
     // Click coverage name/card → navigate to Coverages page with search
+    // Use a search term that matches catalog naming (e.g. "Cover 1" → "Cover 1",
+    // but also "Tampa 2" → "Tampa", "Inverted Cover 2" → "Invert")
+    const searchTerm = cov.name.replace(/\s*\([^)]*\)/, '').trim();
     const navigateToCoverage = () => {
-      window.location.href = `pages/coverages.html?search=${encodeURIComponent(cov.name)}`;
+      window.location.href = `pages/coverages.html?search=${encodeURIComponent(searchTerm)}`;
     };
     card.addEventListener('click', (e) => {
       // If a tag was clicked, navigate to offenses instead

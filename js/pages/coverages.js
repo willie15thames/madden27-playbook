@@ -162,8 +162,18 @@ function findCoverage(name) {
     // Try exact match with "Cover X remainder"
     const exactCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === base);
     if (exactCover) return exactCover;
-    // Try keyword matching
+    // Try keyword matching (whole words and substrings like "skywk" containing "sky")
     if (remainder) {
+      const kwMap = ['robber', 'hole', 'invert', 'man', 'press', 'palms', 'match', 'cloud', 'sky', 'buzz', 'sink', 'lurk', 'hard flat', 'drop', 'zone'];
+      let bestKw = null, bestKwLen = 0;
+      for (const kw of kwMap) {
+        if (remainder.includes(kw) && kw.length > bestKwLen) {
+          const kwMatch = COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes(kw));
+          if (kwMatch) { bestKw = kwMatch; bestKwLen = kw.length; }
+        }
+      }
+      if (bestKw) return bestKw;
+      // Also try full words from remainder
       const kwMatch = COVERAGES.find(c => {
         const cn = c.name.toLowerCase();
         return cn.startsWith('cover ' + coverNum) && remainder.split(/\s+/).some(w => w.length > 1 && cn.includes(w));
@@ -183,16 +193,18 @@ function findCoverage(name) {
   if (best) return best;
 
   // 6. Special defense names and keyword mapping
-  const specialMap = {
-    'fire zone': 'cover 2 zone', 'mid blitz': 'cover 0', 'tampa': 'tampa',
-    'prevent': 'prevent', 'bracket': 'cover 2 man', 'double': 'cover 2 man',
-    'blitz': 'cover 0', 'zero blitz': 'cover 0', 'edge blitz': 'cover 1',
-    'pinch': 'cover 1', 'overload': 'cover 1', 'storm': 'cover 1',
-    'inverted': 'cover 2 invert', 'spy': 'cover 1', 'qb spy': 'cover 1',
-    'quarters': 'cover 4', 'palms': 'cover 4 palms', 'max': 'cover 0',
-    'sugar': 'cover 0'
-  };
-  for (const [kw, target] of Object.entries(specialMap)) {
+  // Ordered longest-first so more-specific terms match before generic ones
+  const specialMap = [
+    ['fire zone', 'cover 2 zone'], ['mid blitz', 'cover 0'], ['zero blitz', 'cover 0'],
+    ['edge blitz', 'cover 1'], ['tampa', 'tampa'], ['prevent', 'prevent'],
+    ['inverted', 'cover 2 invert'], ['qb spy', 'cover 1'],
+    ['quarters', 'cover 4'], ['palms', 'cover 4 palms'],
+    ['bracket', 'cover 2 man'], ['double', 'cover 2 man'],
+    ['pinch', 'cover 1'], ['overload', 'cover 1'], ['storm', 'cover 1'],
+    ['spy', 'cover 1'], ['max', 'cover 0'], ['sugar', 'cover 0'],
+    ['blitz', 'cover 0']
+  ];
+  for (const [kw, target] of specialMap) {
     if (base.includes(kw)) {
       const match = COVERAGES.find(c => c.name.toLowerCase().includes(target));
       if (match) return match;
@@ -266,10 +278,11 @@ function buildTree(filter, search, shell) {
     for (const [subName, plays] of Object.entries(subs)) {
       const matched = plays.filter(p => {
         const cov = findCoverage(p);
-        // Search matches play name, formation, subformation, or coverage description
+        // Search matches play name, formation, subformation, coverage name, or description
         if (lower && !p.toLowerCase().includes(lower)
             && !formation.toLowerCase().includes(lower)
-            && !subName.toLowerCase().includes(lower)) {
+            && !subName.toLowerCase().includes(lower)
+            && !(cov && cov.name.toLowerCase().includes(lower))) {
           if (!cov || !cov.description.toLowerCase().includes(lower)) return false;
         }
         if (filter !== 'all') {

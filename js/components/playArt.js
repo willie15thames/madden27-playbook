@@ -182,8 +182,9 @@ function buildOffensePositions(formation, subFormation) {
   let sub = (subFormation || '').toLowerCase().replace(/-/g, ' ').trim();
 
   // "Other" is a catch-all parent — check if subformation contains a known formation name
+  // Ordered longest-first so "power i" matches before "i form" and "strong" doesn't eat "power i strong"
   if (form === 'other') {
-    const knownForms = ['full house', 'split backs', 'split t', 'strong', 'near', 'weak', 'i form', 'power i', 'maryland i', 'wildcat', 'hail mary', 'pistol', 'singleback', 'gun', 'shotgun'];
+    const knownForms = ['maryland i', 'full house', 'split backs', 'hail mary', 'singleback', 'power i', 'split t', 'wildcat', 'shotgun', 'pistol', 'i form', 'strong', 'near', 'weak', 'far', 'gun'];
     for (const kf of knownForms) {
       if (sub.includes(kf) || sub.startsWith(kf)) {
         form = kf;
@@ -298,8 +299,12 @@ function buildOffensePositions(formation, subFormation) {
     pos.QB = [0.5, 0.65];
     pos.RB = [0.44, 0.76];
     pos.FB = [0.56, 0.76];
-    pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
-    if (sub.includes('wide')) { pos.WR3 = [0.22, 0.58]; }
+    if (sub.includes('wide')) {
+      // Wide variant: 3 WR, no TE (keeps roster at 11)
+      pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.22, 0.58]; pos.WR3 = [0.92, 0.58];
+    } else {
+      pos.TE = [0.75, 0.62]; pos.WR1 = [0.08, 0.58]; pos.WR2 = [0.92, 0.58];
+    }
     return pos;
   }
 
@@ -623,9 +628,11 @@ function buildOffensePositions(formation, subFormation) {
 
 // Build defensive positions dynamically from formation + subFormation names
 function buildDefensePositions(formation, subFormation) {
-  // Normalize: collapse multiple spaces, preserve hyphens in numbers like 3-4, 4-2-5
-  const form = (formation || '').toLowerCase().replace(/\s{2,}/g, ' ').trim();
-  const sub = (subFormation || '').toLowerCase().replace(/\s{2,}/g, ' ').trim();
+  // Normalize: collapse multiple spaces, then convert "3 3" → "3-3", "6 2" → "6-2", etc.
+  // This ensures catalog strings like "3 3 Cub" match the "3-3" branch checks.
+  const normalizeNumeric = s => s.replace(/\s{2,}/g, ' ').trim().replace(/(\d)\s+(\d)/g, '$1-$2');
+  const form = normalizeNumeric((formation || '').toLowerCase());
+  const sub = normalizeNumeric((subFormation || '').toLowerCase());
   const full = form + ' ' + sub;
 
   // Goal Line
@@ -1319,7 +1326,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'deep_third', FS: 'deep_third_mid',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'deep_third',
+    LB1: 'deep_third', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1340,33 +1347,33 @@ const DEF_ASSIGNMENTS = {
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 4': {
-    CB1: 'deep_third', CB2: 'deep_third',
+    CB1: 'deep_quarter', CB2: 'deep_quarter',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
-    SS: 'deep_third', FS: 'deep_third',
+    SS: 'deep_quarter', FS: 'deep_quarter',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 4 Palms': {
-    CB1: 'deep_third', CB2: 'deep_third',
+    CB1: 'deep_quarter', CB2: 'deep_quarter',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
-    SS: 'deep_third', FS: 'deep_third',
+    SS: 'deep_quarter', FS: 'deep_quarter',
     LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 4 Drop': {
-    CB1: 'deep_third', CB2: 'deep_third',
+    CB1: 'deep_quarter', CB2: 'deep_quarter',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
-    SS: 'deep_third', FS: 'deep_third',
+    SS: 'deep_quarter', FS: 'deep_quarter',
     LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 6': {
-    CB1: 'deep_third', CB2: 'deep_third',
+    CB1: 'deep_quarter', CB2: 'deep_half',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
-    SS: 'deep_half', FS: 'deep_third',
+    SS: 'deep_quarter', FS: 'deep_quarter',
     LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
     LOLB: 'curl_flat', ROLB: 'flat_zone',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
@@ -4114,7 +4121,7 @@ class PlayArtRenderer {
         } else {
           // For zone coverages: all non-DL get zone targets
           // For man coverages: only non-man-pool defenders (deep/robber/spy) get zone arrows
-          const NON_MAN_STATIC = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'robber', 'spy', 'contain']);
+          const NON_MAN_STATIC = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'deep_quarter', 'robber', 'spy', 'contain']);
           const showZone = coverageData.type === 'zone' || (coverageData.type !== 'zone' && NON_MAN_STATIC.has(defAssignment));
           if (showZone) {
             const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, pos, coverageName);
@@ -4310,10 +4317,11 @@ class PlayArtRenderer {
     const coverageData = this.getCoverageZones(coverageName);
 
     // Apply position overrides (from Scheme Builder custom edits)
+    // Only override keys that exist in the current formation to prevent extra players
     if (positionOverrides) {
       offPositions = { ...offPositions };
       for (const [key, pos] of Object.entries(positionOverrides)) {
-        if (!key.startsWith('_')) offPositions[key] = [...pos];
+        if (!key.startsWith('_') && offPositions[key]) offPositions[key] = [...pos];
       }
     }
     // Apply route overrides (from Scheme Builder custom edits)
@@ -4429,7 +4437,7 @@ class PlayArtRenderer {
     // Respect declared assignments: defenders with deep, robber, spy, or blitz roles
     // should NOT enter the man coverage pool.
     const manAssignments = {};
-    const NON_MAN_ROLES = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'robber', 'spy', 'contain',
+    const NON_MAN_ROLES = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'deep_quarter', 'robber', 'spy', 'contain',
       'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
     if (coverageData.type !== 'zone') {
       const blockingRoutes = new Set(['block', 'pass_block', 'stalk_block', 'crack_block', 'lead_block']);
@@ -4450,6 +4458,7 @@ class PlayArtRenderer {
         .filter(d => (d.isDB || d.isLB) && !d.isDL);
 
       // Separate defenders into man-eligible and special-role
+      // Only defenders with explicit man_trail or no declared assignment enter the man pool
       const manEligible = [];
       for (const def of manDefenders) {
         if (isRun && def.isLB) {
@@ -4459,10 +4468,13 @@ class PlayArtRenderer {
           };
           continue;
         }
-        // Defenders with special declared roles stay out of man pool
-        if (def.declaredAssignment && NON_MAN_ROLES.has(def.declaredAssignment)) {
-          continue; // will be handled by zone/blitz logic below
+        // If the defender has a declared assignment, only man_trail enters the man pool
+        if (def.declaredAssignment) {
+          if (def.declaredAssignment !== 'man_trail') {
+            continue; // zone, deep, blitz, robber etc. handled below
+          }
         }
+        // No declared assignment or declared man_trail → eligible for man coverage
         manEligible.push(def);
       }
 
@@ -5122,7 +5134,7 @@ class PlayArtRenderer {
     // 5. Fallback: use alignment for any other key.
     let isLeftSide;
     const leftKeys = new Set(['FS', 'CB1', 'LOLB', 'ILB1', 'LB1', 'NCB1']);
-    const rightKeys = new Set(['SS', 'CB2', 'ROLB', 'ILB2', 'LB2', 'NCB2']);
+    const rightKeys = new Set(['SS', 'CB2', 'ROLB', 'ILB2', 'LB2', 'LB3', 'NCB2']);
     if (leftKeys.has(key)) {
       isLeftSide = true;
     } else if (rightKeys.has(key)) {
@@ -5138,6 +5150,9 @@ class PlayArtRenderer {
         'deep_middle': ['deep_middle', 'tampa_mlb_deep'],
         'deep_third_mid': ['deep_third_mid', 'deep_middle'],
         'deep_third': isLeftSide ? ['deep_third_left', 'deep_third_mid'] : ['deep_third_right', 'deep_third_mid'],
+        'deep_quarter': isLeftSide
+          ? (key === 'FS' ? ['deep_quarter_2'] : ['deep_quarter_1'])
+          : (key === 'SS' ? ['deep_quarter_3'] : ['deep_quarter_4']),
         'flat_zone': isLeftSide ? ['flat_left', 'curl_flat_left'] : ['flat_right', 'curl_flat_right'],
         'hard_flat': isLeftSide ? ['flat_left', 'curl_flat_left'] : ['flat_right', 'curl_flat_right'],
         'curl_flat': isLeftSide ? ['curl_flat_left'] : ['curl_flat_right'],
@@ -5151,16 +5166,19 @@ class PlayArtRenderer {
         'contain': []
       };
       const candidates = assignmentZoneMap[assignment];
-      if (candidates) {
+      if (candidates && candidates.length > 0) {
+        // First try: match against the coverage's declared zone list
         for (const zName of candidates) {
           if (coverageData.zones.includes(zName)) {
             const z = ZONE_SHAPES[zName];
             if (z) return [z.x + z.w / 2, z.y + z.h / 2];
           }
         }
-        // If declared zone not in coverage's zone list, use ZONE_SHAPES directly
-        // This handles Tampa deep_middle when the coverage has tampa_mlb_deep
-        if (candidates.length > 0) {
+        // Second try: use the first valid shape from candidates.
+        // This is restricted to deep_middle/tampa_mlb_deep (Tampa's middle runner)
+        // to avoid sending Cover 4 defenders to third zones.
+        const allowFallback = assignment === 'deep_middle' || assignment === 'deep_third_mid';
+        if (allowFallback) {
           for (const zName of candidates) {
             const z = ZONE_SHAPES[zName];
             if (z) return [z.x + z.w / 2, z.y + z.h / 2];
@@ -5725,10 +5743,11 @@ class PlayArtRenderer {
     let playData = isOff ? this.getPlayRoutes(playFamily) : null;
 
     // Apply position overrides (from Scheme Builder custom edits)
+    // Only override keys present in the current formation to prevent extra players
     if (positionOverrides && offPositions) {
       offPositions = { ...offPositions };
       for (const [key, pos] of Object.entries(positionOverrides)) {
-        if (!key.startsWith('_')) offPositions[key] = [...pos];
+        if (!key.startsWith('_') && offPositions[key]) offPositions[key] = [...pos];
       }
     }
     // Apply route overrides (from Scheme Builder custom edits)
@@ -5808,7 +5827,7 @@ class PlayArtRenderer {
       const dbKeysLocal = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
 
       // Use same assignment-aware logic as the full renderer (renderLivePlay)
-      const NON_MAN_ROLES_LOCAL = new Set(['deep_half', 'deep_middle', 'deep_middle_mid', 'deep_third', 'deep_third_mid', 'robber', 'spy', 'contain',
+      const NON_MAN_ROLES_LOCAL = new Set(['deep_half', 'deep_middle', 'deep_third', 'deep_third_mid', 'deep_quarter', 'robber', 'spy', 'contain',
         'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
       const manDropTargets = {};
       if (coverageData && coverageData.type !== 'zone') {

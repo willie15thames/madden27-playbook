@@ -336,8 +336,10 @@ function updateAnimation() {
   renderer.loopEnabled = isLooping;
   activeRenderer = renderer;
 
-  const formation = fmSelect.value || 'Gun';
-  const subFormation = sfSelect.value || 'Spread Y-Flex';
+  // Use the canonical model state, not the dropdown values, to prevent desync
+  // when Creator sets a formation that doesn't exist in the selected playbook's dropdown.
+  const formation = currentFormation || fmSelect.value || 'Gun';
+  const subFormation = currentSubFormation || sfSelect.value || '';
   const play = currentPlay || 'Inside Zone';
 
   // Pass custom positions/routes if the user has edited them
