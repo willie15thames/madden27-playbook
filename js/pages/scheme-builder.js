@@ -134,6 +134,21 @@ function clearSchemeBuilderState() {
   if (typeEl) typeEl.textContent = 'Choose a playbook, formation, and play above';
   if (vsEl) { vsEl.textContent = ''; vsEl.className = 'text-xs text-gray-500'; }
 
+  // Reset flip state — prevents stale position snapshots from old formations
+  isFlipped = false;
+  originalPlayerPositions = null;
+  originalPlayerRoutes = null;
+  if (originalRoutePaths) {
+    for (const routeName of Object.keys(ROUTE_PATHS_LOCAL)) {
+      if (originalRoutePaths[routeName]) {
+        ROUTE_PATHS_LOCAL[routeName] = originalRoutePaths[routeName].map(wp => [...wp]);
+      }
+    }
+  }
+  originalRoutePaths = null;
+  const btnFlipEl = document.getElementById('btnFlip');
+  if (btnFlipEl) btnFlipEl.classList.remove('active');
+
   // Destroy active renderer
   if (activeRenderer) { activeRenderer.destroy(); activeRenderer = null; }
 }
@@ -1246,6 +1261,12 @@ function initCreatorControls() {
   if (creatorFormation) {
     creatorFormation.addEventListener('change', () => {
       currentFormation = creatorFormation.value || 'Gun';
+      // Sync main formation select if it has this value
+      if (fmSelect) {
+        const matchOpt = [...fmSelect.options].find(o => o.value === currentFormation);
+        if (matchOpt) fmSelect.value = currentFormation;
+      }
+      clearSchemeBuilderState();
       resetInteractivePositions();
       if (currentPlay) loadPlayRoutes();
       renderInteractive();
@@ -1445,8 +1466,25 @@ function loadScheme(name) {
   currentPlay = scheme.currentPlay || null;
   currentCoverage = scheme.currentCoverage || null;
   isFlipped = scheme.isFlipped || false;
-  playerPositions = scheme.playerPositions ? { ...scheme.playerPositions } : {};
-  playerRoutes = scheme.playerRoutes ? { ...scheme.playerRoutes } : {};
+
+  // Validate position overrides against the current formation's roster
+  // This prevents stale keys from producing 12+ player merges
+  const tempRenderer = new PlayArtRenderer(liveCanvas, { width: 640, height: 480 });
+  const validKeys = new Set(Object.keys(tempRenderer.getOffensePositions(currentFormation, currentSubFormation)));
+  tempRenderer.destroy();
+
+  playerPositions = {};
+  if (scheme.playerPositions) {
+    for (const [k, v] of Object.entries(scheme.playerPositions)) {
+      if (validKeys.has(k)) playerPositions[k] = v;
+    }
+  }
+  playerRoutes = {};
+  if (scheme.playerRoutes) {
+    for (const [k, v] of Object.entries(scheme.playerRoutes)) {
+      if (k.startsWith('_') || validKeys.has(k)) playerRoutes[k] = v;
+    }
+  }
   selectedPlayer = null;
 
   // Restore select cascade: playbook -> formation -> sub-formation -> play

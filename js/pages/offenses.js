@@ -4,30 +4,42 @@ import { OFFENSIVE_PLAYBOOKS } from '../data/playbooks.js';
 import { PlayArtRenderer } from '../components/playArt.js';
 import { calculateMatchupGrade, getConceptKey, CONCEPT_LABELS } from '../data/analytics.js';
 
-// Build a lookup: playName -> Set of playbook names that contain it
+// Build lookups: playName -> Set<bookName>, and formation/sub/play -> Set<bookName>
 function buildPlaybookLookup() {
-  const lookup = {};
+  const byName = {};
+  const byFull = {};
   for (const book of OFFENSIVE_PLAYBOOKS) {
     for (const [formation, subs] of Object.entries(book.formations)) {
       for (const [subFormation, plays] of Object.entries(subs)) {
         for (const play of plays) {
-          const key = play.toLowerCase();
-          if (!lookup[key]) lookup[key] = new Set();
-          lookup[key].add(book.name);
+          const nameKey = play.toLowerCase();
+          if (!byName[nameKey]) byName[nameKey] = new Set();
+          byName[nameKey].add(book.name);
+          // Full identity key preserves formation context
+          const fullKey = `${formation}|${subFormation}|${play}`.toLowerCase();
+          if (!byFull[fullKey]) byFull[fullKey] = new Set();
+          byFull[fullKey].add(book.name);
         }
       }
     }
   }
-  return lookup;
+  return { byName, byFull };
 }
 const PLAYBOOK_LOOKUP = buildPlaybookLookup();
 
-function getPlaybooks(playName) {
+function getPlaybooks(playName, formation, subFormation) {
+  // If formation context provided, use full identity for accurate count
+  if (formation && subFormation) {
+    const fullKey = `${formation}|${subFormation}|${playName}`.toLowerCase();
+    const fullMatch = PLAYBOOK_LOOKUP.byFull[fullKey];
+    if (fullMatch && fullMatch.size > 0) return [...fullMatch].sort();
+  }
+  // Fallback: name-only match
   const key = playName.toLowerCase();
-  const exact = PLAYBOOK_LOOKUP[key];
+  const exact = PLAYBOOK_LOOKUP.byName[key];
   if (exact) return [...exact].sort();
   const matches = new Set();
-  for (const [k, books] of Object.entries(PLAYBOOK_LOOKUP)) {
+  for (const [k, books] of Object.entries(PLAYBOOK_LOOKUP.byName)) {
     if (k.includes(key) || key.includes(k)) {
       for (const b of books) matches.add(b);
     }
@@ -401,8 +413,8 @@ function openModal(name, play, variants, formation, subFormation) {
     <p class="text-xs text-gray-500 mb-4">Formation: ${fm} / ${sf}</p>
 
     <div class="results-section mb-4">
-      <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getPlaybooks(name).length})</h4>
-      <div class="flex flex-wrap">${getPlaybooks(name).map(p => `<span class="tag-purple">${p}</span>`).join('')}</div>
+      <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getPlaybooks(name, fm, sf).length})</h4>
+      <div class="flex flex-wrap">${getPlaybooks(name, fm, sf).map(p => `<span class="tag-purple">${p}</span>`).join('')}</div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -575,7 +587,7 @@ function openModal(name, play, variants, formation, subFormation) {
     const thumb = document.getElementById(`offVar${vi}`);
     if (thumb) {
       const r = new PlayArtRenderer(thumb, { width: 75, height: 60 });
-      r.renderPlayCard(v.formation, v.subFormation, v.family || v.name);
+      r.renderPlayCard(v.formation, v.subFormation, v.name);
       renderers.push(r);
     }
   });
@@ -594,7 +606,7 @@ function openModal(name, play, variants, formation, subFormation) {
         if (bigCanvas && !bigCanvas.dataset.rendered) {
           const v = variants[vi];
           const r = new PlayArtRenderer(bigCanvas, { width: 300, height: 240 });
-          r.renderPlayCard(v.formation, v.subFormation, v.family || v.name);
+          r.renderPlayCard(v.formation, v.subFormation, v.name);
           renderers.push(r);
           bigCanvas.dataset.rendered = '1';
         }
@@ -689,4 +701,11 @@ function refreshActiveCards() {
 }
 
 buildPosFilter();
-buildTree();
+
+// Read URL search parameter (from home quick-reference links)
+const urlParams = new URLSearchParams(window.location.search);
+const urlSearch = urlParams.get('search') || '';
+if (urlSearch && searchInput) {
+  searchInput.value = urlSearch;
+}
+buildTree('all', searchInput ? searchInput.value : '');

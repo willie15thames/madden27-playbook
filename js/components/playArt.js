@@ -178,8 +178,21 @@ const OL_WIDE = { LT: [0.28, 0.62], LG: [0.36, 0.62], C: [0.5, 0.62], RG: [0.64,
 
 // Build offensive positions dynamically from formation + subFormation names
 function buildOffensePositions(formation, subFormation) {
-  const form = (formation || '').toLowerCase();
-  const sub = (subFormation || '').toLowerCase();
+  let form = (formation || '').toLowerCase().replace(/-/g, ' ').trim();
+  let sub = (subFormation || '').toLowerCase().replace(/-/g, ' ').trim();
+
+  // "Other" is a catch-all parent — check if subformation contains a known formation name
+  if (form === 'other') {
+    const knownForms = ['full house', 'split backs', 'split t', 'strong', 'near', 'weak', 'i form', 'power i', 'maryland i', 'wildcat', 'hail mary', 'pistol', 'singleback', 'gun', 'shotgun'];
+    for (const kf of knownForms) {
+      if (sub.includes(kf) || sub.startsWith(kf)) {
+        form = kf;
+        sub = sub.replace(kf, '').trim();
+        break;
+      }
+    }
+  }
+
   const full = form + ' ' + sub;
 
   // OL base
@@ -610,8 +623,9 @@ function buildOffensePositions(formation, subFormation) {
 
 // Build defensive positions dynamically from formation + subFormation names
 function buildDefensePositions(formation, subFormation) {
-  const form = (formation || '').toLowerCase().replace(/\s{2,}/g, '-');
-  const sub = (subFormation || '').toLowerCase().replace(/\s{2,}/g, '-');
+  // Normalize: collapse multiple spaces, preserve hyphens in numbers like 3-4, 4-2-5
+  const form = (formation || '').toLowerCase().replace(/\s{2,}/g, ' ').trim();
+  const sub = (subFormation || '').toLowerCase().replace(/\s{2,}/g, ' ').trim();
   const full = form + ' ' + sub;
 
   // Goal Line
@@ -682,7 +696,8 @@ function buildDefensePositions(formation, subFormation) {
   }
 
   // Dime formations (4 DL, 1 LB, 6 DB)
-  if (form.includes('dime') || form.includes('2-5')) {
+  // Use exact '2-5' check — exclude '4-2-5' (Nickel) and '2-4-5' (already handled above)
+  if (form.includes('dime') || (form.includes('2-5') && !form.includes('4-2-5') && !form.includes('2-4-5'))) {
     const isDblMug = full.includes('dbl mug') || full.includes('double mug');
     const isSingleMug = full.includes('single mug');
 
@@ -724,27 +739,29 @@ function buildDefensePositions(formation, subFormation) {
   if (form.includes('nickel') || form.includes('4-2-5')) {
     const isDblMug = full.includes('dbl mug') || full.includes('double mug');
     const isSwapDblMug = full.includes('swap dbl mug') || full.includes('swap double mug');
+    const is33 = full.includes('3-3') && !full.includes('3-3-5');
 
+    // Check 3-3 fronts BEFORE Double Mug to prevent 3-3 Dbl Mug hitting generic 4-DL Mug
+    if (is33) {
+      const isCub = full.includes('cub');
+      const isJack = full.includes('jack');
+      const isWide = full.includes('wide');
+      const isMug = isDblMug || full.includes('mug');
+      return {
+        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
+        LB1: [isCub ? 0.20 : isMug ? 0.38 : 0.30, isCub ? 0.52 : isMug ? 0.57 : 0.48],
+        LB2: [0.50, isMug ? 0.57 : 0.48],
+        LB3: [isJack ? 0.80 : isMug ? 0.62 : 0.70, isJack ? 0.52 : isMug ? 0.57 : 0.48],
+        CB1: [0.06, isWide ? 0.40 : 0.42], NCB: [0.25, 0.42], CB2: [0.94, isWide ? 0.40 : 0.42],
+        SS: [0.65, 0.30], FS: [0.50, 0.20]
+      };
+    }
     if (isDblMug || isSwapDblMug) {
       // Double Mug: 2 LBs mugged up at the LOS between DL
       return {
         LE: [0.25, 0.56], DT1: [0.42, 0.56], DT2: [0.58, 0.56], RE: [0.75, 0.56],
         LB1: [0.38, 0.57], LB2: [0.62, 0.57],
         CB1: [0.06, 0.42], NCB: [0.25, 0.42], CB2: [0.94, 0.42],
-        SS: [0.65, 0.30], FS: [0.50, 0.20]
-      };
-    }
-    if (full.includes('3-3') && !full.includes('3-3-5')) {
-      // Nickel 3-3: 3 DL, 3 LBs
-      const isCub = full.includes('cub');
-      const isJack = full.includes('jack');
-      const isWide = full.includes('wide');
-      return {
-        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
-        LB1: [isCub ? 0.20 : 0.30, isCub ? 0.52 : 0.48],
-        LB2: [0.50, 0.48],
-        LB3: [isJack ? 0.80 : 0.70, isJack ? 0.52 : 0.48],
-        CB1: [0.06, isWide ? 0.40 : 0.42], NCB: [0.25, 0.42], CB2: [0.94, isWide ? 0.40 : 0.42],
         SS: [0.65, 0.30], FS: [0.50, 0.20]
       };
     }
@@ -812,21 +829,21 @@ function buildDefensePositions(formation, subFormation) {
 
   // 4-3 Defense
   if (form.includes('4-3')) {
-    if (sub.includes('under')) {
+    if (full.includes('under')) {
       return {
         LE: [0.28, 0.56], DT1: [0.42, 0.56], DT2: [0.60, 0.56], RE: [0.75, 0.56],
         LOLB: [0.15, 0.48], MLB: [0.48, 0.46], ROLB: [0.82, 0.48],
         CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.35, 0.32], FS: [0.50, 0.22]
       };
     }
-    if (sub.includes('wide')) {
+    if (full.includes('wide')) {
       return {
         LE: [0.20, 0.56], DT1: [0.38, 0.56], DT2: [0.62, 0.56], RE: [0.80, 0.56],
         LOLB: [0.15, 0.48], MLB: [0.50, 0.46], ROLB: [0.85, 0.48],
         CB1: [0.04, 0.42], CB2: [0.96, 0.42], SS: [0.65, 0.32], FS: [0.50, 0.22]
       };
     }
-    if (sub.includes('odd')) {
+    if (full.includes('odd')) {
       return {
         DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56], RE: [0.82, 0.54],
         LOLB: [0.18, 0.48], MLB: [0.50, 0.46], ROLB: [0.82, 0.48],
@@ -843,8 +860,13 @@ function buildDefensePositions(formation, subFormation) {
 
   // 3-4 Defense
   if (form.includes('3-4')) {
-    const isCub = sub.includes('cub');
-    const isBear = sub.includes('bear');
+    const isBear = full.includes('bear');
+    const isCub = full.includes('cub');
+    const isUnder = full.includes('under');
+    const isOver = full.includes('over') && !full.includes('cover');
+    const isEven = full.includes('even');
+    const isTite = full.includes('tite') || full.includes('grizzly');
+    const isWide = full.includes('wide');
     if (isBear) {
       return {
         DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
@@ -857,6 +879,46 @@ function buildDefensePositions(formation, subFormation) {
         DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
         LOLB: [0.18, 0.52], ILB1: [0.38, 0.48], ILB2: [0.62, 0.48], ROLB: [0.82, 0.52],
         CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    if (isUnder) {
+      // Under: DE2 shifts inside, ROLB walks up to edge
+      return {
+        DE1: [0.30, 0.56], NT: [0.50, 0.56], DE2: [0.65, 0.56],
+        LOLB: [0.18, 0.50], ILB1: [0.38, 0.48], ILB2: [0.58, 0.48], ROLB: [0.80, 0.54],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    if (isOver) {
+      // Over: strength shifted to offensive strong side
+      return {
+        DE1: [0.28, 0.56], NT: [0.45, 0.56], DE2: [0.68, 0.56],
+        LOLB: [0.18, 0.50], ILB1: [0.40, 0.48], ILB2: [0.62, 0.48], ROLB: [0.82, 0.50],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    if (isEven) {
+      // Even: NT shaded head-up on center, balanced DL spacing
+      return {
+        DE1: [0.28, 0.56], NT: [0.50, 0.56], DE2: [0.72, 0.56],
+        LOLB: [0.20, 0.50], ILB1: [0.40, 0.48], ILB2: [0.60, 0.48], ROLB: [0.80, 0.50],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    if (isTite) {
+      // Tite/Grizzly: tight DL spacing, LBs close to box
+      return {
+        DE1: [0.32, 0.56], NT: [0.50, 0.56], DE2: [0.68, 0.56],
+        LOLB: [0.22, 0.52], ILB1: [0.40, 0.48], ILB2: [0.60, 0.48], ROLB: [0.78, 0.52],
+        CB1: [0.06, 0.42], CB2: [0.94, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
+      };
+    }
+    if (isWide) {
+      // Wide: spread DL, LBs wider
+      return {
+        DE1: [0.25, 0.56], NT: [0.50, 0.56], DE2: [0.75, 0.56],
+        LOLB: [0.15, 0.50], ILB1: [0.38, 0.48], ILB2: [0.62, 0.48], ROLB: [0.85, 0.50],
+        CB1: [0.04, 0.42], CB2: [0.96, 0.42], SS: [0.65, 0.35], FS: [0.50, 0.22]
       };
     }
     // Default 3-4 Odd
@@ -887,10 +949,10 @@ function applyAdjustmentPositions(positions, adjustments, side) {
   const p = {};
   for (const [k, v] of Object.entries(positions)) p[k] = [...v];
 
-  const DL_KEYS = ['DT', 'DT1', 'DT2', 'LE', 'RE', 'NT'];
-  const LB_KEYS = ['MLB', 'LOLB', 'ROLB', 'LILB', 'RILB', 'MLB1', 'MLB2', 'WLB', 'SLB'];
-  const DB_KEYS = ['CB1', 'CB2', 'CB3', 'CB4', 'NCB', 'SCB'];
-  const S_KEYS = ['SS', 'FS'];
+  const DL_KEYS = ['DT', 'DT1', 'DT2', 'LE', 'RE', 'NT', 'DE1', 'DE2', 'DL1', 'DL2', 'DL3', 'DL4', 'DL5', 'DL6'];
+  const LB_KEYS = ['MLB', 'LOLB', 'ROLB', 'LILB', 'RILB', 'MLB1', 'MLB2', 'WLB', 'SLB', 'LB', 'LB1', 'LB2', 'LB3', 'LB4', 'ILB1', 'ILB2'];
+  const DB_KEYS = ['CB1', 'CB2', 'CB3', 'CB4', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SCB'];
+  const S_KEYS = ['SS', 'FS', 'S'];
 
   if (side === 'defense' || side === 'both') {
     // DL adjustments
@@ -1321,9 +1383,10 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB1: 'hook_zone', LB2: 'deep_middle', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
-    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'deep_middle'
+    ILB1: 'hook_zone', ILB2: 'deep_middle', MLB: 'deep_middle',
+    LB: 'deep_middle'
   },
   'Prevent': {
     CB1: 'deep_third', CB2: 'deep_third',
@@ -4357,27 +4420,49 @@ class PlayArtRenderer {
     const dbKeys = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
 
     // Pre-compute man coverage 1-to-1 assignments to avoid multiple DBs on same WR
+    // Respect declared assignments: defenders with deep, robber, spy, or blitz roles
+    // should NOT enter the man coverage pool.
     const manAssignments = {};
+    const NON_MAN_ROLES = new Set(['deep_half', 'deep_middle', 'deep_third', 'robber', 'spy', 'contain',
+      'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
     if (coverageData.type !== 'zone') {
       const blockingRoutes = new Set(['block', 'pass_block', 'stalk_block', 'crack_block', 'lead_block']);
       const receivers = offPlayers.filter(p => !p.isOL && !p.isQB && !blockingRoutes.has(p.routeName));
       const assignedReceivers = new Set();
-      // Sort defenders: DBs first (by proximity priority), then LBs
+      // Build defender list, checking declared assignments
       const manDefenders = defEntries
-        .map(([key, pos]) => ({ key, pos, isDB: dbKeys.includes(key), isLB: lbKeys.includes(key), isDL: dlKeys.includes(key) }))
+        .map(([key, pos]) => {
+          const declaredAssignment = coverageName ? getDefAssignment(coverageName, key) : null;
+          return {
+            key, pos,
+            isDB: dbKeys.includes(key),
+            isLB: lbKeys.includes(key),
+            isDL: dlKeys.includes(key),
+            declaredAssignment
+          };
+        })
         .filter(d => (d.isDB || d.isLB) && !d.isDL);
-      // DBs get first pick, then LBs
-      manDefenders.sort((a, b) => (b.isDB ? 1 : 0) - (a.isDB ? 1 : 0));
+
+      // Separate defenders into man-eligible and special-role
+      const manEligible = [];
       for (const def of manDefenders) {
         if (isRun && def.isLB) {
           manAssignments[def.key] = {
             endPos: [def.pos[0], def.pos[1] + 0.06],
-            receiver: null,
-            followFactor: 0,
-            offset: [0, 0]
+            receiver: null, followFactor: 0, offset: [0, 0]
           };
           continue;
         }
+        // Defenders with special declared roles stay out of man pool
+        if (def.declaredAssignment && NON_MAN_ROLES.has(def.declaredAssignment)) {
+          continue; // will be handled by zone/blitz logic below
+        }
+        manEligible.push(def);
+      }
+
+      // Man-eligible DBs get first pick, then LBs
+      manEligible.sort((a, b) => (b.isDB ? 1 : 0) - (a.isDB ? 1 : 0));
+      for (const def of manEligible) {
         let nearest = null, minDist = Infinity;
         for (const r of receivers) {
           if (assignedReceivers.has(r)) continue;
@@ -4422,9 +4507,15 @@ class PlayArtRenderer {
         const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos, coverageName);
         if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
       } else {
-        // Man: use pre-computed 1-to-1 assignment
+        // Man coverage: use pre-computed 1-to-1 assignment if available
         const manTarget = manAssignments[key];
-        if (manTarget) { endX = manTarget.endPos[0]; endY = manTarget.endPos[1]; }
+        if (manTarget) {
+          endX = manTarget.endPos[0]; endY = manTarget.endPos[1];
+        } else {
+          // Defender not in man pool (deep helper, robber, spy) — use zone destination
+          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, isRun, startPos, coverageName);
+          if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+        }
       }
 
       // Look up defensive assignment from DEF_ASSIGNMENTS
@@ -5015,7 +5106,17 @@ class PlayArtRenderer {
 
     // Use declared assignment to determine zone target
     const assignment = coverageName ? getDefAssignment(coverageName, key) : null;
-    const isLeftSide = startPos[0] < 0.5;
+    // Determine side: for deep safeties, use role convention (FS=left, SS=right) rather than
+    // position alone, since FS at exactly 0.50 would otherwise go to the wrong half.
+    // For other players, use alignment.
+    let isLeftSide;
+    if (key === 'FS') {
+      isLeftSide = startPos[0] <= 0.5;
+    } else if (key === 'SS') {
+      isLeftSide = startPos[0] < 0.45; // SS is typically right-side
+    } else {
+      isLeftSide = startPos[0] < 0.5;
+    }
 
     if (assignment) {
       // Map assignment type to specific zone shapes based on player side
@@ -5684,22 +5785,25 @@ class PlayArtRenderer {
       const lbKeys = ['LOLB', 'ROLB', 'ILB1', 'ILB2', 'MLB', 'LB', 'LB1', 'LB2', 'LB3', 'LB4'];
       const dbKeysLocal = ['CB1', 'CB2', 'NCB', 'NCB1', 'NCB2', 'NCB3', 'SS', 'FS', 'S'];
 
-      // For man coverage, compute zone-like drop targets so DBs move
+      // For man coverage, compute drop targets — but respect declared assignments
+      // Defenders with deep/robber/blitz roles should NOT follow man drops
       const manDropTargets = {};
+      const NON_MAN_ROLES_LOCAL = new Set(['deep_half', 'deep_middle', 'deep_third', 'robber', 'spy', 'contain',
+        'blitz_a', 'blitz_b', 'blitz_edge', 'rush_a_gap', 'rush_b_gap']);
       if (coverageData && coverageData.type === 'man') {
-        // Simulate man coverage movement: DBs drop toward receiver areas
         const defEntries = Object.entries(defPositions);
         const dbDefs = defEntries.filter(([k]) => dbKeysLocal.includes(k));
         const lbDefs = defEntries.filter(([k]) => lbKeys.includes(k));
-        // DBs shadow toward their side's receiver zone
         for (const [key, pos] of dbDefs) {
+          const declAssign = coverageName ? getDefAssignment(coverageName, key) : null;
+          if (declAssign && NON_MAN_ROLES_LOCAL.has(declAssign)) continue; // use zone target instead
           if (key === 'CB1') manDropTargets[key] = [pos[0] + 0.02, pos[1] - 0.12];
           else if (key === 'CB2') manDropTargets[key] = [pos[0] - 0.02, pos[1] - 0.12];
-          else if (key === 'FS') manDropTargets[key] = [pos[0], pos[1] - 0.08];
-          else if (key === 'SS') manDropTargets[key] = [pos[0] - 0.04, pos[1] - 0.06];
           else manDropTargets[key] = [pos[0], pos[1] - 0.08];
         }
         for (const [key, pos] of lbDefs) {
+          const declAssign = coverageName ? getDefAssignment(coverageName, key) : null;
+          if (declAssign && NON_MAN_ROLES_LOCAL.has(declAssign)) continue;
           manDropTargets[key] = [pos[0], pos[1] + 0.04];
         }
       }
@@ -5711,11 +5815,17 @@ class PlayArtRenderer {
         let endX = startPos[0], endY = startPos[1];
         if (isDL) { endY = 0.60; }
         else if (coverageData && coverageData.type === 'zone') {
-          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos);
+          const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos, coverageName);
           if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
-        } else if (coverageData && coverageData.type === 'man' && manDropTargets[key]) {
-          endX = manDropTargets[key][0];
-          endY = manDropTargets[key][1];
+        } else if (coverageData && coverageData.type === 'man') {
+          if (manDropTargets[key]) {
+            endX = manDropTargets[key][0];
+            endY = manDropTargets[key][1];
+          } else {
+            // Defender not in man pool (deep helper, robber) — use zone destination
+            const zoneTarget = this._getDefenderZoneTarget(key, isLB, isDB, coverageData, false, startPos, coverageName);
+            if (zoneTarget) { endX = zoneTarget[0]; endY = zoneTarget[1]; }
+          }
         }
         // Look up defensive assignment from DEF_ASSIGNMENTS
         const defAssignment = getDefAssignment(coverageName, key);

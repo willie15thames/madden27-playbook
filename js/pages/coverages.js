@@ -5,29 +5,39 @@ import { PlayArtRenderer } from '../components/playArt.js';
 
 // Build lookup: coverageName -> Set of defensive playbook names containing it
 function buildDefPlaybookLookup() {
-  const lookup = {};
+  const byName = {};
+  const byFull = {};
   for (const book of DEFENSIVE_PLAYBOOKS) {
     for (const [formation, subs] of Object.entries(book.formations || {})) {
       for (const [subFormation, plays] of Object.entries(subs)) {
         for (const play of plays) {
           const key = play.toLowerCase();
-          if (!lookup[key]) lookup[key] = new Set();
-          lookup[key].add(book.name);
+          if (!byName[key]) byName[key] = new Set();
+          byName[key].add(book.name);
+          const fullKey = `${formation}|${subFormation}|${play}`.toLowerCase();
+          if (!byFull[fullKey]) byFull[fullKey] = new Set();
+          byFull[fullKey].add(book.name);
         }
       }
     }
   }
-  return lookup;
+  return { byName, byFull };
 }
 const DEF_PLAYBOOK_LOOKUP = buildDefPlaybookLookup();
 
-function getDefPlaybooks(covName) {
+function getDefPlaybooks(covName, formation, subFormation) {
+  // Full identity match if context provided
+  if (formation && subFormation) {
+    const fullKey = `${formation}|${subFormation}|${covName}`.toLowerCase();
+    const fullMatch = DEF_PLAYBOOK_LOOKUP.byFull[fullKey];
+    if (fullMatch && fullMatch.size > 0) return [...fullMatch].sort();
+  }
   const key = covName.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
-  const exact = DEF_PLAYBOOK_LOOKUP[key];
+  const exact = DEF_PLAYBOOK_LOOKUP.byName[key];
   if (exact) return [...exact].sort();
   const sigWords = key.replace(/^cover\s+/, '').split(/\s+/).filter(w => w.length > 0);
   const matches = new Set();
-  for (const [k, books] of Object.entries(DEF_PLAYBOOK_LOOKUP)) {
+  for (const [k, books] of Object.entries(DEF_PLAYBOOK_LOOKUP.byName)) {
     if (k.includes(key) || key.includes(k)) {
       for (const b of books) matches.add(b);
       continue;
@@ -93,24 +103,35 @@ function getTypeClass(type) {
 function findCoverage(name) {
   if (!name) return null;
   const nl = name.toLowerCase().trim();
-  const base = nl.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/i, '').trim();
+  // Strip formation suffix (e.g. "- Nickel 2", "- Dime", "- 4-2")
+  let base = nl.replace(/\s*-\s*(nickel|dime|quarter|3-3|4-2|dollar)\s*\d*$/i, '').trim();
+  // Strip presnap presentation modifiers (e.g. "Show 2" is a disguise, not the coverage)
+  base = base.replace(/\s+show\s+\d+/i, '').trim();
+
+  // 1. Exact match
   const exact = COVERAGES.find(c => c.name.toLowerCase() === base);
   if (exact) return exact;
+
+  // 2. Match by ID
   const byId = COVERAGES.find(c => base.replace(/\s+/g, '') === c.id);
   if (byId) return byId;
+
+  // 3. Leading number = "Cover X ..."
   const numPrefix = base.match(/^(\d)\s+(.*)/);
   if (numPrefix) {
-    const expanded = 'cover ' + numPrefix[1] + ' ' + numPrefix[2];
+    const coverNum = numPrefix[1];
+    const remainder = numPrefix[2];
+    const expanded = 'cover ' + coverNum + ' ' + remainder;
     const sorted = [...COVERAGES].sort((a, b) => {
       const al = a.name.replace(/\s*\([^)]*\)/, '').trim().length;
       const bl = b.name.replace(/\s*\([^)]*\)/, '').trim().length;
       return bl - al;
     });
-    const remWords = numPrefix[2].split(/\s+/).filter(w => w.length > 1);
+    const remWords = remainder.split(/\s+/).filter(w => w.length > 1);
     let bestCov = null, bestScore = 0;
     for (const c of sorted) {
       const cn = c.name.replace(/\s*\([^)]*\)/, '').trim().toLowerCase();
-      if (!cn.startsWith('cover ' + numPrefix[1])) continue;
+      if (!cn.startsWith('cover ' + coverNum)) continue;
       if (cn === expanded || expanded.startsWith(cn + ' ')) {
         const score = 100 + cn.length;
         if (score > bestScore) { bestScore = score; bestCov = c; }
@@ -119,15 +140,49 @@ function findCoverage(name) {
       if (wordScore > 0 && wordScore > bestScore) { bestScore = wordScore; bestCov = c; }
     }
     if (bestCov) return bestCov;
-    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + numPrefix[1]);
+
+    // Keyword matching for common coverage variants
+    const kwMap = ['robber', 'hole', 'invert', 'man', 'press', 'palms', 'match', 'cloud', 'sky', 'buzz', 'sink', 'lurk', 'hard flat', 'drop', 'zone'];
+    for (const kw of kwMap) {
+      if (remainder.includes(kw)) {
+        const kwMatch = COVERAGES.find(c => c.name.toLowerCase().includes('cover ' + coverNum) && c.name.toLowerCase().includes(kw));
+        if (kwMatch) return kwMatch;
+      }
+    }
+
+    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + coverNum);
     if (baseCover) return baseCover;
   }
+
+  // 4. "Cover X ..." format already in name
+  const coverMatch = base.match(/^cover\s+(\d)\s*(.*)/);
+  if (coverMatch) {
+    const coverNum = coverMatch[1];
+    const remainder = coverMatch[2].trim();
+    // Try exact match with "Cover X remainder"
+    const exactCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === base);
+    if (exactCover) return exactCover;
+    // Try keyword matching
+    if (remainder) {
+      const kwMatch = COVERAGES.find(c => {
+        const cn = c.name.toLowerCase();
+        return cn.startsWith('cover ' + coverNum) && remainder.split(/\s+/).some(w => w.length > 1 && cn.includes(w));
+      });
+      if (kwMatch) return kwMatch;
+    }
+    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + coverNum);
+    if (baseCover) return baseCover;
+  }
+
+  // 5. Longest coverage name substring match
   let best = null, bestLen = 0;
   for (const c of COVERAGES) {
     const cn = c.name.split('(')[0].trim().toLowerCase();
     if (base.includes(cn) && cn.length > bestLen) { best = c; bestLen = cn.length; }
   }
   if (best) return best;
+
+  // 6. Special defense names
   if (base.includes('fire zone')) return COVERAGES.find(c => c.name.toLowerCase().includes('cover 2 zone'));
   if (base.includes('mid blitz')) return COVERAGES.find(c => c.name.toLowerCase() === 'cover 0');
   if (base.includes('tampa')) return COVERAGES.find(c => c.name.toLowerCase().includes('tampa'));
@@ -346,7 +401,7 @@ function buildTree(filter, search, shell) {
       const pn = card.dataset.play;
       const cov = findCoverage(pn);
       const variants = cov ? DEFENSIVE_PLAYS.filter(dp => dp.coverageFamily === cov.name.split('(')[0].trim() || dp.coverage === cov.name || dp.coverageFamily === cov.name) : [];
-      openModal(cov, variants, card.dataset.formation, card.dataset.subformation);
+      openModal(cov, variants, card.dataset.formation, card.dataset.subformation, pn);
     });
 
     if (isTouchDevice) {
@@ -381,7 +436,7 @@ function reconnectCardObservers() {
   });
 }
 
-function openModal(cov, variants, formation, subFormation) {
+function openModal(cov, variants, formation, subFormation, exactPlayName) {
   cleanup();
   const covDefFormation = formation || 'Nickel';
   const covDefSubFormation = subFormation || '';
@@ -442,8 +497,8 @@ function openModal(cov, variants, formation, subFormation) {
     <p class="text-gray-300 mb-4">${cov.description}</p>
 
     <div class="results-section mb-4">
-      <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getDefPlaybooks(cov.name).length})</h4>
-      <div class="flex flex-wrap">${getDefPlaybooks(cov.name).map(p => `<span class="tag-purple">${p}</span>`).join('')}</div>
+      <h4 class="text-[#8A2BE2]"><i class="bi bi-book-fill mr-1"></i> Found in Playbooks (${getDefPlaybooks(exactPlayName || cov.name, covDefFormation, covDefSubFormation).length})</h4>
+      <div class="flex flex-wrap">${getDefPlaybooks(exactPlayName || cov.name, covDefFormation, covDefSubFormation).map(p => `<span class="tag-purple">${p}</span>`).join('')}</div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -542,7 +597,8 @@ function openModal(cov, variants, formation, subFormation) {
   modal.classList.add('active');
   modalContent.querySelector('#closeModal').addEventListener('click', closeModal);
 
-  // Live animated play art
+  // Live animated play art — use exact play name for coverage identity
+  const covNameForRender = exactPlayName || cov.name;
   const mainCanvas = document.getElementById('modalCovArt');
   let covModalSide = 'defense';
   let modalVisGroups = null;
@@ -568,7 +624,7 @@ function openModal(cov, variants, formation, subFormation) {
         side: covModalSide, offFormation: 'Gun', offSubFormation: 'Spread Y-Flex',
         playFamily: 'PA Crossers', defFormation: covDefFormation,
         defSubFormation: covDefSubFormation || undefined,
-        coverageName: cov.name,
+        coverageName: covNameForRender,
         duration: modalAnimSpeed, visibleGroups: modalVisGroups
       });
       renderers.push(r);
@@ -728,4 +784,11 @@ function refreshActiveCards() {
 }
 
 buildPosFilter();
-buildTree();
+
+// Read URL search parameter (from home quick-reference links)
+const urlParams = new URLSearchParams(window.location.search);
+const urlSearch = urlParams.get('search') || '';
+if (urlSearch && searchInput) {
+  searchInput.value = urlSearch;
+}
+buildTree('all', searchInput ? searchInput.value : '', 'all');
