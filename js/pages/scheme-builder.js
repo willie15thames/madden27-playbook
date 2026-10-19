@@ -1493,8 +1493,12 @@ function loadScheme(name) {
   if (scheme.playerRoutes) {
     for (const [k, v] of Object.entries(scheme.playerRoutes)) {
       if (k === '_ball_target') {
-        // Validate ball target points to an existing player
-        if (v && validKeys.has(v)) playerRoutes[k] = v;
+        // Validate ball target points to an existing player, resolving common aliases
+        if (v) {
+          const TARGET_ALIASES = { TE: 'TE1', TE1: 'TE', TE2: 'TE', WR5: 'WR4', FB: 'RB' };
+          if (validKeys.has(v)) playerRoutes[k] = v;
+          else if (TARGET_ALIASES[v] && validKeys.has(TARGET_ALIASES[v])) playerRoutes[k] = TARGET_ALIASES[v];
+        }
       } else if (k.startsWith('_') || validKeys.has(k)) {
         playerRoutes[k] = v;
       }
@@ -1505,6 +1509,17 @@ function loadScheme(name) {
   // Restore select cascade: playbook -> formation -> sub-formation -> play
   if (scheme.pbValue) {
     pbSelect.value = scheme.pbValue;
+  } else {
+    // No book saved — clear all cascaded selectors to prevent stale state
+    pbSelect.value = '';
+    fmSelect.innerHTML = '<option value="">Formation...</option>';
+    fmSelect.disabled = true;
+    sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
+    sfSelect.disabled = true;
+    plSelect.innerHTML = '<option value="">Play...</option>';
+    plSelect.disabled = true;
+  }
+  if (scheme.pbValue) {
     // Repopulate formation select
     const book = OFFENSIVE_PLAYBOOKS.find(b => b.name === scheme.pbValue);
     if (book && book.formations) {

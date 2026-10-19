@@ -1198,9 +1198,9 @@ const ROUTE_PATHS = {
 
 // Coverage zone shapes (center + radius, normalized)
 const ZONE_SHAPES = {
-  'deep_third_left':   { x: 0.17, y: 0.18, w: 0.33, h: 0.22 },
-  'deep_third_mid':    { x: 0.34, y: 0.18, w: 0.32, h: 0.22 },
-  'deep_third_right':  { x: 0.67, y: 0.18, w: 0.33, h: 0.22 },
+  'deep_third_left':   { x: 0.0, y: 0.18, w: 0.33, h: 0.22 },
+  'deep_third_mid':    { x: 0.33, y: 0.18, w: 0.34, h: 0.22 },
+  'deep_third_right':  { x: 0.66, y: 0.18, w: 0.34, h: 0.22 },
   'deep_half_left':    { x: 0.0, y: 0.12, w: 0.50, h: 0.26 },
   'deep_half_right':   { x: 0.50, y: 0.12, w: 0.50, h: 0.26 },
   'deep_quarter_1':    { x: 0.0, y: 0.14, w: 0.25, h: 0.24 },
@@ -1239,7 +1239,7 @@ const COVERAGE_ZONES = {
   'Cover 4': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 4 Palms': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'hook_left', 'hook_right'], type: 'zone' },
   'Cover 4 Drop': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
-  'Cover 6': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_half_right', 'hook_left', 'hook_right', 'flat_right', 'curl_flat_left'], type: 'zone' },
+  'Cover 6': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_half_right', 'hook_left', 'hook_right', 'flat_right', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
   'Cover 9': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
   'Tampa 2': { zones: ['deep_half_left', 'deep_half_right', 'tampa_mlb_deep', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
   'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle'], type: 'zone' },
@@ -1249,7 +1249,7 @@ const COVERAGE_ZONES = {
   'Edge Blitz 2': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
   'Edge Blitz 3': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'curl_flat_left', 'curl_flat_right', 'hook_left', 'hook_right'], type: 'zone' },
   'Pinch Blitz 0': { zones: [], type: 'man' },
-  'Pinch Blitz 3': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'curl_flat_left', 'hook_left', 'hook_right'], type: 'zone' },
+  'Pinch Blitz 3': { zones: ['deep_third_left', 'deep_third_mid', 'deep_third_right', 'curl_flat_left', 'curl_flat_right', 'hook_left', 'hook_right'], type: 'zone' },
   'Inverted Cover 2': { zones: ['deep_half_left', 'deep_half_right', 'hook_left', 'hook_right', 'flat_left', 'flat_right'], type: 'zone' }
 };
 
@@ -1259,7 +1259,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'man_trail', FS: 'man_trail',
-    LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
+    LB: 'blitz_a', LB1: 'blitz_a', LB2: 'blitz_b', LB3: 'blitz_b',
     LOLB: 'blitz_edge', ROLB: 'blitz_edge',
     ILB1: 'blitz_a', ILB2: 'blitz_b', MLB: 'blitz_a'
   },
@@ -1267,7 +1267,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'man_trail', FS: 'deep_middle',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1275,7 +1275,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'robber', FS: 'deep_middle',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1283,7 +1283,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'robber', FS: 'deep_middle',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1291,7 +1291,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1299,7 +1299,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
+    LB: 'man_trail', LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
     LOLB: 'man_trail', ROLB: 'man_trail',
     ILB1: 'man_trail', ILB2: 'man_trail', MLB: 'man_trail'
   },
@@ -1307,7 +1307,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1315,7 +1315,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1323,7 +1323,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
+    LB: 'man_trail', LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
     LOLB: 'man_trail', ROLB: 'man_trail',
     ILB1: 'man_trail', ILB2: 'man_trail', MLB: 'man_trail'
   },
@@ -1331,7 +1331,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'flat_zone', ROLB: 'flat_zone',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1339,7 +1339,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'robber', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'robber', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'robber'
   },
@@ -1347,7 +1347,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'curl_flat', FS: 'deep_third_mid',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1355,7 +1355,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'flat_zone', FS: 'deep_third_mid',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1363,15 +1363,15 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'deep_third', FS: 'deep_third_mid',
-    LB1: 'deep_third', LB2: 'hook_zone', LB3: 'hook_zone',
-    LOLB: 'curl_flat', ROLB: 'curl_flat',
-    ILB1: 'deep_third', ILB2: 'hook_zone', MLB: 'hook_zone'
+    LB: 'deep_third', LB1: 'deep_third', LB2: 'hook_zone', LB3: 'hook_zone',
+    LOLB: 'deep_third', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 3 Buzz': {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'hook_zone', FS: 'deep_third_mid',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1379,7 +1379,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'curl_flat', FS: 'deep_third_mid',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1387,7 +1387,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_quarter', CB2: 'deep_quarter',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_quarter', FS: 'deep_quarter',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1395,7 +1395,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_quarter', CB2: 'deep_quarter',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_quarter', FS: 'deep_quarter',
-    LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
+    LB: 'curl_flat', LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1403,15 +1403,15 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_quarter', CB2: 'deep_quarter',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'deep_quarter', FS: 'deep_quarter',
-    LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
+    LB: 'curl_flat', LB1: 'curl_flat', LB2: 'curl_flat', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 6': {
-    CB1: 'deep_quarter', CB2: 'deep_half',
-    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
-    SS: 'deep_quarter', FS: 'deep_quarter',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    CB1: 'deep_quarter', CB2: 'curl_flat',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'curl_flat',
+    SS: 'deep_half', FS: 'deep_quarter',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
     LOLB: 'curl_flat', ROLB: 'flat_zone',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1419,7 +1419,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'man_trail', CB2: 'man_trail', CB3: 'man_trail', CB4: 'man_trail',
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
+    LB: 'man_trail', LB1: 'man_trail', LB2: 'man_trail', LB3: 'man_trail',
     LOLB: 'man_trail', ROLB: 'man_trail',
     ILB1: 'man_trail', ILB2: 'man_trail', MLB: 'man_trail'
   },
@@ -1436,7 +1436,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_third', CB2: 'deep_third',
     NCB: 'deep_third', NCB1: 'deep_third', NCB2: 'deep_third',
     SS: 'deep_half', FS: 'deep_half',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'deep_middle', ILB2: 'hook_zone', MLB: 'deep_middle'
   },
@@ -1500,7 +1500,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'deep_half', CB2: 'deep_half',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'flat_zone', FS: 'flat_zone',
-    LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   }
@@ -1553,11 +1553,11 @@ function getDefAssignment(coverageName, defKey) {
     return (DEF_ASSIGNMENTS['Mid Blitz'] || {})[defKey] || null;
   }
   if (lower.includes('tampa')) return (DEF_ASSIGNMENTS['Tampa 2'] || {})[defKey] || null;
-  // Longest key match
+  // Longest key match — only match when coverage name contains the key
   const keys = Object.keys(DEF_ASSIGNMENTS).sort((a, b) => b.length - a.length);
   for (const key of keys) {
     const kl = key.toLowerCase();
-    if (lower.includes(kl) || kl.includes(lower)) {
+    if (lower.includes(kl)) {
       return DEF_ASSIGNMENTS[key][defKey] || null;
     }
   }
@@ -4109,11 +4109,11 @@ class PlayArtRenderer {
     }
     if (lower.includes('prevent')) return COVERAGE_ZONES['Prevent'] || COVERAGE_ZONES['Cover 4'];
     if (lower.includes('46')) return COVERAGE_ZONES['Cover 2 Man'] || COVERAGE_ZONES['Cover 2 Zone'];
-    // Try longest key match
+    // Try longest key match — only match when coverage name contains the key
     const keys = Object.keys(COVERAGE_ZONES).sort((a, b) => b.length - a.length);
     for (const key of keys) {
       const kl = key.toLowerCase();
-      if (lower.includes(kl) || kl.includes(lower)) return COVERAGE_ZONES[key];
+      if (lower.includes(kl)) return COVERAGE_ZONES[key];
     }
     return COVERAGE_ZONES['Cover 3'];
   }

@@ -194,13 +194,20 @@ function findCoverage(name) {
 
   // 6. Special defense names and keyword mapping
   // Ordered longest-first so more-specific terms match before generic ones
+  // Check for numbered blitz variants — the trailing number indicates the coverage shell
+  const blitzNumMatch = base.match(/(?:edge|pinch|mid|zero)\s*blitz\s+(\d)/);
+  if (blitzNumMatch) {
+    const shellNum = blitzNumMatch[1];
+    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + shellNum);
+    if (baseCover) return baseCover;
+  }
   const specialMap = [
     ['fire zone', 'cover 2 zone'], ['mid blitz', 'cover 0'], ['zero blitz', 'cover 0'],
     ['edge blitz', 'cover 1'], ['tampa', 'tampa'], ['prevent', 'prevent'],
     ['inverted', 'cover 2 invert'], ['qb spy', 'cover 1'],
     ['quarters', 'cover 4'], ['palms', 'cover 4 palms'],
     ['bracket', 'cover 2 man'], ['double', 'cover 2 man'],
-    ['pinch', 'cover 1'], ['overload', 'cover 1'], ['storm', 'cover 1'],
+    ['pinch blitz', 'cover 0'], ['overload', 'cover 1'], ['storm', 'cover 1'],
     ['spy', 'cover 1'], ['max', 'cover 0'], ['sugar', 'cover 0'],
     ['blitz', 'cover 0']
   ];
