@@ -1200,7 +1200,7 @@ const ROUTE_PATHS = {
 const ZONE_SHAPES = {
   'deep_third_left':   { x: 0.0, y: 0.18, w: 0.33, h: 0.22 },
   'deep_third_mid':    { x: 0.33, y: 0.18, w: 0.34, h: 0.22 },
-  'deep_third_right':  { x: 0.66, y: 0.18, w: 0.34, h: 0.22 },
+  'deep_third_right':  { x: 0.67, y: 0.18, w: 0.33, h: 0.22 },
   'deep_half_left':    { x: 0.0, y: 0.12, w: 0.50, h: 0.26 },
   'deep_half_right':   { x: 0.50, y: 0.12, w: 0.50, h: 0.26 },
   'deep_quarter_1':    { x: 0.0, y: 0.14, w: 0.25, h: 0.24 },
@@ -1224,6 +1224,7 @@ const COVERAGE_ZONES = {
   'Cover 1': { zones: ['deep_middle', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
   'Cover 1 Robber': { zones: ['deep_middle', 'mid_hole', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
   'Cover 1 Hole': { zones: ['deep_middle', 'mid_hole', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
+  'Cover 2': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 2 Zone': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right', 'mid_hole'], type: 'zone' },
   'Cover 2 Man': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
   'Cover 2 Invert': { zones: ['deep_half_left', 'deep_half_right', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
@@ -1241,8 +1242,8 @@ const COVERAGE_ZONES = {
   'Cover 4 Drop': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
   'Cover 6': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_half_right', 'hook_left', 'hook_right', 'flat_right', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
   'Cover 9': { zones: ['deep_half_left', 'deep_half_right'], type: 'man' },
-  'Tampa 2': { zones: ['deep_half_left', 'deep_half_right', 'tampa_mlb_deep', 'flat_left', 'flat_right', 'hook_left', 'hook_right'], type: 'zone' },
-  'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle'], type: 'zone' },
+  'Tampa 2': { zones: ['deep_half_left', 'deep_half_right', 'tampa_mlb_deep', 'flat_left', 'flat_right', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'zone' },
+  'Prevent': { zones: ['deep_quarter_1', 'deep_quarter_2', 'deep_quarter_3', 'deep_quarter_4', 'deep_middle', 'hook_left', 'hook_right'], type: 'zone' },
   'Mid Blitz': { zones: [], type: 'man' },
   'Edge Blitz': { zones: ['deep_middle', 'hook_left', 'hook_right', 'curl_flat_left', 'curl_flat_right'], type: 'man' },
   'Edge Blitz 0': { zones: [], type: 'man' },
@@ -1284,6 +1285,14 @@ const DEF_ASSIGNMENTS = {
     NCB: 'man_trail', NCB1: 'man_trail', NCB2: 'man_trail',
     SS: 'robber', FS: 'deep_middle',
     LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LOLB: 'curl_flat', ROLB: 'curl_flat',
+    ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
+  },
+  'Cover 2': {
+    CB1: 'flat_zone', CB2: 'flat_zone',
+    NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
+    SS: 'deep_half', FS: 'deep_half',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1363,7 +1372,7 @@ const DEF_ASSIGNMENTS = {
     CB1: 'flat_zone', CB2: 'flat_zone',
     NCB: 'curl_flat', NCB1: 'curl_flat', NCB2: 'curl_flat',
     SS: 'deep_third', FS: 'deep_third_mid',
-    LB: 'deep_third', LB1: 'deep_third', LB2: 'hook_zone', LB3: 'hook_zone',
+    LB: 'deep_third', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'deep_third', ROLB: 'curl_flat',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1408,10 +1417,10 @@ const DEF_ASSIGNMENTS = {
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
   'Cover 6': {
-    CB1: 'deep_quarter', CB2: 'curl_flat',
+    CB1: 'deep_quarter', CB2: 'flat_zone',
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'curl_flat',
     SS: 'deep_half', FS: 'deep_quarter',
-    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'curl_flat',
+    LB: 'hook_zone', LB1: 'hook_zone', LB2: 'hook_zone', LB3: 'hook_zone',
     LOLB: 'curl_flat', ROLB: 'flat_zone',
     ILB1: 'hook_zone', ILB2: 'hook_zone', MLB: 'hook_zone'
   },
@@ -1428,8 +1437,8 @@ const DEF_ASSIGNMENTS = {
     NCB: 'hook_zone', NCB1: 'hook_zone', NCB2: 'hook_zone',
     SS: 'deep_half', FS: 'deep_half',
     LB1: 'hook_zone', LB2: 'deep_middle', LB3: 'hook_zone', LB4: 'hook_zone',
-    LOLB: 'curl_flat', ROLB: 'curl_flat',
-    ILB1: 'hook_zone', ILB2: 'deep_middle', MLB: 'deep_middle',
+    LOLB: 'hook_zone', ROLB: 'hook_zone',
+    ILB1: 'curl_flat', ILB2: 'deep_middle', MLB: 'deep_middle',
     LB: 'deep_middle'
   },
   'Prevent': {
@@ -1541,13 +1550,32 @@ function getDefAssignment(coverageName, defKey) {
   }
   // Named blitz variants: check specific blitz keys before generic fallback
   if (lower.includes('blitz')) {
-    // Try "Edge Blitz 0", "Pinch Blitz 3", etc. by matching against DEF_ASSIGNMENTS keys
+    const trailingNum = lower.match(/(\d)\s*$/);
     const blitzKeys = Object.keys(DEF_ASSIGNMENTS).filter(k => k.toLowerCase().includes('blitz'));
-    // Sort longest first so "Edge Blitz 0" beats "Edge Blitz"
     blitzKeys.sort((a, b) => b.length - a.length);
     for (const bk of blitzKeys) {
       if (lower.includes(bk.toLowerCase())) {
+        // If input has a trailing shell number the matched key doesn't share,
+        // use Cover N assignments for coverage positions, blitz family for rush positions
+        if (trailingNum) {
+          const bkNum = bk.match(/(\d)\s*$/);
+          if (!bkNum || bkNum[1] !== trailingNum[1]) {
+            const coverKey = 'Cover ' + trailingNum[1];
+            if (DEF_ASSIGNMENTS[coverKey]) {
+              const coverageKeys = new Set(['CB1','CB2','CB3','CB4','NCB','NCB1','NCB2','FS','SS','ILB1','ILB2','MLB']);
+              if (coverageKeys.has(defKey)) return DEF_ASSIGNMENTS[coverKey][defKey] || null;
+            }
+          }
+        }
         return DEF_ASSIGNMENTS[bk][defKey] || null;
+      }
+    }
+    // No specific blitz key matched — try trailing number for coverage positions
+    if (trailingNum) {
+      const coverKey = 'Cover ' + trailingNum[1];
+      if (DEF_ASSIGNMENTS[coverKey]) {
+        const coverageKeys = new Set(['CB1','CB2','CB3','CB4','NCB','NCB1','NCB2','FS','SS','ILB1','ILB2','MLB']);
+        if (coverageKeys.has(defKey)) return DEF_ASSIGNMENTS[coverKey][defKey] || null;
       }
     }
     return (DEF_ASSIGNMENTS['Mid Blitz'] || {})[defKey] || null;
@@ -4100,10 +4128,26 @@ class PlayArtRenderer {
     if (lower.includes('tampa')) return COVERAGE_ZONES['Tampa 2'] || COVERAGE_ZONES['Cover 2 Zone'];
     if (lower.includes('fire zone')) return COVERAGE_ZONES['Cover 2 Zone'] || COVERAGE_ZONES['Cover 2 Man'];
     if (lower.includes('blitz')) {
+      const trailingNum = lower.match(/(\d)\s*$/);
       // Check specific blitz keys (longest first) before generic fallback
       const blitzKeys = Object.keys(COVERAGE_ZONES).filter(k => k.toLowerCase().includes('blitz')).sort((a, b) => b.length - a.length);
       for (const bk of blitzKeys) {
-        if (lower.includes(bk.toLowerCase())) return COVERAGE_ZONES[bk];
+        if (lower.includes(bk.toLowerCase())) {
+          // If input has a trailing shell number that the matched key doesn't share, use Cover N zones
+          if (trailingNum) {
+            const bkNum = bk.match(/(\d)\s*$/);
+            if (!bkNum || bkNum[1] !== trailingNum[1]) {
+              const coverKey = 'Cover ' + trailingNum[1];
+              if (COVERAGE_ZONES[coverKey]) return COVERAGE_ZONES[coverKey];
+            }
+          }
+          return COVERAGE_ZONES[bk];
+        }
+      }
+      // No specific blitz key matched — try trailing number for shell
+      if (trailingNum) {
+        const coverKey = 'Cover ' + trailingNum[1];
+        if (COVERAGE_ZONES[coverKey]) return COVERAGE_ZONES[coverKey];
       }
       return COVERAGE_ZONES['Cover 0'] || COVERAGE_ZONES['Cover 1'];
     }
@@ -5267,6 +5311,11 @@ class PlayArtRenderer {
       isLeftSide = false;
     } else {
       isLeftSide = startPos[0] < 0.5;
+    }
+    // Cloud coverage: LB (Dime) must take the LEFT deep third since SS already owns right
+    if (key === 'LB' && assignment === 'deep_third' && coverageName &&
+        coverageName.toLowerCase().includes('cloud')) {
+      isLeftSide = true;
     }
 
     if (assignment) {

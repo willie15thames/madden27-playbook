@@ -198,7 +198,11 @@ function findCoverage(name) {
   const blitzNumMatch = base.match(/(?:edge|pinch|mid|zero)\s*blitz\s+(\d)/);
   if (blitzNumMatch) {
     const shellNum = blitzNumMatch[1];
-    const baseCover = COVERAGES.find(c => c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim() === 'cover ' + shellNum);
+    const prefix = 'cover ' + shellNum;
+    const baseCover = COVERAGES.find(c => {
+      const cn = c.name.toLowerCase().replace(/\s*\([^)]*\)/, '').trim();
+      return cn === prefix || cn.startsWith(prefix + ' ');
+    });
     if (baseCover) return baseCover;
   }
   const specialMap = [

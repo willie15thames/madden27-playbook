@@ -339,7 +339,7 @@ function updateAnimation() {
   // Use the canonical model state, not the dropdown values, to prevent desync
   // when Creator sets a formation that doesn't exist in the selected playbook's dropdown.
   const formation = currentFormation || fmSelect.value || 'Gun';
-  const subFormation = currentSubFormation || sfSelect.value || '';
+  const subFormation = currentSubFormation != null ? currentSubFormation : (sfSelect.value || '');
   const play = currentPlay || 'Inside Zone';
 
   // Pass custom positions/routes if the user has edited them
@@ -1506,18 +1506,18 @@ function loadScheme(name) {
   }
   selectedPlayer = null;
 
+  // Clear all cascaded selectors before restoring — prevents stale dropdown values
+  pbSelect.value = '';
+  fmSelect.innerHTML = '<option value="">Formation...</option>';
+  fmSelect.disabled = true;
+  sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
+  sfSelect.disabled = true;
+  plSelect.innerHTML = '<option value="">Play...</option>';
+  plSelect.disabled = true;
+
   // Restore select cascade: playbook -> formation -> sub-formation -> play
   if (scheme.pbValue) {
     pbSelect.value = scheme.pbValue;
-  } else {
-    // No book saved — clear all cascaded selectors to prevent stale state
-    pbSelect.value = '';
-    fmSelect.innerHTML = '<option value="">Formation...</option>';
-    fmSelect.disabled = true;
-    sfSelect.innerHTML = '<option value="">Sub-formation...</option>';
-    sfSelect.disabled = true;
-    plSelect.innerHTML = '<option value="">Play...</option>';
-    plSelect.disabled = true;
   }
   if (scheme.pbValue) {
     // Repopulate formation select
